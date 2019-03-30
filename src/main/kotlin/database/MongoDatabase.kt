@@ -1,13 +1,13 @@
 package database
 
 import database.collection.*
-import database.entity.*
-import org.litote.kmongo.KMongo
-import org.litote.kmongo.getCollection
+import database.document.*
+import org.litote.kmongo.coroutine.coroutine
+import org.litote.kmongo.reactivestreams.KMongo
 
 class MongoDatabase(databaseName: String) : Database {
 
-    private val database = KMongo.createClient().getDatabase(databaseName)
+    private val database = KMongo.createClient().coroutine.getDatabase(databaseName)
 
     override fun arts() = ArtCollection(database.getCollection<Art>("art"))
 

@@ -1,11 +1,10 @@
 package database.collection
 
-import com.mongodb.client.MongoCollection
 import database.collection.impl.DocumentCollection
-import database.entity.Artist
+import database.document.Artist
+import org.litote.kmongo.coroutine.CoroutineCollection
 
-class ArtistCollection(private val collection: MongoCollection<Artist>) :
+class ArtistCollection(private val collection: CoroutineCollection<Artist>) :
     DocumentCollection<Artist>(collection) {
-
 
 }

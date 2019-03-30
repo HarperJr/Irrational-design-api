@@ -1,6 +1,6 @@
-package database.entity
+package database.document
 
-data class Artist(
+data class Tag(
     override val id: String,
     var name: String
 ) : Document()

@@ -1,10 +1,10 @@
 package database.collection
 
-import com.mongodb.client.MongoCollection
 import database.collection.impl.DocumentCollection
-import database.entity.Follower
+import database.document.Follower
+import org.litote.kmongo.coroutine.CoroutineCollection
 
-class FollowerCollection(private val collection: MongoCollection<Follower>) :
+class FollowerCollection(private val collection: CoroutineCollection<Follower>) :
     DocumentCollection<Follower>(collection) {
 
 }

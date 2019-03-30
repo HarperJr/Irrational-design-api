@@ -1,10 +1,10 @@
 package database.collection
 
-import com.mongodb.client.MongoCollection
 import database.collection.impl.DocumentCollection
-import database.entity.Comment
+import database.document.Comment
+import org.litote.kmongo.coroutine.CoroutineCollection
 
-class CommentCollection(private val collection: MongoCollection<Comment>) :
+class CommentCollection(private val collection: CoroutineCollection<Comment>) :
     DocumentCollection<Comment>(collection) {
 
 }

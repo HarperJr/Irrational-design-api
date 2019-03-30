@@ -1,10 +1,10 @@
 package database.collection
 
-import com.mongodb.client.MongoCollection
 import database.collection.impl.DocumentCollection
-import database.entity.Category
+import database.document.Category
+import org.litote.kmongo.coroutine.CoroutineCollection
 
-class CategoryCollection(private val collection: MongoCollection<Category>) :
+class CategoryCollection(private val collection: CoroutineCollection<Category>) :
     DocumentCollection<Category>(collection) {
 
 }

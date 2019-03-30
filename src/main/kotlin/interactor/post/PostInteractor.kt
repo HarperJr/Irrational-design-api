@@ -1,14 +1,7 @@
 package interactor.post
 
-import database.Database
 import response.PostResponse
 
 interface PostInteractor {
-    fun post(): PostResponse
-
-    companion object : PostInteractor by INSTANCE
+    suspend fun post(id: String): PostResponse?
 }
-
-private val INSTANCE = PostInteractorImpl(
-    Database.posts()
-)

@@ -1,10 +1,10 @@
 package database.collection
 
-import com.mongodb.client.MongoCollection
 import database.collection.impl.DocumentCollection
-import database.entity.Avatar
+import database.document.Avatar
+import org.litote.kmongo.coroutine.CoroutineCollection
 
-class AvatarCollection(private val collection: MongoCollection<Avatar>) :
+class AvatarCollection(private val collection: CoroutineCollection<Avatar>) :
     DocumentCollection<Avatar>(collection) {
 
 }

@@ -1,4 +1,4 @@
-package database.entity
+package database.document
 
 abstract class Document {
     abstract val id: String

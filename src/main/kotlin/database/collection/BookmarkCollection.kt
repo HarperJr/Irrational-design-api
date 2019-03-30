@@ -1,10 +1,10 @@
 package database.collection
 
-import com.mongodb.client.MongoCollection
 import database.collection.impl.DocumentCollection
-import database.entity.Bookmark
+import database.document.Bookmark
+import org.litote.kmongo.coroutine.CoroutineCollection
 
-class BookmarkCollection(private val collection: MongoCollection<Bookmark>) :
+class BookmarkCollection(private val collection: CoroutineCollection<Bookmark>) :
     DocumentCollection<Bookmark>(collection) {
 
 }

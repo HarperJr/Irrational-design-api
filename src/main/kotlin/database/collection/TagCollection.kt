@@ -1,10 +1,10 @@
 package database.collection
 
-import com.mongodb.client.MongoCollection
 import database.collection.impl.DocumentCollection
-import database.entity.Tag
+import database.document.Tag
+import org.litote.kmongo.coroutine.CoroutineCollection
 
-class TagCollection(private val collection: MongoCollection<Tag>) :
+class TagCollection(private val collection: CoroutineCollection<Tag>) :
     DocumentCollection<Tag>(collection) {
 
 }

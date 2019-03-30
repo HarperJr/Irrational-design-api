@@ -25,8 +25,4 @@ interface Database {
     fun tagsInPosts(): TagInPostCollection
 
     fun categoriesInPosts(): CategoryInPostCollection
-
-    companion object : Database by INSTANCE
 }
-
-private val INSTANCE = MongoDatabase("idesign")

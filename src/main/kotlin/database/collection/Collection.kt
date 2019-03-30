@@ -1,22 +1,24 @@
 package database.collection
 
-import database.entity.Document
+import database.document.Document
 
 interface Collection<T : Document> {
 
-    fun all(): List<T>
+    suspend fun all(): List<T>
 
-    fun find(id: String): T?
+    suspend fun find(id: String): T?
 
-    fun delete(id: String)
+    suspend fun find(idRange: List<String>): List<T>
 
-    fun delete(ids: List<String>)
+    suspend fun delete(id: String)
 
-    fun update(t: T)
+    suspend fun delete(ids: List<String>)
 
-    fun insert(t: T)
+    suspend fun update(t: T)
 
-    fun insert(t: List<T>)
+    suspend fun insert(t: T)
 
-    fun contains(t: T): Boolean
+    suspend fun insert(t: List<T>)
+
+    suspend fun contains(t: T): Boolean
 }
