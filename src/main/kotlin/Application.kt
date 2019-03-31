@@ -1,7 +1,7 @@
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import di.AppComponent
-import di.DaggerAppComponent
+import interactor.comment.CommentLoader
+import interactor.post.PostLoader
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -19,15 +19,13 @@ fun main(args: Array<String>) {
 }
 
 val gson: Gson = GsonBuilder().create()
-val component: AppComponent = DaggerAppComponent.create()
 
 fun Application.module() {
     install(DefaultHeaders)
     install(CallLogging)
     install(Routing) {
         get("/post/{postId}") {
-            val post = component.postInteractor()
-                .post("")
+            val post = PostLoader.post("")
             if (post != null) {
                 call.respond(gson.toJson(post))
             } else {
@@ -35,16 +33,20 @@ fun Application.module() {
             }
         }
         get("/posts/{filter}") {
+            val from = call.request.queryParameters["from"]?.toInt() ?: 0
+            val to = call.request.queryParameters["to"]?.toInt() ?: 20
 
+            val posts = PostLoader.posts(from, to)
+            call.respond(gson.toJson(posts))
         }
-        get("/artist/{id}") {
+        get("/artist/") {
 
         }
 
         get("/comments") {
             val postId = call.request.queryParameters["post_id"]
             if (postId != null) {
-                val comments = component.commentInteractor().comments(postId)
+                val comments = CommentLoader.comments(postId)
                 call.respond(gson.toJson(comments))
             } else {
                 call.respond(HttpStatusCode.NotFound)

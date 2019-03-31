@@ -11,12 +11,14 @@ import response.AvatarResponse
 import response.CommentResponse
 import java.util.*
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class CommentInteractorImpl @Inject constructor(
+@Singleton
+class CommentLoaderImpl @Inject constructor(
     private val commentCollection: CommentCollection,
     private val artistCollection: ArtistCollection,
     private val avatarCollection: AvatarCollection
-) : CommentInteractor {
+) : CommentLoader {
     override suspend fun comments(id: String): List<CommentResponse> = coroutineScope {
         withContext(Dispatchers.IO) {
             commentCollection.getAllByPost(id)
@@ -28,7 +30,7 @@ class CommentInteractorImpl @Inject constructor(
                             name = author.name,
                             permalink = author.permalink,
                             avatar = AvatarResponse(
-                                link = avatar.path
+                                link = avatar.link
                             )
                         ),
                         content = it.content,

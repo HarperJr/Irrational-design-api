@@ -4,8 +4,8 @@ import dagger.Component
 import di.module.CollectionsModule
 import di.module.DatabaseModule
 import di.module.InteractorModule
-import interactor.comment.CommentInteractor
-import interactor.post.PostInteractor
+import interactor.comment.CommentLoader
+import interactor.post.PostLoader
 import javax.inject.Singleton
 
 @Singleton
@@ -17,6 +17,10 @@ import javax.inject.Singleton
     ]
 )
 interface AppComponent {
-    fun postInteractor(): PostInteractor
-    fun commentInteractor(): CommentInteractor
+    fun postLoader(): PostLoader
+    fun commentLoader(): CommentLoader
+
+    companion object : AppComponent by INSTANCE
 }
+
+private val INSTANCE = DaggerAppComponent.create()

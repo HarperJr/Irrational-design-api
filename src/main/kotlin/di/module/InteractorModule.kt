@@ -2,16 +2,16 @@ package di.module
 
 import dagger.Binds
 import dagger.Module
-import interactor.comment.CommentInteractor
-import interactor.comment.CommentInteractorImpl
-import interactor.post.PostInteractor
-import interactor.post.PostInteractorImpl
+import interactor.comment.CommentLoader
+import interactor.comment.CommentLoaderImpl
+import interactor.post.PostLoader
+import interactor.post.PostLoaderImpl
 
 @Module
 abstract class InteractorModule {
     @Binds
-    internal abstract fun bindPostInteractor(postInteractor: PostInteractorImpl): PostInteractor
+    internal abstract fun bindPostInteractor(postLoader: PostLoaderImpl): PostLoader
 
     @Binds
-    internal abstract fun bindCommentInteractor(commentInteractor: CommentInteractorImpl): CommentInteractor
+    internal abstract fun bindCommentInteractor(commentLoader: CommentLoaderImpl): CommentLoader
 }

@@ -4,5 +4,5 @@ data class Art(
     override val id: String,
     var postId: String,
     var name: String,
-    var path: String
+    var link: String
 ) : Document()
