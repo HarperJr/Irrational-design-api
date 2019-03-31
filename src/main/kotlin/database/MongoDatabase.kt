@@ -11,6 +11,8 @@ class MongoDatabase(databaseName: String) : Database {
 
     override fun arts() = ArtCollection(database.getCollection<Art>("art"))
 
+    override fun previewCollection() = PreviewCollection(database.getCollection<Preview>("preview"))
+
     override fun artists() = ArtistCollection(database.getCollection<Artist>("artist"))
 
     override fun avatars() = AvatarCollection(database.getCollection<Avatar>("avatar"))

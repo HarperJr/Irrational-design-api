@@ -6,6 +6,8 @@ interface Database {
 
     fun arts(): ArtCollection
 
+    fun previewCollection(): PreviewCollection
+
     fun artists(): ArtistCollection
 
     fun avatars(): AvatarCollection

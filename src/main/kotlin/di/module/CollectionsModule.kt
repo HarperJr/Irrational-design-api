@@ -14,6 +14,10 @@ class CollectionsModule {
 
     @Provides
     @Singleton
+    fun providePreviewCollection(database: Database) = database.previewCollection()
+
+    @Provides
+    @Singleton
     fun provideArtistCollection(database: Database) = database.artists()
 
     @Provides
