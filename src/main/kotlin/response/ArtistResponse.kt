@@ -7,6 +7,4 @@ data class ArtistResponse(
     var permalink: String,
     var email: String,
     var avatar: AvatarResponse
-) {
-    class AvatarResponse(var link: String)
-}
+)

@@ -13,6 +13,7 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.util.AttributeKey
 
 fun main(args: Array<String>) {
     embeddedServer(Netty, 8080, watchPaths = listOf("IrrationalDesign"), module = Application::module).start()
@@ -39,6 +40,16 @@ fun Application.module() {
         }
         get("/artist/{id}") {
 
+        }
+
+        get("/comments") {
+            val postId = call.request.queryParameters["post_id"]
+            if (postId != null){
+                val comments = component.commentInteractor().comments(postId)
+                call.respond(gson.toJson(comments))
+            }else{
+                call.respond(HttpStatusCode.NotFound)
+            }
         }
     }
 }
