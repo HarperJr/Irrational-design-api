@@ -1,18 +1,19 @@
 package database.collection
 
 import database.document.Document
+import org.litote.kmongo.Id
 
-interface Collection<T : Document> {
+interface Collection<T : Document<T>> {
 
     suspend fun all(): List<T>
 
-    suspend fun find(id: String): T?
+    suspend fun find(id: Id<T>): T?
 
-    suspend fun find(idRange: List<String>): List<T>
+    suspend fun find(ids: List<Id<T>>): List<T>
 
-    suspend fun delete(id: String)
+    suspend fun delete(id: Id<T>)
 
-    suspend fun delete(ids: List<String>)
+    suspend fun delete(ids: List<Id<T>>)
 
     suspend fun update(t: T)
 

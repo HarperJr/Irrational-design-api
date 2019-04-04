@@ -1,5 +1,5 @@
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.google.gson.*
+import interactor.artist.ArtistLoader
 import interactor.comment.CommentLoader
 import interactor.post.PostLoader
 import io.ktor.application.Application
@@ -13,12 +13,19 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import org.litote.kmongo.Id
+import org.litote.kmongo.toId
 
 fun main(args: Array<String>) {
     embeddedServer(Netty, 8080, watchPaths = listOf("IrrationalDesign"), module = Application::module).start()
 }
 
-val gson: Gson = GsonBuilder().create()
+val gson: Gson = GsonBuilder()
+    .registerTypeAdapter(Id::class.java,
+        JsonSerializer<Id<Any>> { id, _, _ -> JsonPrimitive(id?.toString()) })
+    .registerTypeAdapter(Id::class.java,
+        JsonDeserializer<Id<Any>> { id, _, _ -> id.asString.toId() })
+    .create()
 
 fun Application.module() {
     install(DefaultHeaders)
@@ -39,10 +46,11 @@ fun Application.module() {
             val posts = PostLoader.posts(from, to)
             call.respond(gson.toJson(posts))
         }
-        get("/artist/") {
-
+        get("/artist/{id}") {
+            val artistId = call.request.queryParameters["id"] ?: ""
+            val artist = ArtistLoader.artist(artistId)
+            call.respond(gson.toJson(artist))
         }
-
         get("/comments") {
             val postId = call.request.queryParameters["post_id"]
             if (postId != null) {

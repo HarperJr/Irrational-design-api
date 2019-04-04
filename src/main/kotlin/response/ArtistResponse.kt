@@ -1,7 +1,10 @@
 package response
 
+import database.document.Artist
+import org.litote.kmongo.Id
+
 data class ArtistResponse(
-    var id: String,
+    var id: Id<Artist>,
     var name: String,
     var followed: Boolean,
     var permalink: String,

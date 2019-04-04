@@ -25,6 +25,7 @@ dependencies {
     compile 'org.litote.kmongo:kmongo-async:3.10.0'
     compile 'org.litote.kmongo:kmongo-annotation-processor:3.10.0'
     compile 'org.litote.kmongo:kmongo-coroutine:3.10.0'
+    compile 'org.litote.kmongo:kmongo-id:3.10.0'
     compile "org.mongodb:mongodb-driver-async:3.10.1"
     //gson
     compile 'com.google.code.gson:gson:2.8.5'

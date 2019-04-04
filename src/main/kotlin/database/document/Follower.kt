@@ -1,5 +1,8 @@
 package database.document
 
+import org.litote.kmongo.Id
+
 data class Follower(
-    override val id: String
-) : Document()
+    var artistId: Id<Artist>,
+    var followerId: Id<Artist>
+) : Document<Follower>()

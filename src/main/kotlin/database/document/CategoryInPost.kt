@@ -1,7 +1,8 @@
 package database.document
 
+import org.litote.kmongo.Id
+
 data class CategoryInPost(
-    override val id: String,
-    var postId: String,
-    var categoryId: String
-) : Document()
+    var postId: Id<Post>,
+    var categoryId: Id<Category>
+) : Document<CategoryInPost>()

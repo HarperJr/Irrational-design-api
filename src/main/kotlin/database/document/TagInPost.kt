@@ -1,7 +1,8 @@
 package database.document
 
+import org.litote.kmongo.Id
+
 data class TagInPost(
-    override val id: String,
-    var postId: String,
-    var tagId: String
-) : Document()
+    var postId: Id<Post>,
+    var tagId: Id<Tag>
+) : Document<TagInPost>()

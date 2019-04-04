@@ -2,6 +2,8 @@ package di.module
 
 import dagger.Binds
 import dagger.Module
+import interactor.artist.ArtistLoader
+import interactor.artist.ArtistLoaderImpl
 import interactor.comment.CommentLoader
 import interactor.comment.CommentLoaderImpl
 import interactor.post.PostLoader
@@ -14,4 +16,7 @@ abstract class InteractorModule {
 
     @Binds
     internal abstract fun bindCommentInteractor(commentLoader: CommentLoaderImpl): CommentLoader
+
+    @Binds
+    internal abstract fun bindArtistInteractor(artistLoader: ArtistLoaderImpl): ArtistLoader
 }

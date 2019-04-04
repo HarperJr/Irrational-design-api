@@ -1,9 +1,10 @@
 package database.document
 
+import org.litote.kmongo.Id
+
 data class Comment(
-    override val id: String,
-    var artistId: String,
-    var postId: String,
+    var artistId: Id<Artist>,
+    var postId: Id<Post>,
     var content: String,
     var date: Long
-) : Document()
+) : Document<Comment>()

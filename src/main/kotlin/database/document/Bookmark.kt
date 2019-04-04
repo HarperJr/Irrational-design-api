@@ -1,5 +1,5 @@
 package database.document
 
 data class Bookmark(
-    override val id: String
-) : Document()
+    var name: String
+) : Document<Bookmark>()

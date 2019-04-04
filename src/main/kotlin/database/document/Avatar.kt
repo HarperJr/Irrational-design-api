@@ -1,6 +1,8 @@
 package database.document
 
+import org.litote.kmongo.Id
+
 data class Avatar(
-    override val id: String,
+    var artistId: Id<Artist>,
     var link: String
-) : Document()
+) : Document<Avatar>()
