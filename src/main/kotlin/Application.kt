@@ -1,3 +1,4 @@
+import com.auth0.jwk.JwkProviderBuilder
 import com.google.gson.*
 import interactor.artist.ArtistLoader
 import interactor.comment.CommentLoader
@@ -5,6 +6,9 @@ import interactor.post.PostLoader
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.auth.Authentication
+import io.ktor.auth.jwt.JWTPrincipal
+import io.ktor.auth.jwt.jwt
 import io.ktor.features.CallLogging
 import io.ktor.features.DefaultHeaders
 import io.ktor.http.HttpStatusCode
@@ -15,6 +19,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import org.litote.kmongo.Id
 import org.litote.kmongo.toId
+import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>) {
     embeddedServer(Netty, 8080, watchPaths = listOf("IrrationalDesign"), module = Application::module).start()
@@ -27,9 +32,28 @@ val gson: Gson = GsonBuilder()
         JsonDeserializer<Id<Any>> { id, _, _ -> id.asString.toId() })
     .create()
 
+const val jwkIssuer = "http://127.0.0.1"
+const val jwkRealm = "irrationaldesign"
+const val jwtAudience = "jwt-audience"
+val jwkProvider = JwkProviderBuilder(jwkIssuer)
+    .cached(10, 24, TimeUnit.HOURS)
+    .rateLimited(10, 1, TimeUnit.MINUTES)
+    .build()
+
 fun Application.module() {
     install(DefaultHeaders)
     install(CallLogging)
+    install(Authentication) {
+        jwt {
+            verifier(jwkProvider, jwkIssuer)
+            realm = jwkRealm
+            validate { credentials ->
+                if (credentials.payload.audience.contains(jwtAudience)) {
+                    JWTPrincipal(credentials.payload)
+                } else null
+            }
+        }
+    }
     install(Routing) {
         get("/post/{postId}") {
             val post = PostLoader.post("")

@@ -2,37 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="84530a7d-e902-4680-819a-826fbe059ede" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/interactor/artist/ArtistLoader.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/interactor/artist/ArtistLoaderImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/com.h.id-server.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/com.h.id-server.main.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/com.h.id-server.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/com.h.id-server.test.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Application.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/collection/ArtCollection.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/collection/ArtCollection.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/collection/CategoryInPostCollection.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/collection/CategoryInPostCollection.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/collection/Collection.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/collection/Collection.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/collection/PostCollection.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/collection/PostCollection.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/collection/TagInPostCollection.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/collection/TagInPostCollection.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/collection/impl/DocumentCollection.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/collection/impl/DocumentCollection.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/Art.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/Art.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/Artist.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/Artist.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/Avatar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/Avatar.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/Bookmark.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/Bookmark.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/Category.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/Category.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/CategoryInPost.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/CategoryInPost.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/Comment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/Comment.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/Document.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/Document.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/Follower.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/Follower.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/Post.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/Post.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/Preview.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/Preview.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/Tag.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/Tag.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/database/document/TagInPost.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/database/document/TagInPost.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/di/AppComponent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/di/AppComponent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/interactor/post/PostLoaderImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/interactor/post/PostLoaderImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/response/ArtistResponse.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/response/ArtistResponse.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/response/PostResponse.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/response/PostResponse.kt" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -65,6 +39,12 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="id-server" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="id-server" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -130,138 +110,56 @@
     <session id="1526545546">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.18" value="1" />
           <entry key="project.open.time.19" value="1" />
           <entry key="project.open.time.5" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="3" />
+          <entry key="project.opened" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="gradle" value="1" />
-          <entry key="kt" value="57" />
+          <entry key="gradle" value="2" />
+          <entry key="kt" value="61" />
+          <entry key="properties" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Groovy" value="1" />
-          <entry key="Kotlin" value="57" />
+          <entry key="Groovy" value="2" />
+          <entry key="Kotlin" value="61" />
+          <entry key="Properties" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="gradle" value="7" />
+          <entry key="gradle" value="19" />
           <entry key="java" value="3" />
-          <entry key="kt" value="1452" />
+          <entry key="kt" value="1881" />
+          <entry key="txt" value="129" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Groovy" value="7" />
+          <entry key="Groovy" value="19" />
           <entry key="JAVA" value="3" />
-          <entry key="Kotlin" value="1452" />
+          <entry key="Kotlin" value="1881" />
+          <entry key="PLAIN_TEXT" value="129" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+    <leaf>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/Application.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="833">
-              <caret line="49" column="66" selection-start-line="49" selection-start-column="66" selection-end-line="49" selection-end-column="66" />
+            <state relative-caret-position="289">
+              <caret line="36" column="38" lean-forward="true" selection-start-line="36" selection-start-column="38" selection-end-line="36" selection-end-column="38" />
               <folding>
-                <element signature="e#0#540#0" expanded="true" />
+                <element signature="e#0#718#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/kotlin/interactor/post/PostLoaderImpl.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-10">
-              <caret line="27" column="16" selection-start-line="27" selection-start-column="16" selection-end-line="27" selection-end-column="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/kotlin/di/AppComponent.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="22" column="36" selection-start-line="22" selection-start-column="36" selection-end-line="22" selection-end-column="36" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/kotlin/database/collection/BookmarkCollection.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="7" column="27" selection-start-line="7" selection-start-column="23" selection-end-line="7" selection-end-column="31" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/kotlin/database/document/Bookmark.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="21" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/kotlin/response/PostResponse.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="14" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
-              <folding>
-                <element signature="e#18#66#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/kotlin/database/document/Post.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="16" lean-forward="true" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
-              <folding>
-                <element signature="e#27#73#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/kotlin/database/document/Art.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="4" column="18" lean-forward="true" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/kotlin/database/collection/CategoryInPostCollection.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="15" column="28" selection-start-line="15" selection-start-column="28" selection-end-line="15" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/kotlin/database/collection/ArtCollection.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="16" lean-forward="true" selection-start-column="16" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -491,9 +389,9 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="7771684610949" />
+        <entry key="$PROJECT_DIR$" value="7772046126421" />
         <entry key="$PROJECT_DIR$/.gradle" value="0" />
-        <entry key="$PROJECT_DIR$/build.gradle" value="1067391594" />
+        <entry key="$PROJECT_DIR$/build.gradle" value="1383874198" />
         <entry key="$PROJECT_DIR$/gradle.properties" value="3650535818" />
         <entry key="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" value="261915471" />
         <entry key="$PROJECT_DIR$/settings.gradle" value="1406975209" />
@@ -661,7 +559,6 @@
         <option value="$PROJECT_DIR$/src/main/kotlin/response/FeedPostResponse.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/interactor/comment/CommentLoader.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/interactor/post/PostLoader.kt" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/kotlin/database/document/Document.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/database/document/Art.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/database/document/Comment.kt" />
@@ -687,8 +584,10 @@
         <option value="$PROJECT_DIR$/src/main/kotlin/response/PostResponse.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/response/ArtistResponse.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/database/document/Artist.kt" />
-        <option value="$PROJECT_DIR$/src/main/kotlin/Application.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/database/document/Bookmark.kt" />
+        <option value="$PROJECT_DIR$/src/main/kotlin/di/module/InteractorModule.kt" />
+        <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/src/main/kotlin/Application.kt" />
       </list>
     </option>
   </component>
@@ -704,7 +603,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -762,6 +661,23 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="kotlin" type="462c0819:PsiDirectoryNode" />
+              <item name="di" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="id-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Irrational-design-api" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="kotlin" type="462c0819:PsiDirectoryNode" />
+              <item name="di" type="462c0819:PsiDirectoryNode" />
+              <item name="module" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="id-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Irrational-design-api" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="kotlin" type="462c0819:PsiDirectoryNode" />
               <item name="interactor" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -787,11 +703,11 @@
         </subPane>
       </pane>
       <pane id="AndroidView" />
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554418835333" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554672699929" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Facets" />
     <property name="project.structure.proportion" value="0.15" />
@@ -896,14 +812,21 @@
       <option name="project" value="LOCAL" />
       <updated>1554044564010</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="#Сервер&#10;&#10;- Изменения в структуре проекта. Добавлен wrapper Id для сущностей, добавлен ArtistLoader для запросов.">
+      <created>1554419080300</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1554419080300</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21278317" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.30097088" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
@@ -912,16 +835,16 @@
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32879046" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.08006814" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.36892053" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.25148278" />
+      <window_info anchor="bottom" id="Version Control" order="7" visible="true" weight="0.081850536" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Build" order="10" weight="0.27020785" />
-      <window_info anchor="bottom" id="Messages" order="11" visible="true" weight="0.13404508" />
+      <window_info anchor="bottom" id="Build" order="10" weight="0.26927638" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.13404508" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -933,12 +856,39 @@
       <window_info anchor="right" id="Theme Preview" order="8" />
     </layout>
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Settings update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Settings update" />
+    <MESSAGE value="#Сервер&#10;&#10;- Изменения в структуре проекта. Добавлен wrapper Id для сущностей, добавлен ArtistLoader для запросов." />
+    <option name="LAST_COMMIT_MESSAGE" value="#Сервер&#10;&#10;- Изменения в структуре проекта. Добавлен wrapper Id для сущностей, добавлен ArtistLoader для запросов." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/.gitignore">
@@ -955,9 +905,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2525" />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gradle.properties">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/Irrational-design-api.iml">
       <provider selected="true" editor-type-id="text-editor" />
@@ -988,16 +935,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="6" column="75" selection-start-line="6" selection-start-column="75" selection-end-line="6" selection-end-column="75" />
-          <folding>
-            <element signature="e#29#167#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="27" column="48" selection-start-line="27" selection-start-column="48" selection-end-line="27" selection-end-column="48" />
         </state>
       </provider>
     </entry>
@@ -1078,16 +1015,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/interactor/artist/ArtistLoader.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="51" selection-start-line="6" selection-start-column="51" selection-end-line="6" selection-end-column="51" />
-          <folding>
-            <element signature="e#27#80#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.litote.kmongo/kmongo-coroutine-core/3.10.0/cce7c109270f5c4d48a39e976ce3f2ee0cd01b68/kmongo-coroutine-core-3.10.0-sources.jar!/org/litote/kmongo/coroutine/CoroutineCollection.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="597">
@@ -1099,9 +1026,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="10" column="64" selection-start-line="10" selection-start-column="45" selection-end-line="10" selection-end-column="64" />
-          <folding>
-            <element signature="e#29#297#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1109,9 +1033,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="15" column="38" selection-start-line="15" selection-start-column="38" selection-end-line="15" selection-end-column="38" />
-          <folding>
-            <element signature="e#29#90#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1161,9 +1082,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="16" lean-forward="true" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
-          <folding>
-            <element signature="e#27#73#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1178,9 +1096,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
           <caret line="16" selection-start-line="16" selection-end-line="16" />
-          <folding>
-            <element signature="e#27#97#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1188,9 +1103,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="6" column="21" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
-          <folding>
-            <element signature="e#18#77#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1198,9 +1110,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="16" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
-          <folding>
-            <element signature="e#27#132#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1222,9 +1131,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="14" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
-          <folding>
-            <element signature="e#18#66#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1232,23 +1138,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-10">
           <caret line="27" column="16" selection-start-line="27" selection-start-column="16" selection-end-line="27" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/Application.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="833">
-          <caret line="49" column="66" selection-start-line="49" selection-start-column="66" selection-end-line="49" selection-end-column="66" />
-          <folding>
-            <element signature="e#0#540#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/di/AppComponent.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="22" column="36" selection-start-line="22" selection-start-column="36" selection-end-line="22" selection-end-column="36" />
         </state>
       </provider>
     </entry>
@@ -1261,8 +1150,49 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/kotlin/database/document/Bookmark.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="21" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
+        <state relative-caret-position="68">
+          <caret line="4" column="21" selection-start-line="4" selection-start-column="21" selection-end-line="4" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/di/module/InteractorModule.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="14" column="40" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/interactor/artist/ArtistLoader.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="10" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/di/AppComponent.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="22" column="32" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gradle.properties">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4">
+          <caret line="7" column="13" lean-forward="true" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/Application.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="36" column="38" lean-forward="true" selection-start-line="36" selection-start-column="38" selection-end-line="36" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#718#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
