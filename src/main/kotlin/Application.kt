@@ -12,13 +12,16 @@ import io.ktor.auth.jwt.jwt
 import io.ktor.features.CallLogging
 import io.ktor.features.DefaultHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
+import io.ktor.routing.post
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import org.litote.kmongo.Id
 import org.litote.kmongo.toId
+import request.CommentRequest
 import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>) {
@@ -83,6 +86,16 @@ fun Application.module() {
             } else {
                 call.respond(HttpStatusCode.NotFound)
             }
+        }
+
+        post("/comment") {
+            val request = call.receive<String>()
+            val comment = gson.fromJson<CommentRequest>(request, CommentRequest::class.java)
+            CommentLoader.comment(
+                postId = comment.postId,
+                author = comment.author,
+                content = comment.content
+            )
         }
     }
 }
