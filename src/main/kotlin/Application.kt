@@ -1,5 +1,6 @@
 import com.auth0.jwk.JwkProviderBuilder
 import com.google.gson.*
+import database.document.Post
 import interactor.artist.ArtistLoader
 import interactor.comment.CommentLoader
 import interactor.post.PostLoader
@@ -22,6 +23,7 @@ import io.ktor.server.netty.Netty
 import org.litote.kmongo.Id
 import org.litote.kmongo.toId
 import request.CommentRequest
+import request.PostRequest
 import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>) {
@@ -96,6 +98,12 @@ fun Application.module() {
                 author = comment.author,
                 content = comment.content
             )
+        }
+
+        post("/upload"){
+            val request = call.receive<String>()
+            val post = gson.fromJson<PostRequest>(request,PostRequest::class.java)
+            PostLoader.upload(post)
         }
     }
 }

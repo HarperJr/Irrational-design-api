@@ -9,5 +9,5 @@ data class Post(
     var title: String,
     var subtitle: String,
     var description: String,
-    var date: Date
+    var date: Long
 ) : Document<Post>()

@@ -1,13 +1,18 @@
 package interactor.post
 
 import database.collection.*
+import database.document.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import org.litote.kmongo.Id
 import org.litote.kmongo.toId
+import request.PostRequest
 import response.*
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
 
 @Singleton
 class PostLoaderImpl @Inject constructor(
@@ -15,12 +20,40 @@ class PostLoaderImpl @Inject constructor(
     private val artistCollection: ArtistCollection,
     private val avatarCollection: AvatarCollection,
     private val artCollection: ArtCollection,
-    private val previewCollection: PreviewCollection,
     private val tagCollection: TagCollection,
     private val categoryCollection: CategoryCollection,
     private val tagInPostCollection: TagInPostCollection,
     private val categoryInPostCollection: CategoryInPostCollection
 ) : PostLoader {
+    override suspend fun upload(fields: PostRequest) {
+
+        val post = Post(
+            date = Date().time,
+            artistId = fields.artist,
+            description = fields.description,
+            title = fields.title,
+            subtitle = fields.subtitle,
+            previewId = fields.preview
+        )
+
+        postCollection.insert(post)
+        val categories = mutableListOf<CategoryInPost>()
+        for ( category in fields.categories )
+        categories.add(CategoryInPost(
+            postId = post.id,
+            categoryId = category
+        ))
+        categoryInPostCollection.insert(categories)
+
+        val tags = mutableListOf<TagInPost>()
+        for ( tag in fields.tags )
+            tags.add(
+                TagInPost(
+                postId = post.id,
+                tagId = tag
+            ))
+        tagInPostCollection.insert(tags)
+    }
 
     override suspend fun post(id: String): PostResponse? = coroutineScope {
         withContext(Dispatchers.IO) {

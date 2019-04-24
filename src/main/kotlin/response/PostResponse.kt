@@ -16,5 +16,5 @@ data class PostResponse(
     var comments: Int,
     var tags: List<TagResponse>,
     var categories: List<CategoryResponse>,
-    var date: Date
+    var date: Long
 )
