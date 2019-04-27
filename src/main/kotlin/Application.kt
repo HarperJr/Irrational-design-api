@@ -1,6 +1,5 @@
 import com.auth0.jwk.JwkProviderBuilder
 import com.google.gson.*
-import database.document.Post
 import interactor.artist.ArtistLoader
 import interactor.comment.CommentLoader
 import interactor.post.PostLoader
@@ -60,35 +59,36 @@ fun Application.module() {
         }
     }
     install(Routing) {
-        get("/post/{postId}") {
-            val post = PostLoader.post("")
+        get("/post/{id}") {
+            val postId = call.parameters["id"]!!
+            val post = PostLoader.post(postId)
             if (post != null) {
                 call.respond(gson.toJson(post))
             } else {
                 call.respond(HttpStatusCode.NotFound)
             }
         }
-        get("/posts/{filter}") {
-            val from = call.request.queryParameters["from"]?.toInt() ?: 0
-            val to = call.request.queryParameters["to"]?.toInt() ?: 20
-
-            val posts = PostLoader.posts(from, to)
-            call.respond(gson.toJson(posts))
+        /*unresolved*/get("/posts/{filter}") {
+        val filter = call.parameters["filter"]!!
+        val from = call.request.queryParameters["from"]?.toInt() ?: 0
+        val to = call.request.queryParameters["to"]?.toInt() ?: 20
+        val posts = PostLoader.posts(from, to, filter)
+        call.respond(gson.toJson(posts))
+    }
+        /*id*/get("/artist/{id}") {
+        val artistId = call.parameters["id"]!!
+        val artist = ArtistLoader.artist(artistId)
+        call.respond(gson.toJson(artist))
+    }
+        /*filter*/get("/comments") {
+        val postId = call.request.queryParameters["post_id"]
+        if (postId != null) {
+            val comments = CommentLoader.comments(postId)
+            call.respond(gson.toJson(comments))
+        } else {
+            call.respond(HttpStatusCode.NotFound)
         }
-        get("/artist/{id}") {
-            val artistId = call.request.queryParameters["id"] ?: ""
-            val artist = ArtistLoader.artist(artistId)
-            call.respond(gson.toJson(artist))
-        }
-        get("/comments") {
-            val postId = call.request.queryParameters["post_id"]
-            if (postId != null) {
-                val comments = CommentLoader.comments(postId)
-                call.respond(gson.toJson(comments))
-            } else {
-                call.respond(HttpStatusCode.NotFound)
-            }
-        }
+    }
 
         post("/comment") {
             val request = call.receive<String>()
@@ -100,9 +100,9 @@ fun Application.module() {
             )
         }
 
-        post("/upload"){
+        post("/upload") {
             val request = call.receive<String>()
-            val post = gson.fromJson<PostRequest>(request,PostRequest::class.java)
+            val post = gson.fromJson<PostRequest>(request, PostRequest::class.java)
             PostLoader.upload(post)
         }
     }

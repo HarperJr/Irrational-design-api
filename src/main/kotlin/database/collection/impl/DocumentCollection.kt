@@ -12,7 +12,7 @@ open class DocumentCollection<T : Document<T>>(private val collection: Coroutine
 
     override suspend fun all(): List<T> = collection.find().toList()
 
-    override suspend fun find(id: Id<T>): T? = collection.findOneById(id)
+    override suspend fun find(id: Id<T>): T? = collection.findOneById(ObjectId(id.toString()))
 
     override suspend fun find(idRange: List<Id<T>>): List<T> {
         return collection.find(Document<T>::id `in` idRange).toList()

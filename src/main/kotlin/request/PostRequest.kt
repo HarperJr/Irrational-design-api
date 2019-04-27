@@ -1,15 +1,11 @@
 package request
 
-import database.document.*
-import org.litote.kmongo.Id
-import java.beans.BeanDescriptor
-
-data class PostRequest (
-    var artist: Id<Artist>,
-    var preview : Id<Preview>,
+data class PostRequest(
+    var artist: String,
+    var preview: String,
     var title: String,
     var subtitle: String,
     var description: String,
-    var categories: List<Id<Category>>,
-    var tags: List<Id<Tag>>
+    var categories: List<String>,
+    var tags: List<String>
 )

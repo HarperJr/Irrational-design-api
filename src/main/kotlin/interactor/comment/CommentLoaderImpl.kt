@@ -3,13 +3,11 @@ package interactor.comment
 import database.collection.ArtistCollection
 import database.collection.AvatarCollection
 import database.collection.CommentCollection
-import database.document.Artist
 import database.document.Comment
-import database.document.Post
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import org.litote.kmongo.Id
+import org.litote.kmongo.toId
 import response.AuthorResponse
 import response.AvatarResponse
 import response.CommentResponse
@@ -23,11 +21,11 @@ class CommentLoaderImpl @Inject constructor(
     private val artistCollection: ArtistCollection,
     private val avatarCollection: AvatarCollection
 ) : CommentLoader {
-    override suspend fun comment(postId: Id<Post>, author: Id<Artist>, content: String) {
+    override suspend fun comment(postId: String, author: String, content: String) {
         commentCollection.insert(
             Comment(
-                artistId = author,
-                postId = postId,
+                artistId = author.toId(),
+                postId = postId.toId(),
                 content = content,
                 date = Date().time
             )
@@ -36,7 +34,7 @@ class CommentLoaderImpl @Inject constructor(
 
     override suspend fun comments(id: String): List<CommentResponse> = coroutineScope {
         withContext(Dispatchers.IO) {
-            commentCollection.getAllByPost(id)
+            return@withContext commentCollection.getAllByPost(id)
                 .map {
                     val author = artistCollection.find(it.artistId)!!
                     val avatar = avatarCollection.find(author.avatarId)!!
@@ -49,7 +47,7 @@ class CommentLoaderImpl @Inject constructor(
                             )
                         ),
                         content = it.content,
-                        date = Date(it.date)
+                        date = it.date
                     )
                 }
         }

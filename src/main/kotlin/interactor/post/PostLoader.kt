@@ -8,7 +8,7 @@ import response.PostResponse
 interface PostLoader {
     suspend fun post(id: String): PostResponse?
 
-    suspend fun posts(from: Int, to: Int): List<FeedPostResponse>
+    suspend fun posts(from: Int, to: Int, filter: String): List<FeedPostResponse>
 
     suspend fun upload(fields: PostRequest)
 
