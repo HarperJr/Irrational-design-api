@@ -1,13 +1,12 @@
 package database.collection
 
+import com.mongodb.client.model.Field
 import database.collection.impl.DocumentCollection
+import database.document.Like
 import database.document.Post
+import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.coroutine.aggregate
-import org.litote.kmongo.group
-import org.litote.kmongo.gt
-import org.litote.kmongo.lookup
-import org.litote.kmongo.unwind
 import java.util.*
 
 class PostCollection(private val collection: CoroutineCollection<Post>) :
@@ -16,12 +15,7 @@ class PostCollection(private val collection: CoroutineCollection<Post>) :
     suspend fun allWithBoundary(from: Int, to: Int): List<Post> = collection.find().skip(from).limit(to).toList()
 
     suspend fun hotWithBoundary(from: Int, to: Int): List<Post> {
-        val actualDate = Calendar.getInstance().let {
-            it.add(Calendar.DAY_OF_MONTH, -7)
-            it.timeInMillis
-        }
-
-        return collection.find(Post::date gt actualDate).toList()
+        return allWithBoundary(from, to)
     }
 
     suspend fun recommendedWithBoundary(from: Int, to: Int): List<Post> {
@@ -38,7 +32,7 @@ class PostCollection(private val collection: CoroutineCollection<Post>) :
                 from = "like",
                 localField = "id",
                 foreignField = "postId",
-                newAs = "rated"
+                newAs = "like"
             ),
             unwind("rated"),
             group(Post::id)
