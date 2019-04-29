@@ -9,5 +9,6 @@ import org.litote.kmongo.eq
 class UserCollection(private val collection: CoroutineCollection<User>) :
     DocumentCollection<User>(collection) {
 
-    suspend fun validate(name: String, password: String) = collection.findOne(and(User::name eq name, User::password eq password)) != null
+    suspend fun identify(name: String, password: String) =
+        collection.findOne(and(User::name eq name, User::password eq password))
 }

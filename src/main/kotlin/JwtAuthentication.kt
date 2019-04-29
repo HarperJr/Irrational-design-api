@@ -1,25 +1,17 @@
-import com.auth0.jwk.JwkProviderBuilder
+import interactor.user.UserLoader
 import io.ktor.auth.Authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
-import java.util.concurrent.TimeUnit
+import jwt.JwtConfig
 
-const val jwkIssuer = "http://127.0.0.1"
-const val jwkRealm = "irrationaldesign"
-const val jwtAudience = "jwt-audience"
-val jwkProvider = JwkProviderBuilder(jwkIssuer)
-    .cached(10, 24, TimeUnit.HOURS)
-    .rateLimited(10, 1, TimeUnit.MINUTES)
-    .build()
 
 fun Authentication.Configuration.authenticate() {
     jwt {
-        verifier(jwkProvider, jwkIssuer)
-        realm = jwkRealm
+        verifier(JwtConfig.verifier)
+        realm = "ktor.io"
         validate { credentials ->
-            if (credentials.payload.audience.contains(jwtAudience)) {
-                JWTPrincipal(credentials.payload)
-            } else null
+            val authorized = UserLoader.find(credentials.payload.getClaim("id").asString())
+            authorized?.let { JWTPrincipal(credentials.payload) }
         }
     }
 }

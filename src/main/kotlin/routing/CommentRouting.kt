@@ -24,8 +24,8 @@ fun Routing.commentRouting() {
 
     authenticate {
         post("/comment") {
-            val request = call.receive<String>()
-            val comment = gson.fromJson<CommentRequest>(request, request.CommentRequest::class.java)
+            val body = call.receive<String>()
+            val comment = gson.fromJson<CommentRequest>(body, request.CommentRequest::class.java)
             interactor.comment.CommentLoader.comment(
                 postId = comment.postId,
                 author = comment.author,

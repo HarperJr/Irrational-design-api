@@ -16,7 +16,11 @@ import io.ktor.sessions.Sessions
 import org.litote.kmongo.Id
 import org.litote.kmongo.toId
 import request.PostRequest
-import routing.*
+import routing.artistRouting
+import routing.authRouting
+import routing.commentRouting
+import routing.postRouting
+import session.initSession
 
 fun main() {
     embeddedServer(Netty, 8080, watchPaths = listOf("IrrationalDesign"), module = Application::module).start()
