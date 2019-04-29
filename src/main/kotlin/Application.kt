@@ -1,6 +1,7 @@
 import com.google.gson.*
 import interactor.post.PostLoader
 import io.ktor.application.Application
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
@@ -53,3 +54,9 @@ fun Application.module() {
         }
     }
 }
+
+@Suppress("UNCHECKED_CAST")
+fun <T> ApplicationCall.param(param: String): T? = parameters[param] as T?
+
+@Suppress("UNCHECKED_CAST")
+fun <T> ApplicationCall.arg(arg: String): T? = request.queryParameters[arg] as T?
