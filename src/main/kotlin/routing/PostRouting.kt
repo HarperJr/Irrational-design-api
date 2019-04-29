@@ -3,6 +3,7 @@ package routing
 import gson
 import interactor.post.PostLoader
 import io.ktor.application.call
+import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import io.ktor.routing.Routing
@@ -19,12 +20,14 @@ fun Routing.postRouting() {
         }
     }
     /*unresolved*/
-    get("/posts/{filter}") {
-        val filter = call.parameters["filter"]!!
-        val from = call.request.queryParameters["from"]?.toInt() ?: 0
-        val to = call.request.queryParameters["to"]?.toInt() ?: 20
+    authenticate {
+        get("/posts/{filter}") {
+            val filter = call.parameters["filter"]!!
+            val from = call.request.queryParameters["from"]?.toInt() ?: 0
+            val to = call.request.queryParameters["to"]?.toInt() ?: 20
 
-        val posts = PostLoader.posts(from, to, filter)
-        call.respond(gson.toJson(posts))
+            val posts = PostLoader.posts(from, to, filter)
+            call.respond(gson.toJson(posts))
+        }
     }
 }

@@ -7,6 +7,7 @@ import di.module.InteractorModule
 import interactor.artist.ArtistLoader
 import interactor.comment.CommentLoader
 import interactor.post.PostLoader
+import interactor.user.UserLoader
 import javax.inject.Singleton
 
 @Singleton
@@ -21,6 +22,7 @@ interface AppComponent {
     fun postLoader(): PostLoader
     fun commentLoader(): CommentLoader
     fun artistLoader(): ArtistLoader
+    fun userLoader(): UserLoader
 
     companion object : AppComponent by INSTANCE
 }

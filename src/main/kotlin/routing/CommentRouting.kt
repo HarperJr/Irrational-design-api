@@ -2,6 +2,7 @@ package routing
 
 import gson
 import io.ktor.application.call
+import io.ktor.auth.authenticate
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Routing
@@ -21,13 +22,15 @@ fun Routing.commentRouting() {
         }
     }
 
-    post("/comment") {
-        val request = call.receive<String>()
-        val comment = gson.fromJson<CommentRequest>(request, request.CommentRequest::class.java)
-        interactor.comment.CommentLoader.comment(
-            postId = comment.postId,
-            author = comment.author,
-            content = comment.content
-        )
+    authenticate {
+        post("/comment") {
+            val request = call.receive<String>()
+            val comment = gson.fromJson<CommentRequest>(request, request.CommentRequest::class.java)
+            interactor.comment.CommentLoader.comment(
+                postId = comment.postId,
+                author = comment.author,
+                content = comment.content
+            )
+        }
     }
 }

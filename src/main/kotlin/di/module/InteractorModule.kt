@@ -8,6 +8,8 @@ import interactor.comment.CommentLoader
 import interactor.comment.CommentLoaderImpl
 import interactor.post.PostLoader
 import interactor.post.PostLoaderImpl
+import interactor.user.UserLoader
+import interactor.user.UserLoaderImpl
 
 @Module
 abstract class InteractorModule {
@@ -19,4 +21,7 @@ abstract class InteractorModule {
 
     @Binds
     internal abstract fun bindArtistInteractor(artistLoader: ArtistLoaderImpl): ArtistLoader
+
+    @Binds
+    internal abstract fun bindUserInteractor(userLoader: UserLoaderImpl): UserLoader
 }
