@@ -28,7 +28,7 @@ fun Routing.authRouting() {
                 respond(HttpStatusCode.OK)
             }
         } else {
-            call.respond(HttpStatusCode.Forbidden.description("Wrong name or password"))
+            call.respond(HttpStatusCode.Forbidden, "Wrong name or password")
         }
     }
 
@@ -45,7 +45,7 @@ fun Routing.authRouting() {
                 )
             )
         } catch (ex: Exception) {
-            call.respond(HttpStatusCode.Conflict)
+            call.respond(HttpStatusCode.Conflict, "User with same name or email already exists")
         }
     }
 }
