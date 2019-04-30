@@ -56,7 +56,6 @@ fun Application.module() {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <T> ApplicationCall.param(param: String): T? = parameters[param] as T?
-
-@Suppress("UNCHECKED_CAST")
-fun <T> ApplicationCall.arg(arg: String): T? = request.queryParameters[arg] as T?
+fun <T> ApplicationCall.arg(arg: String): T? = try {
+    request.queryParameters[arg] as T?
+} catch (ex: ClassCastException) { null }

@@ -4,14 +4,14 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import database.document.User
+import java.time.Duration
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 object JwtConfig {
 
     private const val secret = "zAP5MBA4B4Ijz0MZaS48"
     private const val issuer = "irrational-design.cc"
-    private val validityInMs = TimeUnit.DAYS.toMillis(10) // 10 hours
+    private val validityInMs = Duration.ofHours(10).toMillis() // 10 hours
     private val algorithm = Algorithm.HMAC512(secret)
 
     val verifier: JWTVerifier = JWT

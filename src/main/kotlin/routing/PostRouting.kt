@@ -8,11 +8,10 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
-import param
 
 fun Routing.postRouting() {
     get("/post/{id}") {
-        val postId = call.param<String>("id")!!
+        val postId = call.parameters["id"]!!
         val post = PostLoader.post(postId)
         if (post != null) {
             call.respond(gson.toJson(post))
@@ -22,7 +21,7 @@ fun Routing.postRouting() {
     }
     /*unresolved*/
     get("/posts/{filter}") {
-        val filter = call.param<String>("filter")!!
+        val filter = call.parameters["filter"]!!
         val from = call.arg<Int>("from") ?: 0
         val to = call.arg<Int>("to") ?: 0
 

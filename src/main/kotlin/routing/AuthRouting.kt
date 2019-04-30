@@ -23,9 +23,12 @@ fun Routing.authRouting() {
         val credentials = gson.fromJson(body, CredentialsRequest::class.java)
         val identified = UserLoader.findByCredentials(credentials.name, credentials.password)
         if (identified != null) {
-            call.sessions.set(Session("jwt", JwtConfig.makeToken(user = identified)))
+            with(call) {
+                sessions.set(Session(UUID.randomUUID().toString(), JwtConfig.makeToken(user = identified)))
+                respond(HttpStatusCode.OK)
+            }
         } else {
-            call.respond(HttpStatusCode.Forbidden)
+            call.respond(HttpStatusCode.Forbidden.description("Wrong name or password"))
         }
     }
 
@@ -33,12 +36,14 @@ fun Routing.authRouting() {
         val body = call.receive<String>()
         val form = gson.fromJson(body, RegisterRequest::class.java)
         try {
-            UserLoader.insert(User(
-                name = form.name,
-                password = form.password,
-                email = form.email,
-                registered = Date().time
-            ))
+            UserLoader.insert(
+                User(
+                    name = form.name,
+                    password = form.password,
+                    email = form.email,
+                    registered = Date().time
+                )
+            )
         } catch (ex: Exception) {
             call.respond(HttpStatusCode.Conflict)
         }
