@@ -15,6 +15,15 @@ repositories {
     google()
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'ApplicationKt'
+    }
+
+    // NEW LINE HERE !!!
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.0-alpha'

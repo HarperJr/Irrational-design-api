@@ -44,6 +44,7 @@ fun Routing.authRouting() {
                     registered = Date().time
                 )
             )
+            call.respond(HttpStatusCode.OK, "Successfully registered")
         } catch (ex: Exception) {
             call.respond(HttpStatusCode.Conflict, "User with same name or email already exists")
         }
