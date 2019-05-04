@@ -4,10 +4,10 @@ import dagger.Component
 import di.module.CollectionsModule
 import di.module.DatabaseModule
 import di.module.InteractorModule
+import interactor.art.ArtLoader
 import interactor.artist.ArtistLoader
 import interactor.comment.CommentLoader
 import interactor.post.PostLoader
-import interactor.user.UserLoader
 import javax.inject.Singleton
 
 @Singleton
@@ -22,7 +22,7 @@ interface AppComponent {
     fun postLoader(): PostLoader
     fun commentLoader(): CommentLoader
     fun artistLoader(): ArtistLoader
-    fun userLoader(): UserLoader
+    fun artLoader(): ArtLoader
 
     companion object : AppComponent by INSTANCE
 }

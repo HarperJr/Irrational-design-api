@@ -2,14 +2,14 @@ package di.module
 
 import dagger.Binds
 import dagger.Module
+import interactor.art.ArtLoader
+import interactor.art.ArtLoaderImpl
 import interactor.artist.ArtistLoader
 import interactor.artist.ArtistLoaderImpl
 import interactor.comment.CommentLoader
 import interactor.comment.CommentLoaderImpl
 import interactor.post.PostLoader
 import interactor.post.PostLoaderImpl
-import interactor.user.UserLoader
-import interactor.user.UserLoaderImpl
 
 @Module
 abstract class InteractorModule {
@@ -23,5 +23,5 @@ abstract class InteractorModule {
     internal abstract fun bindArtistInteractor(artistLoader: ArtistLoaderImpl): ArtistLoader
 
     @Binds
-    internal abstract fun bindUserInteractor(userLoader: UserLoaderImpl): UserLoader
+    internal abstract fun bindArtInteractor(artLoader: ArtLoaderImpl): ArtLoader
 }

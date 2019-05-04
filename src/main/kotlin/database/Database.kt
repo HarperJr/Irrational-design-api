@@ -27,6 +27,4 @@ interface Database {
     fun tagsInPosts(): TagInPostCollection
 
     fun categoriesInPosts(): CategoryInPostCollection
-
-    fun users(): UserCollection
 }

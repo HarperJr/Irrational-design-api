@@ -1,4 +1,4 @@
-import interactor.user.UserLoader
+import interactor.artist.ArtistLoader
 import io.ktor.auth.Authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
@@ -10,7 +10,7 @@ fun Authentication.Configuration.authenticate() {
         verifier(JwtConfig.verifier)
         realm = "ktor.io"
         validate { credentials ->
-            val authorized = UserLoader.find(credentials.payload.getClaim("id").asString())
+            val authorized = ArtistLoader.find(credentials.payload.claim("artistId"))
             authorized?.let { JWTPrincipal(credentials.payload) }
         }
     }

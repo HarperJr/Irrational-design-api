@@ -1,7 +1,6 @@
 package interactor.post
 
 import di.AppComponent
-import request.PostRequest
 import response.FeedPostResponse
 import response.PostResponse
 
@@ -10,7 +9,10 @@ interface PostLoader {
 
     suspend fun posts(from: Int, to: Int, filter: String): List<FeedPostResponse>
 
-    suspend fun upload(fields: PostRequest)
+    suspend fun insert(
+        artistId: String, title: String, subtitle: String, description: String,
+        categories: List<String>, tags: List<String>
+    )
 
     companion object : PostLoader by INSTANCE
 }

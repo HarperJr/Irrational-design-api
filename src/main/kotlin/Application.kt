@@ -1,32 +1,32 @@
+import com.auth0.jwt.interfaces.Payload
 import com.google.gson.*
-import interactor.post.PostLoader
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
-import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
-import io.ktor.auth.authenticate
+import io.ktor.auth.authentication
+import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.features.CallLogging
 import io.ktor.features.DefaultHeaders
-import io.ktor.request.receive
 import io.ktor.routing.Routing
-import io.ktor.routing.post
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.sessions.Sessions
+import io.ktor.sessions.sessions
 import org.litote.kmongo.Id
 import org.litote.kmongo.toId
-import request.PostRequest
 import routing.artistRouting
 import routing.authRouting
 import routing.commentRouting
 import routing.postRouting
+import session.Session
 import session.initSession
 
 fun main() {
     embeddedServer(Netty, 8080, watchPaths = listOf("IrrationalDesign"), module = Application::module).start()
 }
 
+val artsPath = "arts/"
 val gson: Gson = GsonBuilder()
     .registerTypeAdapter(Id::class.java,
         JsonSerializer<Id<Any>> { id, _, _ -> JsonPrimitive(id?.toString()) })
@@ -44,18 +44,20 @@ fun Application.module() {
         postRouting()
         artistRouting()
         commentRouting()
-
-        authenticate {
-            post("/upload") {
-                val request = call.receive<String>()
-                val post = gson.fromJson<PostRequest>(request, PostRequest::class.java)
-                PostLoader.upload(post)
-            }
-        }
     }
 }
 
 @Suppress("UNCHECKED_CAST")
 fun <T> ApplicationCall.arg(arg: String): T? = try {
     request.queryParameters[arg] as T?
-} catch (ex: ClassCastException) { null }
+} catch (ex: ClassCastException) {
+    null
+}
+
+fun ApplicationCall.session(): Session = sessions.get(Session.NAME) as Session
+
+fun ApplicationCall.jwtPayload(): Payload {
+    return (authentication.principal as JWTPrincipal).payload
+}
+
+inline fun <reified T> Payload.claim(name: String): T = getClaim(name).`as`(T::class.java)

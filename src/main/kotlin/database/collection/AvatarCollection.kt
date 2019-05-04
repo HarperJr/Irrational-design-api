@@ -6,5 +6,4 @@ import org.litote.kmongo.coroutine.CoroutineCollection
 
 class AvatarCollection(private val collection: CoroutineCollection<Avatar>) :
     DocumentCollection<Avatar>(collection) {
-
 }

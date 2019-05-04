@@ -55,8 +55,4 @@ class CollectionsModule {
     @Provides
     @Singleton
     fun provideCategoryInPostCollection(database: Database) = database.categoriesInPosts()
-
-    @Provides
-    @Singleton
-    fun provideUserCollection(database: Database) = database.users()
 }

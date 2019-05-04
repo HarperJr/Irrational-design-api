@@ -4,7 +4,8 @@ import org.litote.kmongo.Id
 
 data class Artist(
     var name: String,
-    var permalink: String,
+    var password: String,
     var email: String,
-    var avatarId: Id<Avatar>
+    var registered: Long,
+    var avatarId: Id<Avatar>? = null
 ) : Document<Artist>()

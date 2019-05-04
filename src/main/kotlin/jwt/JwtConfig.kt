@@ -3,7 +3,7 @@ package jwt
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
-import database.document.User
+import database.document.Artist
 import java.time.Duration
 import java.util.*
 
@@ -19,10 +19,10 @@ object JwtConfig {
         .withIssuer(issuer)
         .build()
 
-    fun makeToken(user: User): String = JWT.create()
+    fun makeToken(artist: Artist): String = JWT.create()
         .withSubject("Authentication")
         .withIssuer(issuer)
-        .withClaim("id", user.id.toString())
+        .withClaim("artistId", artist.id.toString())
         .withExpiresAt(getExpiration())
         .sign(algorithm)
 

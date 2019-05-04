@@ -1,14 +1,11 @@
 package interactor.post
 
 import database.collection.*
-import database.document.CategoryInPost
 import database.document.Post
-import database.document.TagInPost
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import org.litote.kmongo.toId
-import request.PostRequest
 import response.*
 import java.util.*
 import javax.inject.Inject
@@ -28,44 +25,29 @@ class PostLoaderImpl @Inject constructor(
     private val commentCollection: CommentCollection,
     private val previewCollection: PreviewCollection
 ) : PostLoader {
-    override suspend fun upload(fields: PostRequest) {
 
-        val post = Post(
-            date = Date().time,
-            artistId = fields.artist.toId(),
-            description = fields.description,
-            title = fields.title,
-            subtitle = fields.subtitle,
-            previewId = fields.preview.toId()
-        )
-
-        postCollection.insert(post)
-        val categories = mutableListOf<CategoryInPost>()
-        for (category in fields.categories)
-            categories.add(
-                CategoryInPost(
-                    postId = post.id,
-                    categoryId = category.toId()
+    override suspend fun insert(
+        artistId: String, title: String, subtitle: String, description: String,
+        categories: List<String>, tags: List<String>
+    ) = coroutineScope {
+        withContext(Dispatchers.IO) {
+            postCollection.insert(
+                Post(
+                    artistId = artistId.toId(),
+                    title = title,
+                    subtitle = subtitle,
+                    description = description,
+                    date = Date().time
                 )
             )
-        categoryInPostCollection.insert(categories)
-
-        val tags = mutableListOf<TagInPost>()
-        for (tag in fields.tags)
-            tags.add(
-                TagInPost(
-                    postId = post.id,
-                    tagId = tag.toId()
-                )
-            )
-        tagInPostCollection.insert(tags)
+        }
     }
 
     override suspend fun post(id: String): PostResponse? = coroutineScope {
         withContext(Dispatchers.IO) {
             val post = postCollection.find(id.toId()) ?: return@withContext null
             val artist = artistCollection.find(post.artistId)!!
-            val avatar = avatarCollection.find(artist.avatarId)!!
+            val avatar = artist.avatarId?.let { avatarCollection.find(it) }
             val arts = artCollection.findByPost(post.id)
             val tags = let {
                 val tagsInPost = tagInPostCollection.findByPost(post.id)
@@ -81,11 +63,10 @@ class PostLoaderImpl @Inject constructor(
                     id = artist.id,
                     name = artist.name,
                     followed = false, //todo
-                    permalink = artist.permalink,
                     email = artist.email,
-                    avatar = AvatarResponse(avatar.link)
+                    avatar = avatar?.let { AvatarResponse(it.link) }
                 ),
-                arts = arts.map { ArtResponse(it.name, it.link) },
+                arts = arts.map { ArtResponse(it.link) },
                 title = post.title,
                 subtitle = post.subtitle,
                 description = post.description,
@@ -111,22 +92,21 @@ class PostLoaderImpl @Inject constructor(
                 else -> emptyList()
             }.map { post ->
                 val artist = artistCollection.find(post.artistId)!!
-                val avatar = avatarCollection.find(artist.avatarId)!!
+                val avatar = artist.avatarId?.let { avatarCollection.find(it) }
                 val bookmarks = bookmarkCollection.all().toList()
                 val comment = commentCollection.getAllByPost(post.id.toString()).toList().map {
                     val author = artistCollection.find(it.artistId)!!
-                    val avatar = avatarCollection.find(author.avatarId)!!
+                    val authorAvatar = author.avatarId?.let { avatarCollection.find(it) }
                     CommentResponse(
                         author = AuthorResponse(
                             name = author.name,
-                            permalink = author.permalink,
-                            avatar = AvatarResponse(link = avatar.link)
+                            avatar = authorAvatar?.let { AvatarResponse(it.link) }
                         ),
                         date = it.date,
                         content = it.content
                     )
                 }
-                val preview = previewCollection.find(post.previewId)!!
+                val preview = previewCollection.findByPost(post.id)!!
                 FeedPostResponse(
                     id = post.id,
                     subtitle = post.subtitle,
@@ -137,13 +117,11 @@ class PostLoaderImpl @Inject constructor(
                         followed = false,
                         email = artist.email,
                         name = artist.name,
-                        permalink = artist.permalink,
-                        avatar = AvatarResponse(link = avatar.link)
+                        avatar = avatar?.let { AvatarResponse(it.link) }
                     ),
                     bookmarks = bookmarks,
                     comments = comment,
                     preview = ArtResponse(
-                        name = preview.name,
                         link = preview.link
                     )
                 )

@@ -32,6 +32,4 @@ class MongoDatabase(databaseName: String) : Database {
     override fun tagsInPosts() = TagInPostCollection(database.getCollection<TagInPost>("post_tag"))
 
     override fun categoriesInPosts() = CategoryInPostCollection(database.getCollection<CategoryInPost>("post_category"))
-
-    override fun users() = UserCollection(database.getCollection<User>("user"))
 }
