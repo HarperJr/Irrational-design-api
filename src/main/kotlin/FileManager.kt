@@ -6,12 +6,13 @@ import java.nio.file.Path
 
 object FileManager {
 
-    suspend fun save(path: Path, source: ByteArray) = coroutineScope {
+    suspend fun save(path: Path, source: ByteArray): String = coroutineScope {
         withContext(Dispatchers.IO) {
-            Files.createFile(path).toFile()
+            val file = Files.createFile(path).toFile()
                 .apply {
                     outputStream().use { writeBytes(source) }
                 }
+            file.absolutePath
         }
     }
 

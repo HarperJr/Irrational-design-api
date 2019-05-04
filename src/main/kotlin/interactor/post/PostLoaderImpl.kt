@@ -1,13 +1,12 @@
 package interactor.post
 
 import database.collection.*
-import database.document.Post
+import database.document.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import org.litote.kmongo.toId
 import response.*
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,20 +25,22 @@ class PostLoaderImpl @Inject constructor(
     private val previewCollection: PreviewCollection
 ) : PostLoader {
 
-    override suspend fun insert(
-        artistId: String, title: String, subtitle: String, description: String,
-        categories: List<String>, tags: List<String>
-    ) = coroutineScope {
+    override suspend fun insert(post: Post, categories: List<String>, tags: List<String>) = coroutineScope {
         withContext(Dispatchers.IO) {
-            postCollection.insert(
-                Post(
-                    artistId = artistId.toId(),
-                    title = title,
-                    subtitle = subtitle,
-                    description = description,
-                    date = Date().time
-                )
-            )
+            post.also {
+                postCollection.insert(it)
+                tagInPostCollection.insert(tags.map { tagName ->
+                    val tag = Tag(tagName)
+                    if (!tagCollection.contains(tag)) {
+                        tagCollection.insert(tag)
+                    }
+                    TagInPost(it.id, tag.id)
+                })
+                categoryInPostCollection.insert(categories.map { categoryName ->
+                    val category = Category(categoryName)
+                    CategoryInPost(it.id, category.id)
+                })
+            }.let { it.id.toString() }
         }
     }
 

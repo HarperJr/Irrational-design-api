@@ -4,7 +4,10 @@ import FileManager
 import arg
 import artsPath
 import claim
+import database.document.Art
+import database.document.Post
 import gson
+import interactor.art.ArtLoader
 import interactor.post.PostLoader
 import io.ktor.application.call
 import io.ktor.auth.authenticate
@@ -18,8 +21,10 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
 import jwtPayload
+import org.litote.kmongo.toId
 import request.PostRequest
 import java.nio.file.Paths
+import java.util.*
 
 fun Routing.postRouting() {
     get("/post/{id}") {
@@ -41,37 +46,43 @@ fun Routing.postRouting() {
         call.respond(gson.toJson(posts))
     }
 
-    /**
-     * Not completed
-     */
     authenticate {
         post("/upload") {
             val multipart = call.receiveMultipart()
-            val arts = mutableListOf<String>()
+            val arts = mutableListOf<Pair<String, String>>()
+            var postId = ""
             multipart.forEachPart { part ->
                 if (part is PartData.FormItem) {
                     val content = part.value
                     when (part.contentType) {
                         ContentType.Application.Json -> {
                             val postRequest = gson.fromJson(content, PostRequest::class.java)
-                            PostLoader.insert(
-                                call.jwtPayload().claim("artistId"),
-                                postRequest.title,
-                                postRequest.subtitle,
-                                postRequest.description,
-                                postRequest.categories,
-                                postRequest.tags
+                            postId = PostLoader.insert(
+                                Post(
+                                    artistId = call.jwtPayload().claim<String>("artistId").toId(),
+                                    title = postRequest.title,
+                                    subtitle = postRequest.subtitle,
+                                    description = postRequest.description,
+                                    date = Date().time
+                                ), postRequest.categories, postRequest.tags
                             )
                         }
                         ContentType.Image.PNG,
                         ContentType.Image.JPEG -> {
-                            val art = part.name!!
-                            FileManager.save(Paths.get(artsPath).resolve(art), content.toByteArray())
-                                .also { arts.add(art) }
+                            val artName = part.name!!
+                            FileManager.save(Paths.get(artsPath).resolve(artName), content.toByteArray())
+                                .also { path -> arts.add(Pair(artName, path)) }
                         }
                     }
                 }
             }
+            ArtLoader.insert(arts.map {
+                Art(
+                    postId = postId,
+                    name = it.first,
+                    link = it.second
+                )
+            })
         }
     }
 }

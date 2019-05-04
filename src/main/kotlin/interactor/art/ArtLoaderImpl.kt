@@ -1,6 +1,7 @@
 package interactor.art
 
 import database.collection.ArtCollection
+import database.document.Art
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
@@ -12,9 +13,9 @@ class ArtLoaderImpl @Inject constructor(
     private val artCollection: ArtCollection
 ) : ArtLoader {
 
-    override suspend fun save(bytes: ByteArray) = coroutineScope {
+    override suspend fun insert(arts: List<Art>) = coroutineScope {
         withContext(Dispatchers.IO) {
-
+            artCollection.insert(arts)
         }
     }
 }

@@ -27,5 +27,4 @@ object JwtConfig {
         .sign(algorithm)
 
     private fun getExpiration() = Date(System.currentTimeMillis() + validityInMs)
-
 }
