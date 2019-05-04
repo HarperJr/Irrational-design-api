@@ -37,14 +37,11 @@ class CommentLoaderImpl @Inject constructor(
             return@withContext commentCollection.getAllByPost(id)
                 .map {
                     val author = artistCollection.find(it.artistId)!!
-                    val avatar = avatarCollection.find(author.avatarId)!!
+                    val avatar = author.avatarId?.let { avatarCollection.find(it) }
                     CommentResponse(
                         author = AuthorResponse(
                             name = author.name,
-                            permalink = author.permalink,
-                            avatar = AvatarResponse(
-                                link = avatar.link
-                            )
+                            avatar = avatar?.let { AvatarResponse(it.link) }
                         ),
                         content = it.content,
                         date = it.date
