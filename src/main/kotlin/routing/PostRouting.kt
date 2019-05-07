@@ -2,7 +2,6 @@ package routing
 
 import FileManager
 import arg
-import artsPath
 import claim
 import database.document.Art
 import database.document.Post
@@ -70,7 +69,7 @@ fun Routing.postRouting() {
                         ContentType.Image.PNG,
                         ContentType.Image.JPEG -> {
                             val artName = part.name!!
-                            FileManager.save(Paths.get(artsPath).resolve(artName), content.toByteArray())
+                            FileManager.save(Paths.get("/arts").resolve(artName), content.toByteArray())
                                 .also { path -> arts.add(Pair(artName, path)) }
                         }
                     }

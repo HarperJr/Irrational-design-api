@@ -1,6 +1,7 @@
 package di
 
 import dagger.Component
+import di.module.ApiModule
 import di.module.CollectionsModule
 import di.module.DatabaseModule
 import di.module.InteractorModule
@@ -23,6 +24,8 @@ interface AppComponent {
     fun commentLoader(): CommentLoader
     fun artistLoader(): ArtistLoader
     fun artLoader(): ArtLoader
+
+    fun apiComponent(): ApiComponent
 
     companion object : AppComponent by INSTANCE
 }

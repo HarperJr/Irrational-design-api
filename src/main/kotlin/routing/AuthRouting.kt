@@ -23,7 +23,7 @@ fun Routing.authRouting() {
         val identified = ArtistLoader.findByCredentials(credentials.name, credentials.password)
         if (identified != null) {
             with(call) {
-                sessions.set(Session(UUID.randomUUID().toString(), JwtConfig.makeToken(artist = identified)))
+                sessions.set(Session(UUID.randomUUID().toString()))
                 respond(HttpStatusCode.OK)
             }
         } else {

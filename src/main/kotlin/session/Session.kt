@@ -2,6 +2,7 @@ package session
 
 import io.ktor.sessions.Sessions
 import io.ktor.sessions.cookie
+import io.ktor.sessions.header
 
 fun Sessions.Configuration.initSession() {
     cookie<Session>(Session.NAME) {
@@ -9,8 +10,14 @@ fun Sessions.Configuration.initSession() {
     }
 }
 
-data class Session(val sessionId: String, val barrier: String) {
+data class Session(val value: String) {
     companion object {
-        const val NAME = "SESSION"
+        const val NAME = "Session"
+    }
+}
+
+data class TokenHeader(val token: String) {
+    companion object {
+        const val NAME = "Authentication"
     }
 }
