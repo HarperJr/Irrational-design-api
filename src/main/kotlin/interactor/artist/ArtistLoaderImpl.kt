@@ -61,7 +61,7 @@ class ArtistLoaderImpl @Inject constructor(
                 artistCollection.insert(
                     Artist(
                         name = name,
-                        password = PwdEncryptor.encrypt(password),
+                        password = PwdEncryptor.hash(password),
                         email = email,
                         registered = Date().time
                     )

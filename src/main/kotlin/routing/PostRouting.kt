@@ -28,11 +28,12 @@ import java.util.*
 fun Routing.postRouting() {
     get("/post/{id}") {
         val postId = call.parameters["id"]!!
-        val post = PostLoader.post(call.jwtPayload()?.claim("artistId"), postId)
-        if (post != null) {
+
+        try {
+            val post = PostLoader.post(call.jwtPayload()?.claim("artistId"), postId)
             call.respond(gson.toJson(post))
-        } else {
-            call.respond(HttpStatusCode.NotFound)
+        } catch (ex: Exception) {
+            call.respond(HttpStatusCode.InternalServerError, ex.message!!)
         }
     }
 

@@ -45,9 +45,9 @@ class PostLoaderImpl @Inject constructor(
         }
     }
 
-    override suspend fun post(artistId: String?, id: String): PostResponse? = coroutineScope {
+    override suspend fun post(artistId: String?, id: String): PostResponse = coroutineScope {
         withContext(Dispatchers.IO) {
-            val post = postCollection.find(id.toId()) ?: return@withContext null
+            val post = postCollection.find(id.toId()) ?: throw Exception("Unable to find post with id $id")
             val artist = artistCollection.find(post.artistId)!!
             val avatar = artist.avatarId?.let { avatarCollection.find(it) }
             val arts = artCollection.findByPost(post.id)
@@ -90,7 +90,7 @@ class PostLoaderImpl @Inject constructor(
                 "most_viewed" -> postCollection.viewedWithBoundary(from, to)
                 "most_rated" -> postCollection.ratedWithBoundary(from, to)
                 "most_popular" -> postCollection.popularWithBoundary(from, to)
-                else -> throw Exception("Unable to handle unexpected filter $filter")
+                else -> postCollection.byArtistWithBoundary(from, to, filter.toId())
             }.map { post ->
                 val artist = artistCollection.find(post.artistId)!!
                 val avatar = artist.avatarId?.let { avatarCollection.find(it) }
