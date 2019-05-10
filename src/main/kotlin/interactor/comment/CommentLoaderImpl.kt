@@ -3,6 +3,7 @@ package interactor.comment
 import database.collection.ArtistCollection
 import database.collection.AvatarCollection
 import database.collection.CommentCollection
+import database.collection.PostCollection
 import database.document.Comment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -18,19 +19,26 @@ import javax.inject.Singleton
 @Singleton
 class CommentLoaderImpl @Inject constructor(
     private val commentCollection: CommentCollection,
+    private val postCollection: PostCollection,
     private val artistCollection: ArtistCollection,
     private val avatarCollection: AvatarCollection
 ) : CommentLoader {
+
     override suspend fun comment(postId: String, author: String, content: String) = coroutineScope {
         withContext(Dispatchers.IO) {
-            commentCollection.insert(
-                Comment(
-                    artistId = author.toId(),
-                    postId = postId.toId(),
-                    content = content,
-                    date = Date().time
+            val post = postCollection.find(postId.toId())
+            if (post == null) {
+                throw Exception("Unable to find post with id $postId")
+            } else {
+                commentCollection.insert(
+                    Comment(
+                        artistId = author.toId(),
+                        postId = post.id,
+                        content = content,
+                        date = Date().time
+                    )
                 )
-            )
+            }
         }
     }
 

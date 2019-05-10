@@ -34,7 +34,7 @@ fun Routing.authRouting() {
             ArtistLoader.insert(form.name, form.password, form.email)
             call.respond(HttpStatusCode.OK, "Successfully registered")
         } catch (ex: Exception) {
-            call.respond(HttpStatusCode.Conflict, "User with same name or email already exists")
+            call.respond(HttpStatusCode.InternalServerError, "User with same name or email already exists")
         }
     }
 }

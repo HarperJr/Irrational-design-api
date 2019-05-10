@@ -45,7 +45,7 @@ fun Routing.postRouting() {
             val posts = PostLoader.posts(from, to, filter)
             call.respond(gson.toJson(posts))
         } catch (ex: Exception) {
-            call.respond(HttpStatusCode.BadRequest, ex.message!!)
+            call.respond(HttpStatusCode.InternalServerError, ex.message!!)
         }
     }
 
@@ -93,7 +93,7 @@ fun Routing.postRouting() {
             try {
                 PostLoader.like(postId, call.jwtPayload()!!.claim("artistId"))
             } catch (ex: Exception) {
-                call.respond(HttpStatusCode.NotFound, ex.message!!)
+                call.respond(HttpStatusCode.InternalServerError, ex.message!!)
             }
         }
 
@@ -102,7 +102,7 @@ fun Routing.postRouting() {
             try {
                 PostLoader.bookmark(postId, call.jwtPayload()!!.claim("artistId"))
             } catch (ex: Exception) {
-                call.respond(HttpStatusCode.NotFound, ex.message!!)
+                call.respond(HttpStatusCode.InternalServerError, ex.message!!)
             }
         }
     }
