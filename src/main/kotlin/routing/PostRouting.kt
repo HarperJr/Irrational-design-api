@@ -28,7 +28,7 @@ import java.util.*
 fun Routing.postRouting() {
     get("/post/{id}") {
         val postId = call.parameters["id"]!!
-        val post = PostLoader.post(postId)
+        val post = PostLoader.post(call.jwtPayload()?.claim("artistId"), postId)
         if (post != null) {
             call.respond(gson.toJson(post))
         } else {
@@ -41,8 +41,12 @@ fun Routing.postRouting() {
         val from = call.arg<Int>("from") ?: 0
         val to = call.arg<Int>("to") ?: 0
 
-        val posts = PostLoader.posts(from, to, filter)
-        call.respond(gson.toJson(posts))
+        try {
+            val posts = PostLoader.posts(from, to, filter)
+            call.respond(gson.toJson(posts))
+        } catch (ex: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ex.message!!)
+        }
     }
 
     authenticate {
@@ -58,7 +62,7 @@ fun Routing.postRouting() {
                             val postRequest = gson.fromJson(content, PostRequest::class.java)
                             postId = PostLoader.insert(
                                 Post(
-                                    artistId = call.jwtPayload().claim<String>("artistId").toId(),
+                                    artistId = call.jwtPayload()!!.claim<String>("artistId").toId(),
                                     title = postRequest.title,
                                     subtitle = postRequest.subtitle,
                                     description = postRequest.description,
@@ -82,6 +86,24 @@ fun Routing.postRouting() {
                     link = it.second
                 )
             })
+        }
+
+        post("/like/{id}") {
+            val postId = call.parameters["id"]!!
+            try {
+                PostLoader.like(postId, call.jwtPayload()!!.claim("artistId"))
+            } catch (ex: Exception) {
+                call.respond(HttpStatusCode.NotFound, ex.message!!)
+            }
+        }
+
+        post("/bookmark/{id}") {
+            val postId = call.parameters["id"]!!
+            try {
+                PostLoader.bookmark(postId, call.jwtPayload()!!.claim("artistId"))
+            } catch (ex: Exception) {
+                call.respond(HttpStatusCode.NotFound, ex.message!!)
+            }
         }
     }
 }

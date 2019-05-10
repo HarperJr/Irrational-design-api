@@ -8,13 +8,9 @@ import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.post
-import io.ktor.sessions.sessions
-import io.ktor.sessions.set
 import jwt.JwtConfig
 import request.CredentialsRequest
 import request.RegisterRequest
-import session.Session
-import java.util.*
 
 fun Routing.authRouting() {
     post("/auth") {
@@ -23,7 +19,7 @@ fun Routing.authRouting() {
         val identified = ArtistLoader.findByCredentials(credentials.name, credentials.password)
         if (identified != null) {
             with(call) {
-                sessions.set(Session(UUID.randomUUID().toString()))
+                call.respond(JwtConfig.makeToken(identified))
                 respond(HttpStatusCode.OK)
             }
         } else {

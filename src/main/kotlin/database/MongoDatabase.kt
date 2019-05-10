@@ -19,6 +19,8 @@ class MongoDatabase(databaseName: String) : Database {
 
     override fun bookmarks() = BookmarkCollection(database.getCollection<Bookmark>("bookmark"))
 
+    override fun likes() = LikeCollection(database.getCollection<Like>("like"))
+
     override fun categories() = CategoryCollection(database.getCollection<Category>("category"))
 
     override fun tags() = TagCollection(database.getCollection<Tag>("tag"))
@@ -32,4 +34,6 @@ class MongoDatabase(databaseName: String) : Database {
     override fun tagsInPosts() = TagInPostCollection(database.getCollection<TagInPost>("post_tag"))
 
     override fun categoriesInPosts() = CategoryInPostCollection(database.getCollection<CategoryInPost>("post_category"))
+
+
 }

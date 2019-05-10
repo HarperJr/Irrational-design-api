@@ -6,7 +6,6 @@ import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
-import io.ktor.client.HttpClient
 import io.ktor.client.response.HttpResponse
 import io.ktor.features.CallLogging
 import io.ktor.features.DefaultHeaders
@@ -56,8 +55,8 @@ fun <T> ApplicationCall.arg(arg: String): T? = try {
 
 fun ApplicationCall.session(): Session = sessions.get(Session.NAME) as Session
 
-fun ApplicationCall.jwtPayload(): Payload {
-    return (authentication.principal as JWTPrincipal).payload
+fun ApplicationCall.jwtPayload(): Payload? {
+    return (authentication.principal as JWTPrincipal?)?.payload
 }
 
 inline fun <reified T> Payload.claim(name: String): T = getClaim(name).`as`(T::class.java)

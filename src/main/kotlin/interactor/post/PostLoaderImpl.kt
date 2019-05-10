@@ -13,7 +13,6 @@ import javax.inject.Singleton
 @Singleton
 class PostLoaderImpl @Inject constructor(
     private val postCollection: PostCollection,
-    private val bookmarkCollection: BookmarkCollection,
     private val artistCollection: ArtistCollection,
     private val avatarCollection: AvatarCollection,
     private val artCollection: ArtCollection,
@@ -22,7 +21,9 @@ class PostLoaderImpl @Inject constructor(
     private val tagInPostCollection: TagInPostCollection,
     private val categoryInPostCollection: CategoryInPostCollection,
     private val commentCollection: CommentCollection,
-    private val previewCollection: PreviewCollection
+    private val previewCollection: PreviewCollection,
+    private val likeCollection: LikeCollection,
+    private val bookmarkCollection: BookmarkCollection
 ) : PostLoader {
 
     override suspend fun insert(post: Post, categories: List<String>, tags: List<String>) = coroutineScope {
@@ -44,7 +45,7 @@ class PostLoaderImpl @Inject constructor(
         }
     }
 
-    override suspend fun post(id: String): PostResponse? = coroutineScope {
+    override suspend fun post(artistId: String?, id: String): PostResponse? = coroutineScope {
         withContext(Dispatchers.IO) {
             val post = postCollection.find(id.toId()) ?: return@withContext null
             val artist = artistCollection.find(post.artistId)!!
@@ -63,7 +64,7 @@ class PostLoaderImpl @Inject constructor(
                 artist = ArtistResponse(
                     id = artist.id,
                     name = artist.name,
-                    followed = false, //todo
+                    followed = false,
                     email = artist.email,
                     avatar = avatar?.let { AvatarResponse(it.link) }
                 ),
@@ -71,9 +72,8 @@ class PostLoaderImpl @Inject constructor(
                 title = post.title,
                 subtitle = post.subtitle,
                 description = post.description,
-                likes = 0,
-                bookmarks = 0,
-                comments = 0,
+                likes = likeCollection.countByPost(id),
+                bookmarks = bookmarkCollection.countByPost(id),
                 tags = tags.map { TagResponse(it.name) },
                 categories = categories.map { CategoryResponse(it.name) },
                 date = post.date
@@ -90,7 +90,7 @@ class PostLoaderImpl @Inject constructor(
                 "most_viewed" -> postCollection.viewedWithBoundary(from, to)
                 "most_rated" -> postCollection.ratedWithBoundary(from, to)
                 "most_popular" -> postCollection.popularWithBoundary(from, to)
-                else -> emptyList()
+                else -> throw Exception("Unable to handle unexpected filter $filter")
             }.map { post ->
                 val artist = artistCollection.find(post.artistId)!!
                 val avatar = artist.avatarId?.let { avatarCollection.find(it) }
@@ -124,6 +124,38 @@ class PostLoaderImpl @Inject constructor(
                     comments = comment,
                     preview = ArtResponse(
                         link = preview.link
+                    )
+                )
+            }
+        }
+    }
+
+    override suspend fun like(id: String, artistId: String) = coroutineScope {
+        withContext(Dispatchers.IO) {
+            val post = postCollection.find(id.toId())
+            if (post == null) {
+                throw Exception("Unable to like nonexistent post")
+            } else {
+                likeCollection.insert(
+                    Like(
+                        postId = id.toId(),
+                        artistId = artistId.toId()
+                    )
+                )
+            }
+        }
+    }
+
+    override suspend fun bookmark(id: String, artistId: String) = coroutineScope {
+        withContext(Dispatchers.IO) {
+            val post = postCollection.find(id.toId())
+            if (post == null) {
+                throw Exception("Unable to bookmark nonexistent post")
+            } else {
+                bookmarkCollection.insert(
+                    Bookmark(
+                        postId = id.toId(),
+                        artistId = artistId.toId()
                     )
                 )
             }

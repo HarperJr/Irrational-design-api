@@ -21,30 +21,32 @@ class CommentLoaderImpl @Inject constructor(
     private val artistCollection: ArtistCollection,
     private val avatarCollection: AvatarCollection
 ) : CommentLoader {
-    override suspend fun comment(postId: String, author: String, content: String) {
-        commentCollection.insert(
-            Comment(
-                artistId = author.toId(),
-                postId = postId.toId(),
-                content = content,
-                date = Date().time
+    override suspend fun comment(postId: String, author: String, content: String) = coroutineScope {
+        withContext(Dispatchers.IO) {
+            commentCollection.insert(
+                Comment(
+                    artistId = author.toId(),
+                    postId = postId.toId(),
+                    content = content,
+                    date = Date().time
+                )
             )
-        )
+        }
     }
 
     override suspend fun comments(id: String): List<CommentResponse> = coroutineScope {
         withContext(Dispatchers.IO) {
             return@withContext commentCollection.getAllByPost(id)
-                .map {
-                    val author = artistCollection.find(it.artistId)!!
+                .map { comment ->
+                    val author = artistCollection.find(comment.artistId)!!
                     val avatar = author.avatarId?.let { avatarCollection.find(it) }
                     CommentResponse(
                         author = AuthorResponse(
                             name = author.name,
                             avatar = avatar?.let { AvatarResponse(it.link) }
                         ),
-                        content = it.content,
-                        date = it.date
+                        content = comment.content,
+                        date = comment.date
                     )
                 }
         }

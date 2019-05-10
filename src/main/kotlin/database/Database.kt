@@ -14,6 +14,8 @@ interface Database {
 
     fun bookmarks(): BookmarkCollection
 
+    fun likes(): LikeCollection
+
     fun categories(): CategoryCollection
 
     fun tags(): TagCollection
