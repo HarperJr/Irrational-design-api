@@ -66,36 +66,29 @@ class ArtistLoaderImpl @Inject constructor(
                         registered = Date().time
                     )
                 )
-            } else throw Exception("Invalid arguments") //Avoid those exceptions
+            } else throw Exception("Invalid arguments")
         }
     }
 
-    override suspend fun follow(followerId: String, artistId: String) = coroutineScope {
+    override suspend fun follow(followerId: String, artistId: String, initial: Boolean) = coroutineScope {
         withContext(Dispatchers.IO) {
             val artist = artistCollection.find(artistId.toId())
             if (artist == null) {
                 throw Exception("Unable to find artist with id $artistId")
             } else {
-                if (followerCollection.followed(followerId.toId())) {
-                    throw Exception("Already followed")
-                }
-                followerCollection.insert(
-                    Follower(
-                        followerId = followerId.toId(),
-                        artistId = artist.id
+                val followed = followerCollection.followed(followerId.toId())
+                if (initial) {
+                    if (followed) throw Exception("Already followed")
+                    followerCollection.insert(
+                        Follower(
+                            followerId = followerId.toId(),
+                            artistId = artist.id
+                        )
                     )
-                )
-            }
-        }
-    }
-
-    override suspend fun unfollow(followerId: String, artistId: String) = coroutineScope {
-        withContext(Dispatchers.IO) {
-            val artist = artistCollection.find(artistId.toId())
-            if (artist == null) {
-                throw Exception("Unable to find artist with id $artistId")
-            } else {
-                followerCollection.deleteByFollower(followerId.toId())
+                } else {
+                    if (!followed) return@withContext
+                    followerCollection.deleteByFollower(followerId.toId())
+                }
             }
         }
     }

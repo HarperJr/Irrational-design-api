@@ -40,7 +40,6 @@ fun Routing.postRouting() {
         val filter = call.parameters["filter"]!!
         val from = call.arg<Int>("from") ?: 0
         val to = call.arg<Int>("to") ?: 0
-
         try {
             val posts = PostLoader.posts(from, to, filter)
             call.respond(gson.toJson(posts))
@@ -91,7 +90,9 @@ fun Routing.postRouting() {
         post("/like/{id}") {
             val postId = call.parameters["id"]!!
             try {
-                PostLoader.like(postId, call.jwtPayload()!!.claim("artistId"))
+                val initial = call.arg<Boolean>("initial") ?: throw Exception("Invalid arguments")
+                PostLoader.like(postId, call.jwtPayload()!!.claim("artistId"), initial)
+                call.respond(HttpStatusCode.OK)
             } catch (ex: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, ex.message!!)
             }
@@ -100,7 +101,9 @@ fun Routing.postRouting() {
         post("/bookmark/{id}") {
             val postId = call.parameters["id"]!!
             try {
-                PostLoader.bookmark(postId, call.jwtPayload()!!.claim("artistId"))
+                val initial = call.arg<Boolean>("initial") ?: throw Exception("Invalid arguments")
+                PostLoader.bookmark(postId, call.jwtPayload()!!.claim("artistId"), initial)
+                call.respond(HttpStatusCode.OK)
             } catch (ex: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, ex.message!!)
             }

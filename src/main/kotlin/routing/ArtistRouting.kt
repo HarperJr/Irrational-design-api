@@ -1,5 +1,6 @@
 package routing
 
+import arg
 import claim
 import gson
 import interactor.artist.ArtistLoader
@@ -27,22 +28,13 @@ fun Routing.artistRouting() {
         post("/artist/{id}/follow") {
             val artistId = call.parameters["id"]!!
             try {
+                val initial = call.arg<Boolean>("initial") ?: throw Exception("Invalid arguments")
                 ArtistLoader.follow(
                     call.jwtPayload()!!.claim("artist_id"),
-                    artistId
+                    artistId,
+                    initial
                 )
-            } catch (ex: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, ex.message!!)
-            }
-        }
-
-        post("/artist/{id}/unfollow") {
-            val artistId = call.parameters["id"]!!
-            try {
-                ArtistLoader.unfollow(
-                    call.jwtPayload()!!.claim("artist_id"),
-                    artistId
-                )
+                call.respond(HttpStatusCode.OK)
             } catch (ex: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, ex.message!!)
             }

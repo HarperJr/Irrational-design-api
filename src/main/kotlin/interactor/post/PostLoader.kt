@@ -12,9 +12,9 @@ interface PostLoader {
 
     suspend fun posts(from: Int, to: Int, filter: String): List<FeedPostResponse>
 
-    suspend fun like(id: String, artistId: String)
+    suspend fun like(id: String, artistId: String, initial: Boolean)
 
-    suspend fun bookmark(id: String, artistId: String)
+    suspend fun bookmark(id: String, artistId: String, initial: Boolean)
 
     companion object : PostLoader by INSTANCE
 }

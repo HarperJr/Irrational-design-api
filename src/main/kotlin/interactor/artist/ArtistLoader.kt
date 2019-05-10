@@ -13,9 +13,7 @@ interface ArtistLoader {
 
     suspend fun insert(name: String, password: String, email: String)
 
-    suspend fun follow(followerId: String, artistId: String)
-
-    suspend fun unfollow(followerId: String, artistId: String)
+    suspend fun follow(followerId: String, artistId: String, initial: Boolean)
 
     companion object : ArtistLoader by INSTANCE
 }

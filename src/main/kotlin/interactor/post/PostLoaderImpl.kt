@@ -130,34 +130,48 @@ class PostLoaderImpl @Inject constructor(
         }
     }
 
-    override suspend fun like(id: String, artistId: String) = coroutineScope {
+    override suspend fun like(id: String, artistId: String, initial: Boolean) = coroutineScope {
         withContext(Dispatchers.IO) {
             val post = postCollection.find(id.toId())
             if (post == null) {
                 throw Exception("Unable to like nonexistent post")
             } else {
-                likeCollection.insert(
-                    Like(
-                        postId = id.toId(),
-                        artistId = artistId.toId()
+                val liked = likeCollection.liked(artistId.toId())
+                if (initial) {
+                    if (liked) throw Exception("Already liked")
+                    likeCollection.insert(
+                        Like(
+                            postId = id.toId(),
+                            artistId = artistId.toId()
+                        )
                     )
-                )
+                } else {
+                    if (!liked) return@withContext
+                    likeCollection.deleteByArtist(artistId.toId())
+                }
             }
         }
     }
 
-    override suspend fun bookmark(id: String, artistId: String) = coroutineScope {
+    override suspend fun bookmark(id: String, artistId: String, initial: Boolean) = coroutineScope {
         withContext(Dispatchers.IO) {
             val post = postCollection.find(id.toId())
             if (post == null) {
                 throw Exception("Unable to bookmark nonexistent post")
             } else {
-                bookmarkCollection.insert(
-                    Bookmark(
-                        postId = id.toId(),
-                        artistId = artistId.toId()
+                val bookmarked = bookmarkCollection.bookmarked(artistId.toId())
+                if (initial) {
+                    if (bookmarked) throw Exception("Already bookmarked")
+                    bookmarkCollection.insert(
+                        Bookmark(
+                            postId = id.toId(),
+                            artistId = artistId.toId()
+                        )
                     )
-                )
+                } else {
+                    if (!bookmarked) return@withContext
+                    bookmarkCollection.deleteByArtist(artistId.toId())
+                }
             }
         }
     }
