@@ -8,4 +8,7 @@ import org.litote.kmongo.eq
 class TagCollection(private val collection: CoroutineCollection<Tag>) :
     DocumentCollection<Tag>(collection) {
 
+    suspend fun findByName(name: String): Tag? {
+        return collection.findOne(Tag::name eq name)
+    }
 }

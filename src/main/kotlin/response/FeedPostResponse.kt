@@ -1,17 +1,17 @@
 package response
 
-import database.document.Bookmark
 import database.document.Post
 import org.litote.kmongo.Id
 
 data class FeedPostResponse(
     var id: Id<Post>,
-    var preview: ArtResponse,
+    var preview: String?,
     var artist: ArtistResponse,
     var title: String,
     var subtitle: String,
-    // var likes: Int,
-    var bookmarks: List<Bookmark>,
-    var comments: List<CommentResponse>,
+    var description: String,
+    var likes: Long,
+    var bookmarks: Long,
+    var comments: Long,
     var date: Long
 )

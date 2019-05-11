@@ -2,12 +2,39 @@ package database
 
 import database.collection.*
 import database.document.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.reactive.awaitSingle
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
 
 class MongoDatabase(databaseName: String) : Database {
 
-    private val database = KMongo.createClient().coroutine.getDatabase(databaseName)
+    private val mongoClient = KMongo.createClient()
+    private val database = mongoClient.coroutine.getDatabase(databaseName)
+
+    override suspend fun runInTx(action: suspend CoroutineScope.() -> Unit) {
+        coroutineScope {
+            val session = mongoClient.startSession().awaitSingle()
+            with(session) {
+                startTransaction()
+                action.invoke(this@coroutineScope)
+                commitTransaction()
+            }
+        }
+    }
+
+    override suspend fun <T> callInTx(call: suspend CoroutineScope.() -> T): T {
+        return coroutineScope {
+            val session = mongoClient.startSession().awaitSingle()
+            with(session) {
+                startTransaction()
+                val result = call.invoke(this@coroutineScope)
+                commitTransaction()
+                result
+            }
+        }
+    }
 
     override fun arts() = ArtCollection(database.getCollection<Art>("art"))
 

@@ -76,7 +76,7 @@ class ArtistLoaderImpl @Inject constructor(
             if (artist == null) {
                 throw Exception("Unable to find artist with id $artistId")
             } else {
-                val followed = followerCollection.followed(followerId.toId())
+                val followed = followerCollection.followed(artistId.toId(), followerId.toId())
                 if (initial) {
                     if (followed) throw Exception("Already followed")
                     followerCollection.insert(

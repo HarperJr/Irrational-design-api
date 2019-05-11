@@ -2,11 +2,15 @@ package interactor.post
 
 import database.document.Post
 import di.AppComponent
+import response.CategoryResponse
 import response.FeedPostResponse
 import response.PostResponse
 
 interface PostLoader {
-    suspend fun insert(post: Post, categories: List<String>, tags: List<String>): String
+    suspend fun upload(
+        post: Post, categories: List<String>,
+        tags: List<String>, images: List<ByteArray>
+    )
 
     suspend fun post(artistId: String?, id: String): PostResponse
 
@@ -15,6 +19,8 @@ interface PostLoader {
     suspend fun like(id: String, artistId: String, initial: Boolean)
 
     suspend fun bookmark(id: String, artistId: String, initial: Boolean)
+
+    suspend fun categories(): List<String>
 
     companion object : PostLoader by INSTANCE
 }

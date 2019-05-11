@@ -1,8 +1,13 @@
 package database
 
 import database.collection.*
+import kotlinx.coroutines.CoroutineScope
 
 interface Database {
+
+    suspend fun runInTx(action: suspend CoroutineScope.() -> Unit)
+
+    suspend fun <T> callInTx(call: suspend CoroutineScope.() -> T): T
 
     fun arts(): ArtCollection
 

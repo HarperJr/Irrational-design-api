@@ -1,7 +1,10 @@
 package interactor.post
 
+import FileManager
+import FileManager.ARTS_PATH
 import database.collection.*
 import database.document.*
+import database.transaction.Transaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
@@ -12,6 +15,7 @@ import javax.inject.Singleton
 
 @Singleton
 class PostLoaderImpl @Inject constructor(
+    private val transaction: Transaction, //todo need to resolve issue with transactions in mongo
     private val postCollection: PostCollection,
     private val artistCollection: ArtistCollection,
     private val avatarCollection: AvatarCollection,
@@ -23,25 +27,34 @@ class PostLoaderImpl @Inject constructor(
     private val commentCollection: CommentCollection,
     private val previewCollection: PreviewCollection,
     private val likeCollection: LikeCollection,
-    private val bookmarkCollection: BookmarkCollection
+    private val bookmarkCollection: BookmarkCollection,
+    private val followerCollection: FollowerCollection
 ) : PostLoader {
 
-    override suspend fun insert(post: Post, categories: List<String>, tags: List<String>) = coroutineScope {
+    override suspend fun upload(
+        post: Post, categories: List<String>,
+        tags: List<String>, images: List<ByteArray>
+    ) = coroutineScope {
         withContext(Dispatchers.IO) {
-            post.also {
-                postCollection.insert(it)
-                tagInPostCollection.insert(tags.map { tagName ->
-                    val tag = Tag(tagName)
-                    if (!tagCollection.contains(tag)) {
-                        tagCollection.insert(tag)
-                    }
-                    TagInPost(it.id, tag.id)
-                })
-                categoryInPostCollection.insert(categories.map { categoryName ->
-                    val category = Category(categoryName)
-                    CategoryInPost(it.id, category.id)
-                })
-            }.let { it.id.toString() }
+            val arts = images.mapIndexed { index, image ->
+                val path = "/${post.title}/$index" //path will be like /arts/{post_name}/0..n
+                FileManager.save(ARTS_PATH.resolve(path), image)
+                Art(post.id, "${post.title}_$index", path) //todo change art name
+            }
+            val categoriesInPost = categories.map {
+                val category = categoryCollection.findByName(it)
+                    ?: throw Exception("Unknown category") //Categories have to be present in database
+                CategoryInPost(post.id, category.id)
+            }
+            val tagsInPost = tags.map {
+                val tag = tagCollection.findByName(it)
+                    ?: Tag(it).also { tag -> tagCollection.insert(tag) }
+                TagInPost(post.id, tag.id)
+            }
+            postCollection.insert(post)
+            categoryInPostCollection.insert(categoriesInPost)
+            tagInPostCollection.insert(tagsInPost)
+            artCollection.insert(arts)
         }
     }
 
@@ -53,29 +66,29 @@ class PostLoaderImpl @Inject constructor(
             val arts = artCollection.findByPost(post.id)
             val tags = let {
                 val tagsInPost = tagInPostCollection.findByPost(post.id)
-                tagCollection.find(tagsInPost)
+                tagCollection.find(tagsInPost).map { it.name }
             }
             val categories = let {
                 val categoriesInPost = categoryInPostCollection.findByPost(post.id)
-                categoryCollection.find(categoriesInPost)
+                categoryCollection.find(categoriesInPost).map { it.name }
             }
             return@withContext PostResponse(
                 id = post.id,
                 artist = ArtistResponse(
                     id = artist.id,
                     name = artist.name,
-                    followed = false,
+                    followed = artistId?.let { followerCollection.followed(artist.id, it.toId()) } ?: false,
                     email = artist.email,
                     avatar = avatar?.let { AvatarResponse(it.link) }
                 ),
-                arts = arts.map { ArtResponse(it.link) },
+                arts = arts.map { ArtResponse(it.link, it.name) },
                 title = post.title,
                 subtitle = post.subtitle,
                 description = post.description,
-                likes = likeCollection.countByPost(id),
-                bookmarks = bookmarkCollection.countByPost(id),
-                tags = tags.map { TagResponse(it.name) },
-                categories = categories.map { CategoryResponse(it.name) },
+                likes = likeCollection.countByPost(id.toId()),
+                bookmarks = bookmarkCollection.countByPost(id.toId()),
+                tags = tags,
+                categories = categories,
                 date = post.date
             )
         }
@@ -94,24 +107,12 @@ class PostLoaderImpl @Inject constructor(
             }.map { post ->
                 val artist = artistCollection.find(post.artistId)!!
                 val avatar = artist.avatarId?.let { avatarCollection.find(it) }
-                val bookmarks = bookmarkCollection.all().toList()
-                val comment = commentCollection.getAllByPost(post.id.toString()).toList().map {
-                    val author = artistCollection.find(it.artistId)!!
-                    val authorAvatar = author.avatarId?.let { avatarCollection.find(it) }
-                    CommentResponse(
-                        author = AuthorResponse(
-                            name = author.name,
-                            avatar = authorAvatar?.let { AvatarResponse(it.link) }
-                        ),
-                        date = it.date,
-                        content = it.content
-                    )
-                }
-                val preview = previewCollection.findByPost(post.id)!!
+                val preview = previewCollection.findByPost(post.id)
                 FeedPostResponse(
                     id = post.id,
                     subtitle = post.subtitle,
                     title = post.title,
+                    description = post.description,
                     date = post.date,
                     artist = ArtistResponse(
                         id = artist.id,
@@ -120,11 +121,10 @@ class PostLoaderImpl @Inject constructor(
                         name = artist.name,
                         avatar = avatar?.let { AvatarResponse(it.link) }
                     ),
-                    bookmarks = bookmarks,
-                    comments = comment,
-                    preview = ArtResponse(
-                        link = preview.link
-                    )
+                    likes = likeCollection.countByPost(post.id),
+                    bookmarks = bookmarkCollection.countByPost(post.id),
+                    comments = commentCollection.countByPost(post.id),
+                    preview = preview?.link
                 )
             }
         }
@@ -136,7 +136,7 @@ class PostLoaderImpl @Inject constructor(
             if (post == null) {
                 throw Exception("Unable to like nonexistent post")
             } else {
-                val liked = likeCollection.liked(artistId.toId())
+                val liked = likeCollection.liked(post.id, artistId.toId())
                 if (initial) {
                     if (liked) throw Exception("Already liked")
                     likeCollection.insert(
@@ -147,7 +147,7 @@ class PostLoaderImpl @Inject constructor(
                     )
                 } else {
                     if (!liked) return@withContext
-                    likeCollection.deleteByArtist(artistId.toId())
+                    likeCollection.deleteByArtist(post.id, artistId.toId())
                 }
             }
         }
@@ -159,7 +159,7 @@ class PostLoaderImpl @Inject constructor(
             if (post == null) {
                 throw Exception("Unable to bookmark nonexistent post")
             } else {
-                val bookmarked = bookmarkCollection.bookmarked(artistId.toId())
+                val bookmarked = bookmarkCollection.bookmarked(post.id, artistId.toId())
                 if (initial) {
                     if (bookmarked) throw Exception("Already bookmarked")
                     bookmarkCollection.insert(
@@ -170,9 +170,15 @@ class PostLoaderImpl @Inject constructor(
                     )
                 } else {
                     if (!bookmarked) return@withContext
-                    bookmarkCollection.deleteByArtist(artistId.toId())
+                    bookmarkCollection.deleteByArtist(post.id, artistId.toId())
                 }
             }
+        }
+    }
+
+    override suspend fun categories(): List<String> = coroutineScope {
+        withContext(Dispatchers.IO) {
+            categoryCollection.all().map { it.name }
         }
     }
 }

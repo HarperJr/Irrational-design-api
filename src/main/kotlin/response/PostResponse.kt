@@ -12,7 +12,7 @@ data class PostResponse(
     var description: String,
     var likes: Long,
     var bookmarks: Long,
-    var tags: List<TagResponse>,
-    var categories: List<CategoryResponse>,
+    var tags: List<String>,
+    var categories: List<String>,
     var date: Long
 )
