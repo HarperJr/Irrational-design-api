@@ -28,6 +28,11 @@ class CollectionsModule {
     @Singleton
     fun provideBookmarkCollection(database: Database) = database.bookmarks()
 
+
+    @Provides
+    @Singleton
+    fun provideLikeCollection(database: Database) = database.likes()
+
     @Provides
     @Singleton
     fun provideCategoryCollection(database: Database) = database.categories()
@@ -55,4 +60,8 @@ class CollectionsModule {
     @Provides
     @Singleton
     fun provideCategoryInPostCollection(database: Database) = database.categoriesInPosts()
+
+    @Provides
+    @Singleton
+    fun providePaymentCollection(database: Database) = database.payments()
 }

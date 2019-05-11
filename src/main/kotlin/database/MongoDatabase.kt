@@ -35,5 +35,5 @@ class MongoDatabase(databaseName: String) : Database {
 
     override fun categoriesInPosts() = CategoryInPostCollection(database.getCollection<CategoryInPost>("post_category"))
 
-
+    override fun payments() = PaymentCollection(database.getCollection<Payment>("payment"))
 }

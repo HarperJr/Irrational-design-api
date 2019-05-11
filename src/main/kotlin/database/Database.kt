@@ -29,4 +29,6 @@ interface Database {
     fun tagsInPosts(): TagInPostCollection
 
     fun categoriesInPosts(): CategoryInPostCollection
+
+    fun payments(): PaymentCollection
 }
