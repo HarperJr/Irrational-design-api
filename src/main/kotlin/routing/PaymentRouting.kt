@@ -1,6 +1,5 @@
 package routing
 
-import gson
 import interactor.payment.PaymentLoader
 import io.ktor.application.call
 import io.ktor.request.receive
@@ -12,12 +11,11 @@ import request.PaymentRequest
 
 fun Routing.paymentRouting() {
     post("/payment/request-payment") {
-        val body = call.receive<String>()
-        val paymentData = gson.fromJson(body, PaymentRequest::class.java)
-        var response = PaymentLoader.requestPayment(
-            pattern_id = paymentData.pattern_id,
+        val paymentData = call.receive<PaymentRequest>()
+        val response = PaymentLoader.requestPayment(
+            patternId = paymentData.patternId,
             amount = paymentData.amount,
-            amount_due = paymentData.amount_due,
+            amountDue = paymentData.amountDue,
             comment = paymentData.comment,
             message = paymentData.message,
             to = paymentData.to
@@ -26,10 +24,9 @@ fun Routing.paymentRouting() {
     }
 
     post("/payment/process-payment") {
-        val body = call.receive<String>()
-        val paymentData = gson.fromJson(body, PaymentProcessRequest::class.java)
-        var response = PaymentLoader.processPayment(
-            request_id = paymentData.request_id,
+        val paymentData = call.receive<PaymentProcessRequest>()
+        val response = PaymentLoader.processPayment(
+            requestId = paymentData.requestId,
             csc = paymentData.csc,
             moneySource = paymentData.moneySource
         )

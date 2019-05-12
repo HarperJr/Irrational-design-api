@@ -21,7 +21,7 @@ class ArtistLoaderImpl @Inject constructor(
     private val followerCollection: FollowerCollection
 ) : ArtistLoader {
 
-    override suspend fun artist(id: String): ArtistResponse? = coroutineScope {
+    override suspend fun artist(id: String): ArtistResponse = coroutineScope {
         withContext(Dispatchers.IO) {
             val artist = artistCollection.find(id.toId())
             if (artist == null) {

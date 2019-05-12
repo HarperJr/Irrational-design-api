@@ -1,5 +1,5 @@
 package payment
 
-data class Wallet_PaymentSource(
+data class WalletPaymentSource(
     override var allowed: Boolean
 ) : PaymentSource()

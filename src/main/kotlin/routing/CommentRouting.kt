@@ -18,8 +18,7 @@ fun Routing.commentRouting() {
     get("/post/{id}/comments") {
         val postId = call.parameters["post_id"]!!
         try {
-            val comments = CommentLoader.comments(postId)
-            call.respond(gson.toJson(comments))
+            call.respond(CommentLoader.comments(postId))
         } catch (ex: Exception) {
             call.respond(HttpStatusCode.InternalServerError, ex.message!!)
         }
@@ -27,14 +26,15 @@ fun Routing.commentRouting() {
 
     authenticate {
         post("post/comment") {
-            val body = call.receive<String>()
-            val comment = gson.fromJson<CommentRequest>(body, CommentRequest::class.java)
+            val comment = call.receive<CommentRequest>()
             try {
                 CommentLoader.comment(
                     postId = comment.postId,
-                    author = call.jwtPayload()!!.claim("artist_id"),
+                    author = call.jwtPayload()!!.claim("artistId"),
                     content = comment.content
                 )
+                //We need to respond with the new comment
+                call.respond(HttpStatusCode.OK)
             } catch (ex: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, ex.message!!)
             }

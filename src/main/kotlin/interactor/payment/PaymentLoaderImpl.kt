@@ -10,23 +10,23 @@ class PaymentLoaderImpl(
 
 ) : PaymentLoader {
     override suspend fun requestPayment(
-        pattern_id: String,
+        patternId: String,
         to: String,
         amount: Double,
-        amount_due: Double,
+        amountDue: Double,
         comment: String,
         message: String
     ): PaymentResponse {
         return PaymentErrorResponse(
             error = "payment_refused",
-            error_description = "there is some problem with payment"
+            errorDescription = "there is some problem with payment"
         )
     }
 
-    override suspend fun processPayment(request_id: String, moneySource: PaymentSource, csc: String): PaymentResponse {
+    override suspend fun processPayment(requestId: String, moneySource: PaymentSource, csc: String): PaymentResponse {
         return PaymentErrorResponse(
             error = "payment_refused",
-            error_description = "there is some problem with payment"
+            errorDescription = "there is some problem with payment"
         )
     }
 

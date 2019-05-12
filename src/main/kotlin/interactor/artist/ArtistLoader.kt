@@ -5,7 +5,7 @@ import di.AppComponent
 import response.ArtistResponse
 
 interface ArtistLoader {
-    suspend fun artist(id: String): ArtistResponse?
+    suspend fun artist(id: String): ArtistResponse
 
     suspend fun findByCredentials(name: String, password: String): Artist?
 

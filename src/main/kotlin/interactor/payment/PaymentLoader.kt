@@ -8,16 +8,16 @@ import response.PaymentResponse
 interface PaymentLoader {
 
     suspend fun requestPayment(
-        pattern_id: String,
+        patternId: String,
         to: String,
         amount: Double,
-        amount_due: Double,
+        amountDue: Double,
         comment: String,
         message: String
     ): PaymentResponse
 
     suspend fun processPayment(
-        request_id: String,
+        requestId: String,
         moneySource: PaymentSource,
         csc: String
     ): PaymentResponse

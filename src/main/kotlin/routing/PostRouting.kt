@@ -25,7 +25,6 @@ import java.util.*
 fun Routing.postRouting() {
     get("/post/{id}") {
         val postId = call.parameters["id"]!!
-
         try {
             val post = PostLoader.post(call.jwtPayload()?.claim("artistId"), postId)
             call.respond(gson.toJson(post))
@@ -39,8 +38,7 @@ fun Routing.postRouting() {
         val from = call.arg<Int>("from") ?: 0
         val to = call.arg<Int>("to") ?: 0
         try {
-            val posts = PostLoader.posts(from, to, filter)
-            call.respond(gson.toJson(posts))
+            call.respond(PostLoader.posts(from, to, filter))
         } catch (ex: Exception) {
             call.respond(HttpStatusCode.InternalServerError, ex.message!!)
         }

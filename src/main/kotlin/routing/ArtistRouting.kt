@@ -17,8 +17,7 @@ fun Routing.artistRouting() {
     get("/artist/{id}") {
         val artistId = call.parameters["id"]!!
         try {
-            val artist = ArtistLoader.artist(artistId)
-            call.respond(gson.toJson(artist))
+            call.respond(ArtistLoader.artist(artistId))
         } catch (ex: Exception) {
             call.respond(HttpStatusCode.InternalServerError, ex.message!!)
         }
@@ -30,11 +29,11 @@ fun Routing.artistRouting() {
             try {
                 val initial = call.arg<Boolean>("initial") ?: throw Exception("Invalid arguments")
                 ArtistLoader.follow(
-                    call.jwtPayload()!!.claim("artist_id"),
+                    call.jwtPayload()!!.claim("artistId"),
                     artistId,
                     initial
                 )
-                call.respond(HttpStatusCode.OK)
+                call.respond(HttpStatusCode.OK, "Followed")
             } catch (ex: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, ex.message!!)
             }

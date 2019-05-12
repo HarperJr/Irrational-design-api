@@ -3,7 +3,7 @@ package request
 import payment.PaymentSource
 
 data class PaymentProcessRequest(
-    var request_id: String,
+    var requestId: String,
     var csc: String,
     var moneySource: PaymentSource
 )

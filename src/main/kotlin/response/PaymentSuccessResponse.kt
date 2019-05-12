@@ -2,6 +2,6 @@ package response
 
 data class PaymentSuccessResponse(
     override val status: String = "success",
-    var payment_id: String,
+    var paymentId: String,
     var balance: Double
 ): PaymentResponse()

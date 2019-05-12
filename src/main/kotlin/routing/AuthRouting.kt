@@ -14,12 +14,11 @@ import request.RegisterRequest
 
 fun Routing.authRouting() {
     post("/auth") {
-        val body = call.receive<String>()
-        val credentials = gson.fromJson(body, CredentialsRequest::class.java)
+        val credentials = call.receive<CredentialsRequest>()
         val identified = ArtistLoader.findByCredentials(credentials.name, credentials.password)
         if (identified != null) {
             with(call) {
-                call.respond(JwtConfig.makeToken(identified))
+                call.respond(TokenResponse(JwtConfig.makeToken(identified)))
                 respond(HttpStatusCode.OK)
             }
         } else {
@@ -34,7 +33,9 @@ fun Routing.authRouting() {
             ArtistLoader.insert(form.name, form.password, form.email)
             call.respond(HttpStatusCode.OK, "Successfully registered")
         } catch (ex: Exception) {
-            call.respond(HttpStatusCode.InternalServerError, "User with same name or email already exists")
+            call.respond(HttpStatusCode.Gone, "User with same name or email already exists")
         }
     }
 }
+
+data class TokenResponse(val jwtToken: String)
