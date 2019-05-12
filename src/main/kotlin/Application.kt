@@ -8,6 +8,7 @@ import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.client.response.HttpResponse
 import io.ktor.features.CallLogging
+import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.http.content.PartData
 import io.ktor.http.content.streamProvider
@@ -38,6 +39,7 @@ val gson: Gson = GsonBuilder()
 fun Application.module() {
     install(DefaultHeaders)
     install(CallLogging)
+    install(ContentNegotiation) {}
     install(Authentication) { authenticate() }
     install(Sessions) { initSession() }
     install(Routing) {

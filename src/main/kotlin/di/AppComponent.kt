@@ -1,13 +1,13 @@
 package di
 
 import dagger.Component
-import di.module.ApiModule
 import di.module.CollectionsModule
 import di.module.DatabaseModule
 import di.module.InteractorModule
 import interactor.art.ArtLoader
 import interactor.artist.ArtistLoader
 import interactor.comment.CommentLoader
+import interactor.payment.PaymentLoader
 import interactor.post.PostLoader
 import javax.inject.Singleton
 
@@ -24,8 +24,7 @@ interface AppComponent {
     fun commentLoader(): CommentLoader
     fun artistLoader(): ArtistLoader
     fun artLoader(): ArtLoader
-
-    fun apiComponent(): ApiComponent
+    fun paymentLoader(): PaymentLoader
 
     companion object : AppComponent by INSTANCE
 }
