@@ -8,5 +8,6 @@ data class Artist(
     var email: String,
     var registered: Long,
     var avatarId: Id<Avatar>? = null,
-    var cash: Long = 0
+    var cash: Double = 0.0,
+    var paymentSources: List<PaymentSource>
 ) : Document<Artist>()

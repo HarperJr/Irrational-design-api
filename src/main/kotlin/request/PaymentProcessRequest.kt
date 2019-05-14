@@ -1,6 +1,6 @@
 package request
 
-import payment.PaymentSource
+import database.document.PaymentSource
 
 data class PaymentProcessRequest(
     var requestId: String,

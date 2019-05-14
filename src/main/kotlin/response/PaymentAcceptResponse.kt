@@ -1,23 +1,16 @@
 package response
 
-import payment.PaymentSource
+import database.document.PaymentSource
+
 
 data class PaymentAcceptResponse(
     override val status: String = "success",
-    /**
-     * ???
-     */
+
+    var wallet: Boolean,
+
     var paymentSources: List<PaymentSource>,
     /**
      * Id запроса
      */
-    var requestId: String,
-    /**
-     * ???
-     */
-    var contractAmount: Double,
-    /**
-     * Баланс
-     */
-    var balance: Double
+    var requestId: String
 ) : PaymentResponse()

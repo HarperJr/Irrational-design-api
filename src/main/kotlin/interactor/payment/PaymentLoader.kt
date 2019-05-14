@@ -1,25 +1,25 @@
 package interactor.payment
 
 import di.AppComponent
-import payment.PaymentSource
 import response.PaymentResponse
 
 
 interface PaymentLoader {
 
     suspend fun requestPayment(
-        patternId: String,
         to: String,
         amount: Double,
-        amountDue: Double,
-        comment: String,
-        message: String
+        message: String,
+        initiator: String
     ): PaymentResponse
 
-    suspend fun processPayment(
+    suspend fun processPaymentCard(
         requestId: String,
-        moneySource: PaymentSource,
-        csc: String
+        csc: Long
+    ): PaymentResponse
+
+    suspend fun processPaymentWallet(
+        requestId: String
     ): PaymentResponse
 
     companion object : PaymentLoader by INSTANCE
