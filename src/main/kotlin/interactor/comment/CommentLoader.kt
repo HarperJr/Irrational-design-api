@@ -1,12 +1,14 @@
 package interactor.comment
 
+import database.document.Post
 import di.AppComponent
+import org.litote.kmongo.Id
 import response.CommentResponse
 
 interface CommentLoader {
     suspend fun comments(id: String): List<CommentResponse>
 
-    suspend fun comment(postId: String, author: String, content: String)
+    suspend fun insert(postId: Id<Post>, author: String, content: String)
 
     companion object : CommentLoader by INSTANCE
 }

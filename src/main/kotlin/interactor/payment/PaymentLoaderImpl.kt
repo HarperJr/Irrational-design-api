@@ -3,10 +3,11 @@ package interactor.payment
 import payment.PaymentSource
 import response.PaymentErrorResponse
 import response.PaymentResponse
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PaymentLoaderImpl(
+class PaymentLoaderImpl @Inject constructor(
 
 ) : PaymentLoader {
     override suspend fun requestPayment(

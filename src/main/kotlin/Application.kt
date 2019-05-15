@@ -9,7 +9,8 @@ import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
-import io.ktor.gson.gson
+import io.ktor.gson.GsonConverter
+import io.ktor.http.ContentType
 import io.ktor.http.content.PartData
 import io.ktor.http.content.streamProvider
 import io.ktor.routing.Routing
@@ -30,6 +31,10 @@ fun main() {
 }
 
 val gson: Gson = GsonBuilder()
+    .serializeNulls()
+    .setPrettyPrinting()
+    .disableHtmlEscaping()
+    .setFieldNamingStrategy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
     .registerTypeAdapter(Id::class.java,
         JsonSerializer<Id<Any>> { id, _, _ -> JsonPrimitive(id?.toString()) })
     .registerTypeAdapter(Id::class.java,
@@ -40,7 +45,7 @@ fun Application.module() {
     install(DefaultHeaders)
     install(CallLogging)
     install(ContentNegotiation) {
-        gson { setPrettyPrinting() }
+        register(ContentType.Application.Json, GsonConverter(gson))
     }
     install(Authentication) { authenticate() }
     install(Sessions) { initSession() }
@@ -62,8 +67,10 @@ fun <T> ApplicationCall.arg(arg: String): T? = try {
     null
 }
 
-fun ApplicationCall.jwtPayload(): Payload? {
-    return (authentication.principal as JWTPrincipal?)?.payload
+fun ApplicationCall.authPayload(): AuthPayload {
+    return authentication.principal?.let {
+        AuthPayload((it as JWTPrincipal).payload)
+    } ?: throw Exception("Payload is null")
 }
 
 inline fun <reified T> Payload.claim(name: String): T = getClaim(name).`as`(T::class.java)

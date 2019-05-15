@@ -1,7 +1,6 @@
 package routing
 
-import claim
-import gson
+import authPayload
 import interactor.comment.CommentLoader
 import io.ktor.application.call
 import io.ktor.auth.authenticate
@@ -11,16 +10,16 @@ import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
-import jwtPayload
 import request.CommentRequest
+import utils.ApiException
 
 fun Routing.commentRouting() {
     get("/post/{id}/comments") {
         val postId = call.parameters["post_id"]!!
         try {
             call.respond(CommentLoader.comments(postId))
-        } catch (ex: Exception) {
-            call.respond(HttpStatusCode.InternalServerError, ex.message!!)
+        } catch (ex: ApiException) {
+            call.respond(ex.statusCode, ex.errorMessage)
         }
     }
 
@@ -28,15 +27,15 @@ fun Routing.commentRouting() {
         post("post/comment") {
             val comment = call.receive<CommentRequest>()
             try {
-                CommentLoader.comment(
+                CommentLoader.insert(
                     postId = comment.postId,
-                    author = call.jwtPayload()!!.claim("artistId"),
+                    author = call.authPayload().artistId,
                     content = comment.content
                 )
-                //We need to respond with the new comment
+                //We need to respond with the new insert
                 call.respond(HttpStatusCode.OK)
-            } catch (ex: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, ex.message!!)
+            } catch (ex: ApiException) {
+                call.respond(ex.statusCode, ex.errorMessage)
             }
         }
     }
