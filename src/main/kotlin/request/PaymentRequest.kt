@@ -1,9 +1,11 @@
 package request
 
+import com.google.gson.annotations.SerializedName
+
 data class PaymentRequest(
-    var patternId: String,
+    @SerializedName("pattern_id") var patternId: String,
     var amount: Double,
-    var amountDue: Double,
+    @SerializedName("amount_due") var amountDue: Double,
     var comment: String,
     var message: String,
     var to: String

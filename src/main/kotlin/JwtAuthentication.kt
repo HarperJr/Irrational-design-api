@@ -1,3 +1,4 @@
+import com.auth0.jwt.interfaces.Payload
 import interactor.artist.ArtistLoader
 import io.ktor.auth.Authentication
 import io.ktor.auth.jwt.JWTPrincipal
@@ -14,4 +15,8 @@ fun Authentication.Configuration.authenticate() {
             authorized?.let { JWTPrincipal(credentials.payload) }
         }
     }
+}
+
+data class AuthPayload(private val jwtPayload: Payload) {
+    val artistId: String = jwtPayload.claim("artistId")
 }

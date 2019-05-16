@@ -1,9 +1,10 @@
 package request
 
 import database.document.PaymentSource
+import com.google.gson.annotations.SerializedName
 
 data class PaymentProcessRequest(
-    var requestId: String,
+    @SerializedName("request_id") var requestId: String,
     var csc: String,
-    var moneySource: PaymentSource
+    @SerializedName("money_source") var moneySource: PaymentSource
 )

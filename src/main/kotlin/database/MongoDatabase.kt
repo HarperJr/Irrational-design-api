@@ -52,7 +52,7 @@ class MongoDatabase(databaseName: String) : Database {
 
     override fun tags() = TagCollection(database.getCollection<Tag>("tag"))
 
-    override fun comments() = CommentCollection(database.getCollection<Comment>("comment"))
+    override fun comments() = CommentCollection(database.getCollection<Comment>("insert"))
 
     override fun followers() = FollowerCollection(database.getCollection<Follower>("follower"))
 

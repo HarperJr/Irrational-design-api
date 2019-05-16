@@ -9,12 +9,12 @@ import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.post
 import jwt.JwtConfig
-import request.CredentialsRequest
+import request.AuthRequest
 import request.RegisterRequest
 
 fun Routing.authRouting() {
     post("/auth") {
-        val credentials = call.receive<CredentialsRequest>()
+        val credentials = call.receive<AuthRequest>()
         val identified = ArtistLoader.findByCredentials(credentials.name, credentials.password)
         if (identified != null) {
             with(call) {
