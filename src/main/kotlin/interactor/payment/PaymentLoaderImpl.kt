@@ -8,7 +8,6 @@ import org.litote.kmongo.toId
 import response.PaymentAcceptResponse
 import response.PaymentErrorResponse
 import response.PaymentResponse
-import javax.inject.Inject
 import response.PaymentSuccessResponse
 import java.util.*
 import javax.inject.Inject
