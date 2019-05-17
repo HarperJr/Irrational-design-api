@@ -36,4 +36,8 @@ interface Database {
     fun categoriesInPosts(): CategoryInPostCollection
 
     fun payments(): PaymentCollection
+
+    fun virtualWallets(): VirtualWalletCollection
+
+    fun walletCards(): WalletCardCollection
 }

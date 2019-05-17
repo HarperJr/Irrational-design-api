@@ -2,57 +2,51 @@ package interactor.payment
 
 import database.collection.ArtistCollection
 import database.collection.PaymentCollection
+import database.collection.VirtualWalletCollection
+import database.collection.WalletCardCollection
+import database.document.Artist
 import database.document.Payment
-import database.document.PaymentSource
-import org.litote.kmongo.toId
+import database.document.PaymentStatus
+import database.document.VirtualWallet
+import org.litote.kmongo.Id
 import response.PaymentAcceptResponse
 import response.PaymentErrorResponse
 import response.PaymentResponse
 import response.PaymentSuccessResponse
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class PaymentLoaderImpl @Inject constructor(
     private val artistCollection: ArtistCollection,
-    private val paymentCollection: PaymentCollection
+    private val paymentCollection: PaymentCollection,
+    private val virtualWalletCollection: VirtualWalletCollection,
+    private var walletCardCollection: WalletCardCollection
 ) : PaymentLoader {
 
     override suspend fun requestPayment(
-        to: String,
+        senderId: Id<Artist>,
+        receiverId: Id<Artist>,
         amount: Double,
-        message: String,
-        initiator: String
+        message: String
     ): PaymentResponse {
+        val senderWallet = virtualWalletCollection.findByArtist(senderId)!! //Опасно так делать!
+        val receiverWallet = virtualWalletCollection.findByArtist(receiverId)!! //Опасно так делать!
 
-        val paymentInitiator = artistCollection.find(initiator.toId())!!
-        val requestId = (paymentInitiator.id.toString() + to + amount.toString()).hashCode().toString()
+        val availableCard = walletCardCollection
+            .findByWallet(senderWallet.id)
+            .firstOrNull { it.cash >= amount }
 
-        paymentCollection.insert(
-            Payment(
-                requestId = requestId,
-                sender = paymentInitiator.id,
-                receiver = to.toId(),
-                amount = amount,
-                date = Date().time,
-                status = false
-            )
-        )
-        val paymentSources: MutableList<PaymentSource> = mutableListOf()
-        paymentInitiator.paymentSources.forEach {
-            if (it.card.cash >= amount) {
-                paymentSources.add(it)
+        return when {
+            availableCard != null -> {
+                //Здесь ты ставишь флажок, что платишь картой, нет?
+                throw NotImplementedError()
             }
-        }
-        return if ((paymentInitiator.cash >= amount) or (paymentSources.size > 0)) {
-            PaymentAcceptResponse(
-                wallet = paymentInitiator.cash >= amount,
-                paymentSources = paymentInitiator.paymentSources,
-                requestId = requestId
-            )
-        } else {
-            PaymentErrorResponse(
+            senderWallet.cash >= amount -> {
+                //Здесь платим из кошелька напрямую
+                throw NotImplementedError()
+            }
+            else -> PaymentErrorResponse(
                 error = "payment_refused",
                 errorDescription = "not enough cash"
             )
@@ -67,18 +61,18 @@ class PaymentLoaderImpl @Inject constructor(
         val sender = artistCollection.find(payment!!.sender)!!
         val receiver = artistCollection.find(payment.receiver)!!
 
-        sender.paymentSources.forEach {
-            if (it.card.csc == csc) {
-                it.card.cash -= payment.amount
-                receiver.cash += payment.amount
-                payment.status = true
-
-                return PaymentSuccessResponse(
-                    requestId = requestId,
-                    message = "payment success"
-                )
-            }
-        }
+//        sender.paymentSources.forEach {
+//            if (it.card.csc == csc) {
+//                it.card.cash -= payment.amount
+//                receiver.cash += payment.amount
+//                payment.status = true
+//
+//                return PaymentSuccessResponse(
+//                    requestId = requestId,
+//                    message = "payment success"
+//                )
+//            }
+//        }
         return PaymentErrorResponse(
             error = "payment_refused",
             errorDescription = "there is some problem with payment"
@@ -92,8 +86,8 @@ class PaymentLoaderImpl @Inject constructor(
         val receiver = artistCollection.find(payment.receiver)!!
 
         return if (sender.cash >= payment.amount) {
-            sender.cash -= payment.amount
-            receiver.cash += payment.amount
+//            sender.cash -= payment.amount
+//            receiver.cash += payment.amount
             PaymentSuccessResponse(
                 requestId = requestId,
                 message = "payment success"

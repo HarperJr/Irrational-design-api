@@ -12,7 +12,6 @@ import kotlinx.coroutines.withContext
 import org.litote.kmongo.toId
 import response.ArtistResponse
 import response.AvatarResponse
-import java.util.*
 import javax.inject.Inject
 
 class ArtistLoaderImpl @Inject constructor(
@@ -62,8 +61,7 @@ class ArtistLoaderImpl @Inject constructor(
                     Artist(
                         name = name,
                         password = PwdEncryptor.hash(password),
-                        email = email,
-                        registered = Date().time
+                        email = email
                     )
                 )
             } else throw Exception("Invalid arguments")

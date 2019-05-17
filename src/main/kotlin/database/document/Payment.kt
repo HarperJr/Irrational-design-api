@@ -1,12 +1,16 @@
 package database.document
 
 import org.litote.kmongo.Id
+import java.util.*
 
 data class Payment(
-    var requestId: String,
     var sender: Id<Artist>,
     var receiver: Id<Artist>,
     var amount: Double,
-    var date: Long,
-    var status: Boolean
+    var date: Long = Date().time,
+    var status: PaymentStatus
 ) : Document<Payment>()
+
+enum class PaymentStatus {
+    PENDING, COMPLETED, REJECTED
+}

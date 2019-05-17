@@ -64,4 +64,12 @@ class CollectionsModule {
     @Provides
     @Singleton
     fun providePaymentCollection(database: Database) = database.payments()
+
+    @Provides
+    @Singleton
+    fun provideVirtualWalletCollection(database: Database) = database.virtualWallets()
+
+    @Provides
+    @Singleton
+    fun provideWalletCardCollection(database: Database) = database.walletCards()
 }

@@ -1,7 +1,6 @@
 package database
 
 import database.collection.*
-import database.document.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.reactive.awaitSingle
@@ -36,31 +35,35 @@ class MongoDatabase(databaseName: String) : Database {
         }
     }
 
-    override fun arts() = ArtCollection(database.getCollection<Art>("art"))
+    override fun arts() = ArtCollection(database.getCollection("art"))
 
-    override fun previewCollection() = PreviewCollection(database.getCollection<Preview>("preview"))
+    override fun previewCollection() = PreviewCollection(database.getCollection("preview"))
 
-    override fun artists() = ArtistCollection(database.getCollection<Artist>("artist"))
+    override fun artists() = ArtistCollection(database.getCollection("artist"))
 
-    override fun avatars() = AvatarCollection(database.getCollection<Avatar>("avatar"))
+    override fun avatars() = AvatarCollection(database.getCollection("avatar"))
 
-    override fun bookmarks() = BookmarkCollection(database.getCollection<Bookmark>("bookmark"))
+    override fun bookmarks() = BookmarkCollection(database.getCollection("bookmark"))
 
-    override fun likes() = LikeCollection(database.getCollection<Like>("like"))
+    override fun likes() = LikeCollection(database.getCollection("like"))
 
-    override fun categories() = CategoryCollection(database.getCollection<Category>("category"))
+    override fun categories() = CategoryCollection(database.getCollection("category"))
 
-    override fun tags() = TagCollection(database.getCollection<Tag>("tag"))
+    override fun tags() = TagCollection(database.getCollection("tag"))
 
-    override fun comments() = CommentCollection(database.getCollection<Comment>("insert"))
+    override fun comments() = CommentCollection(database.getCollection("insert"))
 
-    override fun followers() = FollowerCollection(database.getCollection<Follower>("follower"))
+    override fun followers() = FollowerCollection(database.getCollection("follower"))
 
-    override fun posts() = PostCollection(database.getCollection<Post>("post"))
+    override fun posts() = PostCollection(database.getCollection("post"))
 
-    override fun tagsInPosts() = TagInPostCollection(database.getCollection<TagInPost>("post_tag"))
+    override fun tagsInPosts() = TagInPostCollection(database.getCollection("post_tag"))
 
-    override fun categoriesInPosts() = CategoryInPostCollection(database.getCollection<CategoryInPost>("post_category"))
+    override fun categoriesInPosts() = CategoryInPostCollection(database.getCollection("post_category"))
 
-    override fun payments() = PaymentCollection(database.getCollection<Payment>("payment"))
+    override fun payments() = PaymentCollection(database.getCollection("payment"))
+
+    override fun virtualWallets() = VirtualWalletCollection(database.getCollection("virtual_wallet"))
+
+    override fun walletCards() = WalletCardCollection(database.getCollection("wallet_card"))
 }

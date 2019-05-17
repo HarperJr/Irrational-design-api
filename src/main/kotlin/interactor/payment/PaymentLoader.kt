@@ -1,16 +1,18 @@
 package interactor.payment
 
+import database.document.Artist
 import di.AppComponent
+import org.litote.kmongo.Id
 import response.PaymentResponse
 
 
 interface PaymentLoader {
 
     suspend fun requestPayment(
-        to: String,
+        senderId: Id<Artist>,
+        receiverId: Id<Artist>,
         amount: Double,
-        message: String,
-        initiator: String
+        message: String
     ): PaymentResponse
 
     suspend fun processPaymentCard(
