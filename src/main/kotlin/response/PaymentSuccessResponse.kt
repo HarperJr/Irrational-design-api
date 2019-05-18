@@ -1,7 +1,10 @@
 package response
 
+import database.document.Payment
+import org.litote.kmongo.Id
+
 data class PaymentSuccessResponse(
     override val status: String = "success",
-    var requestId: String,
+    var paymentId: Id<Payment>,
     var message: String
 ) : PaymentResponse()

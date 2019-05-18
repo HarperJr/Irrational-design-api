@@ -1,6 +1,7 @@
 package interactor.payment
 
 import database.document.Artist
+import database.document.Payment
 import di.AppComponent
 import org.litote.kmongo.Id
 import response.PaymentResponse
@@ -16,12 +17,12 @@ interface PaymentLoader {
     ): PaymentResponse
 
     suspend fun processPaymentCard(
-        requestId: String,
+        paymentId: Id<Payment>,
         csc: Long
     ): PaymentResponse
 
     suspend fun processPaymentWallet(
-        requestId: String
+        paymentId: Id<Payment>
     ): PaymentResponse
 
     companion object : PaymentLoader by INSTANCE

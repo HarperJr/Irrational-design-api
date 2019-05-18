@@ -28,7 +28,7 @@ fun Routing.paymentRouting() {
         post("/payment/process-payment-card") {
             val paymentData = call.receive<PaymentProcessRequest>()
             val response = PaymentLoader.processPaymentCard(
-                requestId = paymentData.requestId,
+                paymentId = paymentData.paymentId,
                 csc = paymentData.csc.toLong()
             )
             call.respond(response)
@@ -37,7 +37,7 @@ fun Routing.paymentRouting() {
         post("/payment/process-payment-wallet") {
             val paymentData = call.receive<PaymentProcessRequest>()
             val response = PaymentLoader.processPaymentWallet(
-                requestId = paymentData.requestId
+                paymentId = paymentData.paymentId
             )
             call.respond(response)
         }

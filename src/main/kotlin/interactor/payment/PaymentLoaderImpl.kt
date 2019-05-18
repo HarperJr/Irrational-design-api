@@ -6,10 +6,7 @@ import database.collection.VirtualWalletCollection
 import database.collection.WalletCardCollection
 import database.document.Artist
 import database.document.Payment
-import database.document.PaymentStatus
-import database.document.VirtualWallet
 import org.litote.kmongo.Id
-import response.PaymentAcceptResponse
 import response.PaymentErrorResponse
 import response.PaymentResponse
 import response.PaymentSuccessResponse
@@ -54,10 +51,10 @@ class PaymentLoaderImpl @Inject constructor(
     }
 
     override suspend fun processPaymentCard(
-        requestId: String,
+        paymentId: Id<Payment>,
         csc: Long
     ): PaymentResponse {
-        val payment = paymentCollection.findByRequestId(requestId)
+        val payment = paymentCollection.find(paymentId)
         val sender = artistCollection.find(payment!!.sender)!!
         val receiver = artistCollection.find(payment.receiver)!!
 
@@ -79,17 +76,16 @@ class PaymentLoaderImpl @Inject constructor(
         )
     }
 
-    override suspend fun processPaymentWallet(requestId: String): PaymentResponse {
+    override suspend fun processPaymentWallet(paymentId: Id<Payment>): PaymentResponse {
+        val payment = paymentCollection.find(paymentId)
+        val senderWallet = virtualWalletCollection.findByArtist(payment!!.sender)!!
+        val receiverWallet = virtualWalletCollection.findByArtist(payment.receiver)!!
 
-        val payment = paymentCollection.findByRequestId(requestId)
-        val sender = artistCollection.find(payment!!.sender)!!
-        val receiver = artistCollection.find(payment.receiver)!!
-
-        return if (sender.cash >= payment.amount) {
+        return if (senderWallet.cash >= payment.amount) {
 //            sender.cash -= payment.amount
 //            receiver.cash += payment.amount
             PaymentSuccessResponse(
-                requestId = requestId,
+                paymentId = paymentId,
                 message = "payment success"
             )
         } else {
