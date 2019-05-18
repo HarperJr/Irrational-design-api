@@ -9,5 +9,6 @@ data class PaymentAcceptResponse(
     override val status: String = "success",
     var paymentId: Id<Payment>,
     var walletId: Id<VirtualWallet>,
+    var availableCards: List<CardResponse>,
     var availableCash: Double
 ) : PaymentResponse()

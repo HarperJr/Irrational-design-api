@@ -5,11 +5,13 @@ import FileManager.ARTS_PATH
 import database.collection.*
 import database.document.*
 import database.transaction.Transaction
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import org.litote.kmongo.toId
 import response.*
+import utils.ApiException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -132,46 +134,44 @@ class PostLoaderImpl @Inject constructor(
 
     override suspend fun like(id: String, artistId: String, initial: Boolean) = coroutineScope {
         withContext(Dispatchers.IO) {
-            val post = postCollection.find(id.toId())
-            if (post == null) {
-                throw Exception("Unable to like nonexistent post")
-            } else {
-                val liked = likeCollection.liked(post.id, artistId.toId())
-                if (initial) {
-                    if (liked) throw Exception("Already liked")
-                    likeCollection.insert(
-                        Like(
-                            postId = id.toId(),
-                            artistId = artistId.toId()
-                        )
+            val post = postCollection.find(id.toId()) ?: throw ApiException(
+                statusCode = HttpStatusCode.BadRequest,
+                errorMessage = "Unable to bookmark nonexistent post"
+            )
+            val liked = likeCollection.liked(post.id, artistId.toId())
+            if (initial) {
+                if (liked) throw Exception("Already liked")
+                likeCollection.insert(
+                    Like(
+                        postId = id.toId(),
+                        artistId = artistId.toId()
                     )
-                } else {
-                    if (!liked) return@withContext
-                    likeCollection.deleteByArtist(post.id, artistId.toId())
-                }
+                )
+            } else {
+                if (!liked) return@withContext
+                likeCollection.deleteByArtist(post.id, artistId.toId())
             }
         }
     }
 
     override suspend fun bookmark(id: String, artistId: String, initial: Boolean) = coroutineScope {
         withContext(Dispatchers.IO) {
-            val post = postCollection.find(id.toId())
-            if (post == null) {
-                throw Exception("Unable to bookmark nonexistent post")
-            } else {
-                val bookmarked = bookmarkCollection.bookmarked(post.id, artistId.toId())
-                if (initial) {
-                    if (bookmarked) throw Exception("Already bookmarked")
-                    bookmarkCollection.insert(
-                        Bookmark(
-                            postId = id.toId(),
-                            artistId = artistId.toId()
-                        )
+            val post = postCollection.find(id.toId()) ?: throw ApiException(
+                statusCode = HttpStatusCode.BadRequest,
+                errorMessage = "Unable to bookmark nonexistent post"
+            )
+            val bookmarked = bookmarkCollection.bookmarked(post.id, artistId.toId())
+            if (initial) {
+                if (bookmarked) throw Exception("Already bookmarked")
+                bookmarkCollection.insert(
+                    Bookmark(
+                        postId = id.toId(),
+                        artistId = artistId.toId()
                     )
-                } else {
-                    if (!bookmarked) return@withContext
-                    bookmarkCollection.deleteByArtist(post.id, artistId.toId())
-                }
+                )
+            } else {
+                if (!bookmarked) return@withContext
+                bookmarkCollection.deleteByArtist(post.id, artistId.toId())
             }
         }
     }

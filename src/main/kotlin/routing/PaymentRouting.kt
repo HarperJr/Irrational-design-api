@@ -18,8 +18,7 @@ fun Routing.paymentRouting() {
             val paymentData = call.receive<PaymentRequest>()
             val response = PaymentLoader.requestPayment(
                 amount = paymentData.amount,
-                message = paymentData.message,
-                receiverId = paymentData.to.toId(),
+                receiverId = paymentData.to,
                 senderId = call.authPayload().artistId.toId()
             )
             call.respond(response)

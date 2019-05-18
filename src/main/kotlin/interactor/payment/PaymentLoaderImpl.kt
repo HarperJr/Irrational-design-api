@@ -6,10 +6,12 @@ import database.collection.VirtualWalletCollection
 import database.collection.WalletCardCollection
 import database.document.Artist
 import database.document.Payment
+import database.document.PaymentStatus
+import io.ktor.http.HttpStatusCode
 import org.litote.kmongo.Id
-import response.PaymentErrorResponse
-import response.PaymentResponse
-import response.PaymentSuccessResponse
+import response.*
+import utils.ApiException
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -24,75 +26,153 @@ class PaymentLoaderImpl @Inject constructor(
     override suspend fun requestPayment(
         senderId: Id<Artist>,
         receiverId: Id<Artist>,
-        amount: Double,
-        message: String
+        amount: Double
     ): PaymentResponse {
-        val senderWallet = virtualWalletCollection.findByArtist(senderId)!! //Опасно так делать!
-        val receiverWallet = virtualWalletCollection.findByArtist(receiverId)!! //Опасно так делать!
+        val senderWallet = virtualWalletCollection.findByArtist(senderId) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "Sender wallet not found"
+        )
 
-        val availableCard = walletCardCollection
+        val receiverWallet = virtualWalletCollection.findByArtist(receiverId) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "Receiver wallet not found"
+        )
+
+        val availableCards = walletCardCollection
             .findByWallet(senderWallet.id)
-            .firstOrNull { it.cash >= amount }
+            .filter { it.cash >= amount }
 
-        return when {
-            availableCard != null -> {
-                //Здесь ты ставишь флажок, что платишь картой, нет?
-                throw NotImplementedError()
-            }
-            senderWallet.cash >= amount -> {
-                //Здесь платим из кошелька напрямую
-                throw NotImplementedError()
-            }
-            else -> PaymentErrorResponse(
-                error = "payment_refused",
-                errorDescription = "not enough cash"
+        if (senderWallet.cash >= amount && availableCards.isNotEmpty()) {
+            val payment = Payment(
+                sender = senderId,
+                receiver = receiverId,
+                status = PaymentStatus.PENDING,
+                date = Date().time,
+                amount = amount
+            )
+            paymentCollection.insert(payment)// как получить id?
+            return PaymentAcceptResponse(
+                paymentId = payment.id,
+                availableCards = availableCards.map {
+                    CardResponse(
+                        id = it.id,
+                        availableCash = it.cash
+                    )
+                },
+                availableCash = senderWallet.cash,
+                walletId = receiverWallet.id
             )
         }
+
+        return PaymentErrorResponse(
+            error = "payment_refused",
+            errorDescription = "not enough cash"
+        )
     }
 
     override suspend fun processPaymentCard(
         paymentId: Id<Payment>,
         csc: Long
     ): PaymentResponse {
-        val payment = paymentCollection.find(paymentId)
-        val sender = artistCollection.find(payment!!.sender)!!
-        val receiver = artistCollection.find(payment.receiver)!!
+        val payment = paymentCollection.find(paymentId) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "Payment not found"
+        )
 
-//        sender.paymentSources.forEach {
-//            if (it.card.csc == csc) {
-//                it.card.cash -= payment.amount
-//                receiver.cash += payment.amount
-//                payment.status = true
-//
-//                return PaymentSuccessResponse(
-//                    requestId = requestId,
-//                    message = "payment success"
-//                )
-//            }
-//        }
-        return PaymentErrorResponse(
-            error = "payment_refused",
-            errorDescription = "there is some problem with payment"
+        if (payment.status == PaymentStatus.PENDING) return PaymentErrorResponse(
+            error = "payment_decline",
+            errorDescription = "payment already complited or rejected"
+        )
+
+        val senderWallet = virtualWalletCollection.findByArtist(payment.sender) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "Sender wallet not found"
+        )
+
+        val senderCard =
+            walletCardCollection.findByWallet(senderWallet.id).firstOrNull { it.csc == csc } ?: throw ApiException(
+                statusCode = HttpStatusCode.BadRequest,
+                errorMessage = "Card not found"
+            )
+
+        val receiver = artistCollection.find(payment.receiver) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "Receiver not found"
+        )
+
+        val receiverWallet = virtualWalletCollection.findByArtist(receiver.id) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "Receiver wallet not found"
+        )
+
+        senderCard.cash -= payment.amount
+        walletCardCollection.update(senderCard)
+
+        receiverWallet.cash += payment.amount
+        virtualWalletCollection.update(receiverWallet)
+
+        payment.status = PaymentStatus.COMPLETED
+        paymentCollection.update(payment)
+
+        return PaymentSuccessResponse(
+            paymentId = payment.id,
+            message = "Payment successfully applied"
         )
     }
 
     override suspend fun processPaymentWallet(paymentId: Id<Payment>): PaymentResponse {
-        val payment = paymentCollection.find(paymentId)
-        val senderWallet = virtualWalletCollection.findByArtist(payment!!.sender)!!
-        val receiverWallet = virtualWalletCollection.findByArtist(payment.receiver)!!
+        val payment = paymentCollection.find(paymentId) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "Payment not found"
+        )
 
-        return if (senderWallet.cash >= payment.amount) {
-//            sender.cash -= payment.amount
-//            receiver.cash += payment.amount
-            PaymentSuccessResponse(
-                paymentId = paymentId,
-                message = "payment success"
-            )
-        } else {
-            PaymentErrorResponse(
-                error = "payment_refused",
-                errorDescription = "not enough wallet cash"
-            )
-        }
+        val sender = artistCollection.find(payment.receiver) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "Receiver not found"
+        )
+
+        val senderWallet = virtualWalletCollection.findByArtist(sender.id) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "Receiver wallet not found"
+        )
+
+        val receiver = artistCollection.find(payment.receiver) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "Receiver not found"
+        )
+
+        val receiverWallet = virtualWalletCollection.findByArtist(receiver.id) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "Receiver wallet not found"
+        )
+
+        receiverWallet.cash -= payment.amount
+        virtualWalletCollection.update(senderWallet)
+
+        receiverWallet.cash += payment.amount
+        virtualWalletCollection.update(receiverWallet)
+
+        payment.status = PaymentStatus.COMPLETED
+        paymentCollection.update(payment)
+
+        return PaymentSuccessResponse(
+            paymentId = payment.id,
+            message = "Payment successfully applied"
+        )
+    }
+
+    override suspend fun rejectPayment(paymentId: Id<Payment>): PaymentResponse {
+        val payment = paymentCollection.find(paymentId) ?: throw ApiException(
+            statusCode = HttpStatusCode.NotFound,
+            errorMessage = "Payment not found"
+        )
+
+        payment.status = PaymentStatus.REJECTED
+        paymentCollection.update(payment)
+
+        return PaymentSuccessResponse(
+            paymentId = payment.id,
+            message = "Payment successfully rejected"
+        )
     }
 }

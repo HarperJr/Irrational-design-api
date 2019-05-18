@@ -12,8 +12,7 @@ interface PaymentLoader {
     suspend fun requestPayment(
         senderId: Id<Artist>,
         receiverId: Id<Artist>,
-        amount: Double,
-        message: String
+        amount: Double
     ): PaymentResponse
 
     suspend fun processPaymentCard(
@@ -22,6 +21,10 @@ interface PaymentLoader {
     ): PaymentResponse
 
     suspend fun processPaymentWallet(
+        paymentId: Id<Payment>
+    ): PaymentResponse
+
+    suspend fun rejectPayment(
         paymentId: Id<Payment>
     ): PaymentResponse
 
