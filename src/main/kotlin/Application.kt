@@ -6,11 +6,14 @@ import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
+import io.ktor.features.CORS
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.gson.GsonConverter
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.content.PartData
 import io.ktor.http.content.streamProvider
 import io.ktor.routing.Routing
@@ -21,10 +24,11 @@ import org.litote.kmongo.Id
 import org.litote.kmongo.toId
 import routing.*
 import session.initSession
+import java.time.Duration
 
 fun main() {
     embeddedServer(
-        Netty, 8080,
+        Netty, 8081,
         watchPaths = listOf("IrrationalDesign"),
         module = Application::module
     ).start()
@@ -46,6 +50,16 @@ fun Application.module() {
     install(CallLogging)
     install(ContentNegotiation) {
         register(ContentType.Application.Json, GsonConverter(gson))
+    }
+    install(CORS) {
+        method(HttpMethod.Options)
+        method(HttpMethod.Get)
+        method(HttpMethod.Post)
+        header(HttpHeaders.AccessControlAllowOrigin)
+        header(HttpHeaders.Authorization)
+        anyHost()
+        allowCredentials = true
+        maxAge = Duration.ofDays(1)
     }
     install(Authentication) { authenticate() }
     install(Sessions) { initSession() }

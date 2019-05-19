@@ -36,7 +36,7 @@ fun Routing.postRouting() {
     get("/posts/{filter}") {
         val filter = call.parameters["filter"]!!
         val from = call.arg<Int>("from") ?: 0
-        val to = call.arg<Int>("to") ?: 0
+        val to = call.arg<Int>("to") ?: 20
         try {
             call.respond(PostLoader.posts(from, to, filter))
         } catch (ex: ApiException) {
