@@ -28,7 +28,7 @@ import java.time.Duration
 
 fun main() {
     embeddedServer(
-        Netty, 8081,
+        Netty, 8080,
         watchPaths = listOf("IrrationalDesign"),
         module = Application::module
     ).start()

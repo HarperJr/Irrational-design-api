@@ -2,7 +2,6 @@ package database.collection.impl
 
 import database.collection.Collection
 import database.document.Document
-import org.bson.types.ObjectId
 import org.litote.kmongo.Id
 import org.litote.kmongo.`in`
 import org.litote.kmongo.coroutine.CoroutineCollection
@@ -12,7 +11,7 @@ open class DocumentCollection<T : Document<T>>(private val collection: Coroutine
 
     override suspend fun all(): List<T> = collection.find().toList()
 
-    override suspend fun find(id: Id<T>): T? = collection.findOneById(ObjectId(id.toString()))
+    override suspend fun find(id: Id<T>): T? = collection.findOne(Document<T>::id eq id)
 
     override suspend fun find(idRange: List<Id<T>>): List<T> {
         return collection.find(Document<T>::id `in` idRange).toList()

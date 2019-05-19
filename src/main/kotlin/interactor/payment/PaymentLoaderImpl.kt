@@ -42,7 +42,7 @@ class PaymentLoaderImpl @Inject constructor(
             .findByWallet(senderWallet.id)
             .filter { it.cash >= amount }
 
-        if (senderWallet.cash >= amount && availableCards.isNotEmpty()) {
+        if (senderWallet.cash >= amount || availableCards.isNotEmpty()) {
             val payment = Payment(
                 sender = senderId,
                 receiver = receiverId,
@@ -50,7 +50,7 @@ class PaymentLoaderImpl @Inject constructor(
                 date = Date().time,
                 amount = amount
             )
-            paymentCollection.insert(payment)// как получить id?
+            paymentCollection.insert(payment)
             return PaymentAcceptResponse(
                 paymentId = payment.id,
                 availableCards = availableCards.map {
@@ -79,7 +79,7 @@ class PaymentLoaderImpl @Inject constructor(
             errorMessage = "Payment not found"
         )
 
-        if (payment.status == PaymentStatus.PENDING) return PaymentErrorResponse(
+        if (payment.status != PaymentStatus.PENDING) return PaymentErrorResponse(
             error = "payment_decline",
             errorDescription = "payment already complited or rejected"
         )
@@ -126,7 +126,12 @@ class PaymentLoaderImpl @Inject constructor(
             errorMessage = "Payment not found"
         )
 
-        val sender = artistCollection.find(payment.receiver) ?: throw ApiException(
+        if (payment.status != PaymentStatus.PENDING) return PaymentErrorResponse(
+            error = "payment_decline",
+            errorDescription = "payment already complited or rejected"
+        )
+
+        val sender = artistCollection.find(payment.sender) ?: throw ApiException(
             statusCode = HttpStatusCode.BadRequest,
             errorMessage = "Receiver not found"
         )
@@ -146,7 +151,7 @@ class PaymentLoaderImpl @Inject constructor(
             errorMessage = "Receiver wallet not found"
         )
 
-        receiverWallet.cash -= payment.amount
+        senderWallet.cash -= payment.amount
         virtualWalletCollection.update(senderWallet)
 
         receiverWallet.cash += payment.amount
