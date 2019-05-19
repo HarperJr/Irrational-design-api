@@ -13,16 +13,16 @@ open class DocumentCollection<T : Document<T>>(private val collection: Coroutine
 
     override suspend fun find(id: Id<T>): T? = collection.findOne(Document<T>::id eq id)
 
-    override suspend fun find(idRange: List<Id<T>>): List<T> {
-        return collection.find(Document<T>::id `in` idRange).toList()
+    override suspend fun find(ids: List<Id<T>>): List<T> {
+        return collection.find(Document<T>::id `in` ids).toList()
     }
 
     override suspend fun delete(id: Id<T>) {
-        collection.deleteOneById(id)
+        collection.deleteOne(Document<T>::id eq id)
     }
 
     override suspend fun delete(ids: List<Id<T>>) {
-        collection.deleteMany(Document<T>::id eq ids)
+        collection.deleteMany(Document<T>::id `in` ids)
     }
 
     override suspend fun update(t: T) {
