@@ -4,11 +4,10 @@ import database.collection.ArtistCollection
 import database.collection.PaymentCollection
 import database.collection.VirtualWalletCollection
 import database.collection.WalletCardCollection
-import database.document.Artist
-import database.document.Payment
-import database.document.PaymentStatus
+import database.document.*
 import io.ktor.http.HttpStatusCode
 import org.litote.kmongo.Id
+import request.CardRequest
 import response.*
 import utils.ApiException
 import java.util.*
@@ -22,12 +21,53 @@ class PaymentLoaderImpl @Inject constructor(
     private val virtualWalletCollection: VirtualWalletCollection,
     private var walletCardCollection: WalletCardCollection
 ) : PaymentLoader {
+    override suspend fun addCard(cardData: CardRequest): StatusResponse {
+
+        val wallet = virtualWalletCollection.findByArtist(cardData.owner)
+
+        if (wallet == null) {
+            addWallet(cardData.owner)
+        }
+
+        walletCardCollection.insert(
+            WalletCard(
+                walletId = wallet!!.id,
+                csc = cardData.csc,
+                cash = 0.0,
+                panFragment = cardData.panFragment,
+                type = CardType.by(cardData.type)
+            )
+        )
+
+        return SuccessResponse(
+            message = "Card successfully added"
+        )
+    }
+
+    override suspend fun addWallet(owner: Id<Artist>): StatusResponse {
+
+        if (virtualWalletCollection.findByArtist(owner) != null) return PaymentErrorResponse(
+            error = "already_exist",
+            errorDescription = "owner already have registered wallet"
+        )
+
+        virtualWalletCollection.insert(
+            VirtualWallet(
+                artistId = owner,
+                cash = 0.0
+            )
+        )
+
+        return SuccessResponse(
+            message = "Wallet successfully added"
+        )
+    }
 
     override suspend fun requestPayment(
         senderId: Id<Artist>,
         receiverId: Id<Artist>,
         amount: Double
-    ): PaymentResponse {
+    ): StatusResponse {
         val senderWallet = virtualWalletCollection.findByArtist(senderId) ?: throw ApiException(
             statusCode = HttpStatusCode.BadRequest,
             errorMessage = "Sender wallet not found"
@@ -73,7 +113,7 @@ class PaymentLoaderImpl @Inject constructor(
     override suspend fun processPaymentCard(
         paymentId: Id<Payment>,
         csc: Long
-    ): PaymentResponse {
+    ): StatusResponse {
         val payment = paymentCollection.find(paymentId) ?: throw ApiException(
             statusCode = HttpStatusCode.BadRequest,
             errorMessage = "Payment not found"
@@ -81,7 +121,7 @@ class PaymentLoaderImpl @Inject constructor(
 
         if (payment.status != PaymentStatus.PENDING) return PaymentErrorResponse(
             error = "payment_decline",
-            errorDescription = "payment already complited or rejected"
+            errorDescription = "payment already completed or rejected"
         )
 
         val senderWallet = virtualWalletCollection.findByArtist(payment.sender) ?: throw ApiException(
@@ -120,7 +160,7 @@ class PaymentLoaderImpl @Inject constructor(
         )
     }
 
-    override suspend fun processPaymentWallet(paymentId: Id<Payment>): PaymentResponse {
+    override suspend fun processPaymentWallet(paymentId: Id<Payment>): StatusResponse {
         val payment = paymentCollection.find(paymentId) ?: throw ApiException(
             statusCode = HttpStatusCode.BadRequest,
             errorMessage = "Payment not found"
@@ -166,7 +206,7 @@ class PaymentLoaderImpl @Inject constructor(
         )
     }
 
-    override suspend fun rejectPayment(paymentId: Id<Payment>): PaymentResponse {
+    override suspend fun rejectPayment(paymentId: Id<Payment>): StatusResponse {
         val payment = paymentCollection.find(paymentId) ?: throw ApiException(
             statusCode = HttpStatusCode.NotFound,
             errorMessage = "Payment not found"

@@ -23,5 +23,10 @@ data class WalletCard(
 ) : Document<WalletCard>()
 
 enum class CardType {
-    VISA, MASTER_CARD, MAESTRO, AMERICAN_EXPRESS, MIR
+    VISA, MASTER_CARD, MAESTRO, AMERICAN_EXPRESS, MIR;
+
+    companion object {
+        fun by(ordinal: Int) = values().firstOrNull { it.ordinal == ordinal }
+            ?: throw IllegalArgumentException("Type with ordinal $ordinal is null")
+    }
 }

@@ -7,4 +7,4 @@ data class PaymentSuccessResponse(
     override val status: String = "success",
     var paymentId: Id<Payment>,
     var message: String
-) : PaymentResponse()
+) : StatusResponse()

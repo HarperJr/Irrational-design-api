@@ -11,4 +11,4 @@ data class PaymentAcceptResponse(
     var walletId: Id<VirtualWallet>,
     var availableCards: List<CardResponse>,
     var availableCash: Double
-) : PaymentResponse()
+) : StatusResponse()

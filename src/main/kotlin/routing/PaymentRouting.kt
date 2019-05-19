@@ -9,6 +9,7 @@ import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.post
 import org.litote.kmongo.toId
+import request.CardRequest
 import request.PaymentProcessRequest
 import request.PaymentRequest
 
@@ -38,6 +39,25 @@ fun Routing.paymentRouting() {
             val response = PaymentLoader.processPaymentWallet(
                 paymentId = paymentData.paymentId
             )
+            call.respond(response)
+        }
+
+        post("/payment/reject-payment") {
+            val paymentData = call.receive<PaymentProcessRequest>()
+            val response = PaymentLoader.rejectPayment(
+                paymentId = paymentData.paymentId
+            )
+            call.respond(response)
+        }
+
+        post("/payment/add-card") {
+            val cardData = call.receive<CardRequest>()
+            val response = PaymentLoader.addCard(cardData = cardData)
+            call.respond(response)
+        }
+
+        post("/payment/add-wallet") {
+            val response = PaymentLoader.addWallet(owner = call.receive())
             call.respond(response)
         }
     }

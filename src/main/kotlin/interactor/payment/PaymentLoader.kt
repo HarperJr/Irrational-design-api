@@ -4,7 +4,8 @@ import database.document.Artist
 import database.document.Payment
 import di.AppComponent
 import org.litote.kmongo.Id
-import response.PaymentResponse
+import request.CardRequest
+import response.StatusResponse
 
 
 interface PaymentLoader {
@@ -13,20 +14,28 @@ interface PaymentLoader {
         senderId: Id<Artist>,
         receiverId: Id<Artist>,
         amount: Double
-    ): PaymentResponse
+    ): StatusResponse
 
     suspend fun processPaymentCard(
         paymentId: Id<Payment>,
         csc: Long
-    ): PaymentResponse
+    ): StatusResponse
 
     suspend fun processPaymentWallet(
         paymentId: Id<Payment>
-    ): PaymentResponse
+    ): StatusResponse
 
     suspend fun rejectPayment(
         paymentId: Id<Payment>
-    ): PaymentResponse
+    ): StatusResponse
+
+    suspend fun addCard(
+        cardData: CardRequest
+    ): StatusResponse
+
+    suspend fun addWallet(
+        owner: Id<Artist>
+    ): StatusResponse
 
     companion object : PaymentLoader by INSTANCE
 }

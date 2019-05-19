@@ -1,5 +1,5 @@
 package response
 
-abstract class PaymentResponse {
+abstract class StatusResponse {
     abstract val status: String
 }
