@@ -16,3 +16,7 @@ data class PostResponse(
     var categories: List<String>,
     var date: Long
 )
+
+data class LikedResponse(
+    var liked: Boolean
+)

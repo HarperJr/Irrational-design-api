@@ -7,7 +7,6 @@ import gson
 import interactor.post.PostLoader
 import io.ktor.application.call
 import io.ktor.auth.authenticate
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.readAllParts
 import io.ktor.request.receiveMultipart
@@ -24,8 +23,8 @@ import java.util.*
 
 fun Routing.postRouting() {
     get("/post/{id}") {
-        val postId = call.parameters["id"]!!
         try {
+            val postId = call.parameters["id"]!!
             val post = PostLoader.post(call.authPayload().artistId, postId)
             call.respond(gson.toJson(post))
         } catch (ex: ApiException) {
@@ -34,10 +33,10 @@ fun Routing.postRouting() {
     }
 
     get("/posts/{filter}") {
-        val filter = call.parameters["filter"]!!
-        val from = call.arg<Int>("from") ?: 0
-        val to = call.arg<Int>("to") ?: 20
         try {
+            val filter = call.parameters["filter"]!!
+            val from = call.arg<Int>("from") ?: 0
+            val to = call.arg<Int>("to") ?: 20
             call.respond(PostLoader.posts(from, to, filter))
         } catch (ex: ApiException) {
             call.respond(ex.statusCode, ex.errorMessage)
@@ -45,19 +44,36 @@ fun Routing.postRouting() {
     }
 
     authenticate {
+        get("post/{id}/liked") {
+            try {
+                val postId = call.parameters["id"]!!
+                call.respond(
+                    PostLoader.liked(
+                        call.authPayload().artistId,
+                        postId
+                    )
+                )
+            } catch (ex: ApiException) {
+                call.respond(ex.statusCode, ex.errorMessage)
+            }
+        }
+
         post("/upload") {
             try {
                 val multipart = call.receiveMultipart()
                 with(multipart.readAllParts()) {
-                    val postBody = find { it.contentType == ContentType.Application.Json }
-                        ?: throw ApiException(HttpStatusCode.BadRequest, "No post json provided")
+                    val postBody = find { body -> body.name.equals("post-part") }
+                        ?: throw ApiException(HttpStatusCode.BadRequest, "No post part provided")
                     val post = gson.fromJson(postBody.read(), PostRequest::class.java)
+                    val rawImages = filter { body -> body.name?.startsWith("image") ?: false }
+                        .map { body -> body.readBytes() }
 
-                    val rawImages = filter {
-                        it.contentType == ContentType.Image.JPEG ||
-                                it.contentType == ContentType.Image.PNG
-                    }.map { it.readBytes() }
-                    if (rawImages.isEmpty()) throw ApiException(HttpStatusCode.BadRequest, "Now images provided")
+                    if (rawImages.isEmpty()) {
+                        throw ApiException(
+                            HttpStatusCode.BadRequest,
+                            "No images parts provided, at least one is required"
+                        )
+                    }
 
                     PostLoader.upload(
                         Post(
@@ -78,7 +94,7 @@ fun Routing.postRouting() {
             }
         }
 
-        post("/like/{id}") {
+        post("post/{id}/like") {
             val postId = call.parameters["id"]!!
             try {
                 val initial = call.arg<Boolean>("initial")
@@ -90,7 +106,7 @@ fun Routing.postRouting() {
             }
         }
 
-        post("/bookmark/{id}") {
+        post("post/{id}/bookmark") {
             val postId = call.parameters["id"]!!
             try {
                 val initial = call.arg<Boolean>("initial")

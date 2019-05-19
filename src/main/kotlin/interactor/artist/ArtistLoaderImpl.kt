@@ -10,8 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import org.litote.kmongo.toId
-import response.ArtistResponse
-import response.AvatarResponse
+import response.*
 import javax.inject.Inject
 
 class ArtistLoaderImpl @Inject constructor(
@@ -51,6 +50,50 @@ class ArtistLoaderImpl @Inject constructor(
     override suspend fun find(id: String): Artist? = coroutineScope {
         withContext(Dispatchers.IO) {
             artistCollection.find(id.toId())
+        }
+    }
+
+    override suspend fun followers(artistId: String): FollowersResponse = coroutineScope {
+        withContext(Dispatchers.IO) {
+            FollowersResponse(
+                followerCollection.followers(artistId.toId())
+                    .map { follower ->
+                        val artist = artistCollection.find(follower.artistId)!!
+                        val avatar = artist.avatarId?.let { avatarCollection.find(it) }
+                        ArtistResponse(
+                            id = artist.id,
+                            name = artist.name,
+                            followed = false,
+                            email = artist.email,
+                            avatar = avatar?.let { AvatarResponse(it.link) }
+                        )
+                    }
+            )
+        }
+    }
+
+    override suspend fun follows(artistId: String): FollowsResponse = coroutineScope {
+        withContext(Dispatchers.IO) {
+            FollowsResponse(
+                followerCollection.follows(artistId.toId())
+                    .map { follower ->
+                        val artist = artistCollection.find(follower.artistId)!!
+                        val avatar = artist.avatarId?.let { avatarCollection.find(it) }
+                        ArtistResponse(
+                            id = artist.id,
+                            name = artist.name,
+                            followed = false,
+                            email = artist.email,
+                            avatar = avatar?.let { AvatarResponse(it.link) }
+                        )
+                    }
+            )
+        }
+    }
+
+    override suspend fun followed(artistId: String, id: String): FollowedResponse = coroutineScope {
+        withContext(Dispatchers.IO) {
+            FollowedResponse(followerCollection.followed(id.toId(), artistId.toId()))
         }
     }
 

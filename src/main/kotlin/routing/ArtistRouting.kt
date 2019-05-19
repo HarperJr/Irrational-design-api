@@ -14,15 +14,47 @@ import utils.ApiException
 
 fun Routing.artistRouting() {
     get("/artist/{id}") {
-        val artistId = call.parameters["id"]!!
         try {
+            val artistId = call.parameters["id"]!!
             call.respond(ArtistLoader.artist(artistId))
         } catch (ex: ApiException) {
             call.respond(ex.statusCode, ex.errorMessage)
         }
     }
 
+    get("/artist/{id}/followers") {
+        try {
+            val artistId = call.parameters["id"]!!
+            call.respond(ArtistLoader.followers(artistId))
+        } catch (ex: ApiException) {
+            call.respond(ex.statusCode, ex.errorMessage)
+        }
+    }
+
+    get("/artist/{id}/follows") {
+        try {
+            val artistId = call.parameters["id"]!!
+            call.respond(ArtistLoader.follows(artistId))
+        } catch (ex: ApiException) {
+            call.respond(ex.statusCode, ex.errorMessage)
+        }
+    }
+
     authenticate {
+        get("artist/{id}/followed") {
+            try {
+                val artistId = call.parameters["id"]!!
+                call.respond(
+                    ArtistLoader.followed(
+                        call.authPayload().artistId,
+                        artistId
+                    )
+                )
+            } catch (ex: ApiException) {
+                call.respond(ex.statusCode, ex.errorMessage)
+            }
+        }
+
         post("/artist/{id}/follow") {
             val artistId = call.parameters["id"]!!
             try {

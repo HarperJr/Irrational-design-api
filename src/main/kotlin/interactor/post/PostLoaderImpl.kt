@@ -41,7 +41,7 @@ class PostLoaderImpl @Inject constructor(
             val arts = images.mapIndexed { index, image ->
                 val path = "/${post.title}/$index" //path will be like /arts/{post_name}/0..n
                 FileManager.save(ARTS_PATH.resolve(path), image)
-                Art(post.id, "${post.title}_$index", path) //todo change art name
+                Art(post.id, path)
             }
             val categoriesInPost = categories.map {
                 val category = categoryCollection.findByName(it)
@@ -57,6 +57,12 @@ class PostLoaderImpl @Inject constructor(
             categoryInPostCollection.insert(categoriesInPost)
             tagInPostCollection.insert(tagsInPost)
             artCollection.insert(arts)
+        }
+    }
+
+    override suspend fun liked(artistId: String, id: String): LikedResponse = coroutineScope {
+        withContext(Dispatchers.IO) {
+            LikedResponse(likeCollection.liked(id.toId(), artistId.toId()))
         }
     }
 
@@ -83,7 +89,7 @@ class PostLoaderImpl @Inject constructor(
                     email = artist.email,
                     avatar = avatar?.let { AvatarResponse(it.link) }
                 ),
-                arts = arts.map { ArtResponse(it.link, it.name) },
+                arts = arts.map { ArtResponse(it.link) },
                 title = post.title,
                 subtitle = post.subtitle,
                 description = post.description,

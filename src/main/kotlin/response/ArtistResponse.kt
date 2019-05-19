@@ -10,3 +10,15 @@ data class ArtistResponse(
     var email: String,
     var avatar: AvatarResponse?
 )
+
+data class FollowersResponse(
+    var followers: List<ArtistResponse>
+)
+
+data class FollowsResponse(
+    var follows: List<ArtistResponse>
+)
+
+data class FollowedResponse(
+    var followed: Boolean
+)
