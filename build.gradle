@@ -20,7 +20,6 @@ jar {
         attributes 'Main-Class': 'ApplicationKt'
     }
 
-    // NEW LINE HERE !!!
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 

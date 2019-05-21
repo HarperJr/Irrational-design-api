@@ -8,5 +8,6 @@ data class Artist(
     var password: String,
     var email: String,
     var registered: Long = Date().time,
-    var avatarId: Id<Avatar>? = null
+    var avatarId: Id<Avatar>? = null,
+    var roleId: Id<Role>
 ) : Document<Artist>()

@@ -15,6 +15,8 @@ interface Database {
 
     fun artists(): ArtistCollection
 
+    fun roles(): RoleCollection
+
     fun avatars(): AvatarCollection
 
     fun bookmarks(): BookmarkCollection

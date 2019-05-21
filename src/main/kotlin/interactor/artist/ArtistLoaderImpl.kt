@@ -4,8 +4,11 @@ import PwdEncryptor
 import database.collection.ArtistCollection
 import database.collection.AvatarCollection
 import database.collection.FollowerCollection
+import database.collection.RoleCollection
 import database.document.Artist
 import database.document.Follower
+import database.document.Role
+import database.document.RoleType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
@@ -16,7 +19,8 @@ import javax.inject.Inject
 class ArtistLoaderImpl @Inject constructor(
     private val artistCollection: ArtistCollection,
     private val avatarCollection: AvatarCollection,
-    private val followerCollection: FollowerCollection
+    private val followerCollection: FollowerCollection,
+    private val roleCollection: RoleCollection
 ) : ArtistLoader {
 
     override suspend fun artist(id: String): ArtistResponse = coroutineScope {
@@ -100,11 +104,13 @@ class ArtistLoaderImpl @Inject constructor(
     override suspend fun insert(name: String, password: String, email: String) = coroutineScope {
         withContext(Dispatchers.IO) {
             if (artistCollection.findByName(name) == null) {
+                val roleId = roleCollection.findByType(RoleType.USER)?.id ?: throw IllegalStateException("Role doesnt exist")
                 artistCollection.insert(
                     Artist(
                         name = name,
                         password = PwdEncryptor.hash(password),
-                        email = email
+                        email = email,
+                        roleId = roleId
                     )
                 )
             } else throw Exception("Invalid arguments")

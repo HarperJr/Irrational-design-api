@@ -2,20 +2,20 @@ import com.auth0.jwt.interfaces.Payload
 import com.google.gson.*
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
+import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
-import io.ktor.features.CORS
-import io.ktor.features.CallLogging
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.DefaultHeaders
+import io.ktor.features.*
 import io.ktor.gson.GsonConverter
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
 import io.ktor.http.content.streamProvider
+import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -24,6 +24,7 @@ import org.litote.kmongo.Id
 import org.litote.kmongo.toId
 import routing.*
 import session.initSession
+import utils.ApiException
 import java.time.Duration
 
 fun main() {
@@ -69,6 +70,14 @@ fun Application.module() {
         artistRouting()
         commentRouting()
         paymentRouting()
+    }
+    install(StatusPages) {
+        exception<ApiException> { ex ->
+            call.respond(ex.statusCode, ex.errorMessage)
+        }
+        exception<Exception> { ex ->
+            call.respond(HttpStatusCode.BadRequest, ex.message ?: "Unhandled error by passing arguments")
+        }
     }
 }
 

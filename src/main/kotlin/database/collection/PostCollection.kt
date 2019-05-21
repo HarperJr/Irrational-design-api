@@ -34,7 +34,7 @@ class PostCollection(private val collection: CoroutineCollection<Post>) :
                 foreignField = "postId",
                 newAs = "like"
             ),
-            unwind("rated"),
+            unwind("like"),
             group(Post::id)
         ).toList()
 

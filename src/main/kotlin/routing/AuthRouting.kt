@@ -29,12 +29,8 @@ fun Routing.authRouting() {
     post("/register") {
         val body = call.receive<String>()
         val form = gson.fromJson(body, RegisterRequest::class.java)
-        try {
-            ArtistLoader.insert(form.name, form.password, form.email)
-            call.respond(HttpStatusCode.OK, "Successfully registered")
-        } catch (ex: Exception) {
-            call.respond(HttpStatusCode.Gone, "User with same name or email already exists")
-        }
+        ArtistLoader.insert(form.name, form.password, form.email)
+        call.respond(HttpStatusCode.OK, "Successfully registered")
     }
 }
 

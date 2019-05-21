@@ -22,6 +22,10 @@ class CollectionsModule {
 
     @Provides
     @Singleton
+    fun provideRoleCollection(database: Database) = database.roles()
+
+    @Provides
+    @Singleton
     fun provideAvatarCollection(database: Database) = database.avatars()
 
     @Provides

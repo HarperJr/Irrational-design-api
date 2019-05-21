@@ -41,6 +41,8 @@ class MongoDatabase(databaseName: String) : Database {
 
     override fun artists() = ArtistCollection(database.getCollection("artist"))
 
+    override fun roles() = RoleCollection(database.getCollection("role"))
+
     override fun avatars() = AvatarCollection(database.getCollection("avatar"))
 
     override fun bookmarks() = BookmarkCollection(database.getCollection("bookmark"))

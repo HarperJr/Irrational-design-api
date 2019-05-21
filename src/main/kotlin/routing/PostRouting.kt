@@ -23,99 +23,77 @@ import java.util.*
 
 fun Routing.postRouting() {
     get("/post/{id}") {
-        try {
-            val postId = call.parameters["id"]!!
-            val post = PostLoader.post(call.authPayload().artistId, postId)
-            call.respond(gson.toJson(post))
-        } catch (ex: ApiException) {
-            call.respond(ex.statusCode, ex.errorMessage)
-        }
+        val postId = call.parameters["id"]!!
+        val post = PostLoader.post(call.authPayload().artistId, postId)
+        call.respond(gson.toJson(post))
     }
 
     get("/posts/{filter}") {
-        try {
-            val filter = call.parameters["filter"]!!
-            val from = call.arg<Int>("from") ?: 0
-            val to = call.arg<Int>("to") ?: 20
-            call.respond(PostLoader.posts(from, to, filter))
-        } catch (ex: ApiException) {
-            call.respond(ex.statusCode, ex.errorMessage)
-        }
+
+        val filter = call.parameters["filter"]!!
+        val from = call.arg<Int>("from") ?: 0
+        val to = call.arg<Int>("to") ?: 20
+        call.respond(PostLoader.posts(from, to, filter))
+
     }
 
     authenticate {
         get("post/{id}/liked") {
-            try {
-                val postId = call.parameters["id"]!!
-                call.respond(
-                    PostLoader.liked(
-                        call.authPayload().artistId,
-                        postId
-                    )
+            val postId = call.parameters["id"]!!
+            call.respond(
+                PostLoader.liked(
+                    call.authPayload().artistId,
+                    postId
                 )
-            } catch (ex: ApiException) {
-                call.respond(ex.statusCode, ex.errorMessage)
-            }
+            )
         }
 
         post("/upload") {
-            try {
-                val multipart = call.receiveMultipart()
-                with(multipart.readAllParts()) {
-                    val postBody = find { body -> body.name.equals("post-part") }
-                        ?: throw ApiException(HttpStatusCode.BadRequest, "No post part provided")
-                    val post = gson.fromJson(postBody.read(), PostRequest::class.java)
-                    val rawImages = filter { body -> body.name?.startsWith("image") ?: false }
-                        .map { body -> body.readBytes() }
+            val multipart = call.receiveMultipart()
+            with(multipart.readAllParts()) {
+                val postBody = find { body -> body.name.equals("post-part") }
+                    ?: throw ApiException(HttpStatusCode.BadRequest, "No post part provided")
+                val post = gson.fromJson(postBody.read(), PostRequest::class.java)
+                val rawImages = filter { body -> body.name?.startsWith("image") ?: false }
+                    .map { body -> body.readBytes() }
 
-                    if (rawImages.isEmpty()) {
-                        throw ApiException(
-                            HttpStatusCode.BadRequest,
-                            "No images parts provided, at least one is required"
-                        )
-                    }
-
-                    PostLoader.upload(
-                        Post(
-                            artistId = call.authPayload().artistId.toId(),
-                            title = post.title,
-                            subtitle = post.subtitle,
-                            description = post.description,
-                            date = Date().time
-                        ),
-                        categories = post.categories,
-                        tags = post.tags,
-                        images = rawImages
+                if (rawImages.isEmpty()) {
+                    throw ApiException(
+                        HttpStatusCode.BadRequest,
+                        "No images parts provided, at least one is required"
                     )
                 }
-                call.respond(HttpStatusCode.OK, "Post successfully added")
-            } catch (ex: ApiException) {
-                call.respond(ex.statusCode, ex.errorMessage)
+
+                PostLoader.upload(
+                    Post(
+                        artistId = call.authPayload().artistId.toId(),
+                        title = post.title,
+                        subtitle = post.subtitle,
+                        description = post.description,
+                        date = Date().time
+                    ),
+                    categories = post.categories,
+                    tags = post.tags,
+                    images = rawImages
+                )
             }
+            call.respond(HttpStatusCode.OK, "Post successfully added")
         }
 
         post("post/{id}/like") {
             val postId = call.parameters["id"]!!
-            try {
-                val initial = call.arg<Boolean>("initial")
-                    ?: throw ApiException(HttpStatusCode.BadRequest, "Argument <initial: Boolean> is required")
-                PostLoader.like(postId, call.authPayload().artistId, initial)
-                call.respond(HttpStatusCode.OK)
-            } catch (ex: ApiException) {
-                call.respond(ex.statusCode, ex.errorMessage)
-            }
+            val initial = call.arg<Boolean>("initial")
+                ?: throw ApiException(HttpStatusCode.BadRequest, "Argument <initial: Boolean> is required")
+            PostLoader.like(postId, call.authPayload().artistId, initial)
+            call.respond(HttpStatusCode.OK)
         }
 
         post("post/{id}/bookmark") {
             val postId = call.parameters["id"]!!
-            try {
-                val initial = call.arg<Boolean>("initial")
-                    ?: throw ApiException(HttpStatusCode.BadRequest, "Argument <initial: Boolean> is required")
-                PostLoader.bookmark(postId, call.authPayload().artistId, initial)
-                call.respond(HttpStatusCode.OK)
-            } catch (ex: ApiException) {
-                call.respond(ex.statusCode, ex.errorMessage)
-            }
+            val initial = call.arg<Boolean>("initial")
+                ?: throw ApiException(HttpStatusCode.BadRequest, "Argument <initial: Boolean> is required")
+            PostLoader.bookmark(postId, call.authPayload().artistId, initial)
+            call.respond(HttpStatusCode.OK)
         }
     }
 }

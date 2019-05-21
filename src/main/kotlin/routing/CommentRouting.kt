@@ -11,32 +11,23 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
 import request.CommentRequest
-import utils.ApiException
 
 fun Routing.commentRouting() {
     get("/post/{id}/comments") {
         val postId = call.parameters["post_id"]!!
-        try {
-            call.respond(CommentLoader.comments(postId))
-        } catch (ex: ApiException) {
-            call.respond(ex.statusCode, ex.errorMessage)
-        }
+        call.respond(CommentLoader.comments(postId))
     }
 
     authenticate {
         post("post/comment") {
             val comment = call.receive<CommentRequest>()
-            try {
-                CommentLoader.insert(
-                    postId = comment.postId,
-                    author = call.authPayload().artistId,
-                    content = comment.content
-                )
-                //We need to respond with the new insert
-                call.respond(HttpStatusCode.OK)
-            } catch (ex: ApiException) {
-                call.respond(ex.statusCode, ex.errorMessage)
-            }
+            CommentLoader.insert(
+                postId = comment.postId,
+                author = call.authPayload().artistId,
+                content = comment.content
+            )
+            //We need to respond with the new insert
+            call.respond(HttpStatusCode.OK)
         }
     }
 }
