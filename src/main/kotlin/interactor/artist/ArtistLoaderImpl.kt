@@ -37,6 +37,8 @@ class ArtistLoaderImpl @Inject constructor(
                     name = artist.name,
                     email = artist.email,
                     followed = false,
+                    followers = followerCollection.followers(artist.id).count(),
+                    follows = followerCollection.follows(artist.id).count(),
                     id = artist.id
                 )
             }
@@ -68,6 +70,8 @@ class ArtistLoaderImpl @Inject constructor(
                             id = artist.id,
                             name = artist.name,
                             followed = false,
+                            followers = followerCollection.followers(artist.id).count(),
+                            follows = followerCollection.follows(artist.id).count(),
                             email = artist.email,
                             avatar = avatar?.let { AvatarResponse(it.link) }
                         )
@@ -87,6 +91,8 @@ class ArtistLoaderImpl @Inject constructor(
                             id = artist.id,
                             name = artist.name,
                             followed = false,
+                            followers = followerCollection.followers(artist.id).count(),
+                            follows = followerCollection.follows(artist.id).count(),
                             email = artist.email,
                             avatar = avatar?.let { AvatarResponse(it.link) }
                         )
