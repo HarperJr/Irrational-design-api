@@ -3,6 +3,7 @@ package routing
 import gson
 import interactor.artist.ArtistLoader
 import io.ktor.application.call
+import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -31,6 +32,12 @@ fun Routing.authRouting() {
         val form = gson.fromJson(body, RegisterRequest::class.java)
         ArtistLoader.insert(form.name, form.password, form.email)
         call.respond(HttpStatusCode.OK, "Successfully registered")
+    }
+
+    authenticate {
+        post("/change-pass") {
+
+        }
     }
 }
 
