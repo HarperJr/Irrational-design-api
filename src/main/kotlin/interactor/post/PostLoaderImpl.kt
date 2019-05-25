@@ -41,7 +41,7 @@ class PostLoaderImpl @Inject constructor(
             val arts = images.mapIndexed { index, image ->
                 val name = "${post.title}/$index" //path will be like /arts/{post_name}/0..n
                 FileManager.save(FileManager.artsFolder(), name, image)
-                Art(post.id, Paths.get(FileManager.ARTS).resolve(name).toString())
+                Art(post.id, name)
             }
             val categoriesInPost = categories.map {
                 val category = categoryCollection.findByName(it)

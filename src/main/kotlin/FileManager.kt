@@ -1,9 +1,11 @@
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import java.awt.Image
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
+import javax.imageio.ImageIO
 
 object FileManager {
     const val ARTS = "arts"
@@ -15,7 +17,7 @@ object FileManager {
                 .let { path ->
                     val file = File(path.toUri())
                     if (!file.exists()) {
-                        file.mkdirs()
+                        file.parentFile.mkdirs()
                         file.createNewFile()
                     }
                     file.outputStream().use { it.write(source) }

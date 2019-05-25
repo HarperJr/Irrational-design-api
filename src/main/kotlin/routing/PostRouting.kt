@@ -32,12 +32,15 @@ fun Routing.postRouting() {
     }
 
     get("/posts/{filter}") {
-
         val filter = call.parameters["filter"]!!
         val from = call.arg<Int>("from") ?: 0
         val to = call.arg<Int>("to") ?: 20
         call.respond(PostLoader.posts(from, to, filter))
 
+    }
+
+    get("/categories") {
+        call.respond(PostLoader.categories())
     }
 
     authenticate {
