@@ -103,7 +103,9 @@ fun Routing.postRouting() {
         }
     }
 
-    static(FileManager.ARTS) {
+    static(ARTS) {
         staticRootFolder = FileManager.artsFolder()
     }
 }
+
+private const val ARTS = "arts"

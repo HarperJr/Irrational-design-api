@@ -14,6 +14,8 @@ object JwtConfig {
     private val validityInMs = Duration.ofHours(10).toMillis() // 10 hours
     private val algorithm = Algorithm.HMAC512(secret)
 
+    const val ARTIST_ID_CLAIM = "id"
+
     val verifier: JWTVerifier = JWT
         .require(algorithm)
         .withIssuer(issuer)
@@ -22,7 +24,7 @@ object JwtConfig {
     fun makeToken(artist: Artist): String = JWT.create()
         .withSubject("Authentication")
         .withIssuer(issuer)
-        .withClaim("artistId", artist.id.toString())
+        .withClaim(ARTIST_ID_CLAIM, artist.id.toString())
         .withExpiresAt(getExpiration())
         .sign(algorithm)
 

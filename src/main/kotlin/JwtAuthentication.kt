@@ -11,12 +11,13 @@ fun Authentication.Configuration.authenticate() {
         verifier(JwtConfig.verifier)
         realm = "ktor.io"
         validate { credentials ->
-            val authorized = ArtistLoader.find(credentials.payload.claim("artistId"))
+            val authPayload = AuthPayload(credentials.payload)
+            val authorized = ArtistLoader.find(authPayload.artistId)
             authorized?.let { JWTPrincipal(credentials.payload) }
         }
     }
 }
 
 data class AuthPayload(private val jwtPayload: Payload) {
-    val artistId: String = jwtPayload.claim("artistId")
+    val artistId: String = jwtPayload.claim(JwtConfig.ARTIST_ID_CLAIM)
 }

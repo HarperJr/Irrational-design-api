@@ -1,15 +1,13 @@
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import java.awt.Image
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
-import javax.imageio.ImageIO
 
 object FileManager {
-    const val ARTS = "arts"
-    private val ARTS_FOLDER_PATH: Path = Paths.get("/var/images")
+    private val ROOT_FOLDER_PATH: Path = Paths.get("/var/irrational-design")
+    private val ARTS_FOLDER_PATH: Path = ROOT_FOLDER_PATH.resolve("/images")
 
     suspend fun save(folder: File, name: String, source: ByteArray): String = coroutineScope {
         withContext(Dispatchers.IO) {
