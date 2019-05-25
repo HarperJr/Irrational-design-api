@@ -1,5 +1,6 @@
 package routing
 
+import FileManager
 import arg
 import authPayload
 import database.document.Post
@@ -8,10 +9,7 @@ import interactor.post.PostLoader
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.content.files
-import io.ktor.http.content.readAllParts
-import io.ktor.http.content.static
-import io.ktor.http.content.staticRootFolder
+import io.ktor.http.content.*
 import io.ktor.request.receiveMultipart
 import io.ktor.response.respond
 import io.ktor.routing.Routing
@@ -19,7 +17,6 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import org.litote.kmongo.toId
 import read
-import readBytes
 import request.PostRequest
 import utils.ApiException
 import java.util.*
@@ -27,7 +24,8 @@ import java.util.*
 fun Routing.postRouting() {
     get("/post/{id}") {
         val postId = call.parameters["id"]!!
-        val post = PostLoader.post(call.authPayload().artistId, postId)
+        val artistId = call.runCatching { authPayload().artistId }.getOrNull()
+        val post = PostLoader.post(artistId, postId)
         call.respond(gson.toJson(post))
     }
 
@@ -61,12 +59,17 @@ fun Routing.postRouting() {
                     ?: throw ApiException(HttpStatusCode.BadRequest, "No post part provided")
                 val post = gson.fromJson(postBody.read(), PostRequest::class.java)
                 val rawImages = filter { body -> body.name?.startsWith("image") ?: false }
-                    .map { body -> body.readBytes() }
+                    .map { body ->
+                        if (body is PartData.FileItem) {
+                            val bytes = body.streamProvider().use { it.readBytes() }
+                            Image(body.originalFileName!!, bytes)
+                        } else throw ApiException(HttpStatusCode.BadRequest, "Image file is invalid")
+                    }
 
                 if (rawImages.isEmpty()) {
                     throw ApiException(
                         HttpStatusCode.BadRequest,
-                        "No images parts provided, at least one is required"
+                        "No image parts provided, at least one is required"
                     )
                 }
 
@@ -104,8 +107,10 @@ fun Routing.postRouting() {
     }
 
     static(ARTS) {
-        staticRootFolder = FileManager.artsFolder()
+        files(FileManager.artsFolder())
     }
 }
+
+typealias Image = Pair<String, ByteArray>
 
 private const val ARTS = "arts"

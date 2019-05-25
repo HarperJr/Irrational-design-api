@@ -10,8 +10,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import org.litote.kmongo.toId
 import response.*
+import routing.Image
 import utils.ApiException
-import java.nio.file.Paths
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,17 +36,18 @@ class PostLoaderImpl @Inject constructor(
 
     override suspend fun upload(
         post: Post, categories: List<String>,
-        tags: List<String>, images: List<ByteArray>
+        tags: List<String>, images: List<Image>
     ) = coroutineScope {
         withContext(Dispatchers.IO) {
-            val arts = images.mapIndexed { index, image ->
-                val name = "${post.title}/$index" //path will be like /arts/{post_name}/0..n
-                FileManager.save(FileManager.artsFolder(), name, image)
+            val artsUuid = UUID.randomUUID().toString()
+            val arts = images.map { image ->
+                val name = "$artsUuid/${image.first}"
+                FileManager.save(FileManager.artsFolder(), name, image.second)
                 Art(post.id, name)
             }
             val categoriesInPost = categories.map {
                 val category = categoryCollection.findByName(it)
-                    ?: throw Exception("Unknown category") //Categories have to be present in database
+                    ?: throw Exception("Unknown category")
                 CategoryInPost(post.id, category.id)
             }
             val tagsInPost = tags.map {
@@ -53,9 +55,12 @@ class PostLoaderImpl @Inject constructor(
                     ?: Tag(it).also { tag -> tagCollection.insert(tag) }
                 TagInPost(post.id, tag.id)
             }
+            val preview = Preview(post.id, arts.first().link)
+
             postCollection.insert(post)
             categoryInPostCollection.insert(categoriesInPost)
             tagInPostCollection.insert(tagsInPost)
+            previewCollection.insert(preview)
             artCollection.insert(arts)
         }
     }

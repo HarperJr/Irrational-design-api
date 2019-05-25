@@ -5,12 +5,13 @@ import di.AppComponent
 import response.FeedPostResponse
 import response.LikedResponse
 import response.PostResponse
+import routing.Image
 
 interface PostLoader {
 
     suspend fun upload(
         post: Post, categories: List<String>,
-        tags: List<String>, images: List<ByteArray>
+        tags: List<String>, images: List<Image>
     )
 
     suspend fun post(artistId: String?, id: String): PostResponse
