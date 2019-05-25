@@ -53,7 +53,7 @@ class ArtistLoaderImpl @Inject constructor(
 
     override suspend fun find(id: String): Artist? = coroutineScope {
         withContext(Dispatchers.IO) {
-            artistCollection.find(id.toId())
+            artistCollection.findEx(id.toId())
         }
     }
 
