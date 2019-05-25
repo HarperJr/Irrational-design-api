@@ -2,30 +2,33 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
 object FileManager {
-    val ARTS_PATH: Path = Paths.get("/arts")
+    const val ARTS = "arts"
+    private val ARTS_FOLDER_PATH: Path = Paths.get("/var/images")
 
-    suspend fun save(path: Path, source: ByteArray): String = coroutineScope {
+    suspend fun save(folder: File, name: String, source: ByteArray): String = coroutineScope {
         withContext(Dispatchers.IO) {
-            val file = File(path.toUri())
-                .apply {
-                    if (!exists()) {
-                        parentFile.mkdirs()
-                        createNewFile()
+            Paths.get(folder.absolutePath, name)
+                .let { path ->
+                    val file = File(path.toUri())
+                    if (!file.exists()) {
+                        file.mkdirs()
+                        file.createNewFile()
                     }
-                    outputStream().use { writeBytes(source) }
+                    file.outputStream().use { it.write(source) }
+                    file.absolutePath
                 }
-            file.absolutePath
         }
     }
 
-    suspend fun read(path: Path): ByteArray = coroutineScope {
-        withContext(Dispatchers.IO) {
-            Files.readAllBytes(path)
+    fun artsFolder(): File {
+        val folder = File(ARTS_FOLDER_PATH.toUri())
+        if (!folder.exists()) {
+            folder.mkdirs()
         }
+        return folder
     }
 }

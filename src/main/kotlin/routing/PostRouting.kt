@@ -8,7 +8,10 @@ import interactor.post.PostLoader
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.files
 import io.ktor.http.content.readAllParts
+import io.ktor.http.content.static
+import io.ktor.http.content.staticRootFolder
 import io.ktor.request.receiveMultipart
 import io.ktor.response.respond
 import io.ktor.routing.Routing
@@ -95,5 +98,9 @@ fun Routing.postRouting() {
             PostLoader.bookmark(postId, call.authPayload().artistId, initial)
             call.respond(HttpStatusCode.OK)
         }
+    }
+
+    static(FileManager.ARTS) {
+        staticRootFolder = FileManager.artsFolder()
     }
 }

@@ -1,7 +1,6 @@
 package interactor.post
 
 import FileManager
-import FileManager.ARTS_PATH
 import database.collection.*
 import database.document.*
 import database.transaction.Transaction
@@ -12,6 +11,7 @@ import kotlinx.coroutines.withContext
 import org.litote.kmongo.toId
 import response.*
 import utils.ApiException
+import java.nio.file.Paths
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,9 +39,9 @@ class PostLoaderImpl @Inject constructor(
     ) = coroutineScope {
         withContext(Dispatchers.IO) {
             val arts = images.mapIndexed { index, image ->
-                val path = "/${post.title}/$index" //path will be like /arts/{post_name}/0..n
-                FileManager.save(ARTS_PATH.resolve(path), image)
-                Art(post.id, path)
+                val name = "${post.title}/$index" //path will be like /arts/{post_name}/0..n
+                FileManager.save(FileManager.artsFolder(), name, image)
+                Art(post.id, Paths.get(FileManager.ARTS).resolve(name).toString())
             }
             val categoriesInPost = categories.map {
                 val category = categoryCollection.findByName(it)
@@ -86,6 +86,8 @@ class PostLoaderImpl @Inject constructor(
                     id = artist.id,
                     name = artist.name,
                     followed = artistId?.let { followerCollection.followed(artist.id, it.toId()) } ?: false,
+                    follows = followerCollection.follows(artist.id).count(),
+                    followers = followerCollection.followers(artist.id).count(),
                     email = artist.email,
                     avatar = avatar?.let { AvatarResponse(it.link) }
                 ),
@@ -125,6 +127,8 @@ class PostLoaderImpl @Inject constructor(
                     artist = ArtistResponse(
                         id = artist.id,
                         followed = false,
+                        follows = followerCollection.follows(artist.id).count(),
+                        followers = followerCollection.followers(artist.id).count(),
                         email = artist.email,
                         name = artist.name,
                         avatar = avatar?.let { AvatarResponse(it.link) }

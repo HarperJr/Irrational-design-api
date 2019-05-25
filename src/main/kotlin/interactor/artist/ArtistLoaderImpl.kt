@@ -7,8 +7,6 @@ import database.collection.FollowerCollection
 import database.collection.RoleCollection
 import database.document.Artist
 import database.document.Follower
-import database.document.Role
-import database.document.RoleType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
@@ -110,13 +108,12 @@ class ArtistLoaderImpl @Inject constructor(
     override suspend fun insert(name: String, password: String, email: String) = coroutineScope {
         withContext(Dispatchers.IO) {
             if (artistCollection.findByName(name) == null) {
-                val roleId = roleCollection.findByType(RoleType.USER)?.id ?: throw IllegalStateException("Role doesnt exist")
                 artistCollection.insert(
                     Artist(
                         name = name,
                         password = PwdEncryptor.hash(password),
                         email = email,
-                        roleId = roleId
+                        roleId = null
                     )
                 )
             } else throw Exception("Invalid arguments")
