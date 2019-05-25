@@ -10,8 +10,4 @@ class ArtistCollection(private val collection: CoroutineCollection<Artist>) :
     DocumentCollection<Artist>(collection) {
 
     suspend fun findByName(name: String) = collection.findOne(Artist::name eq name)
-
-    suspend fun findEx(id: Id<Artist>): Artist? {
-        return collection.findOne(Artist::id eq id)
-    }
 }

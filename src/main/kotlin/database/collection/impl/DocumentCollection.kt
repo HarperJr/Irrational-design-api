@@ -13,14 +13,14 @@ open class DocumentCollection<T : Document<T>>(private val collection: Coroutine
 
     override suspend fun all(): List<T> = collection.find().toList()
 
-    override suspend fun find(id: Id<T>): T? = collection.findOneById(ObjectId(id.toString()))
+    override suspend fun find(id: Id<T>): T? = collection.findOneById(ObjectId("$id"))
 
     override suspend fun find(ids: List<Id<T>>): List<T> {
         return collection.find(Document<T>::id `in` ids).toList()
     }
 
     override suspend fun delete(id: Id<T>) {
-        collection.deleteOne(Document<T>::id eq id)
+        collection.deleteOneById(ObjectId("$id"))
     }
 
     override suspend fun delete(ids: List<Id<T>>) {
@@ -28,7 +28,7 @@ open class DocumentCollection<T : Document<T>>(private val collection: Coroutine
     }
 
     override suspend fun update(t: T) {
-        collection.updateOne(Document<T>::id eq t.id, t)
+        collection.updateOneById(ObjectId("${t.id}"), t)
     }
 
     override suspend fun insert(t: T) {
@@ -39,5 +39,5 @@ open class DocumentCollection<T : Document<T>>(private val collection: Coroutine
         collection.insertMany(t)
     }
 
-    override suspend fun contains(t: T): Boolean = collection.findOne(Document<T>::id eq t.id) != null
+    override suspend fun contains(t: T): Boolean = find(t.id) != null
 }

@@ -40,11 +40,6 @@ class PostLoaderImpl @Inject constructor(
     ) = coroutineScope {
         withContext(Dispatchers.IO) {
             val artsUuid = UUID.randomUUID().toString()
-            val arts = images.map { image ->
-                val name = "$artsUuid/${image.first}"
-                FileManager.save(FileManager.artsFolder(), name, image.second)
-                Art(post.id, name)
-            }
             val categoriesInPost = categories.map {
                 val category = categoryCollection.findByName(it)
                     ?: throw Exception("Unknown category")
@@ -54,6 +49,11 @@ class PostLoaderImpl @Inject constructor(
                 val tag = tagCollection.findByName(it)
                     ?: Tag(it).also { tag -> tagCollection.insert(tag) }
                 TagInPost(post.id, tag.id)
+            }
+            val arts = images.map { image ->
+                val name = "$artsUuid/${image.first}"
+                FileManager.save(FileManager.artsFolder(), name, image.second)
+                Art(post.id, name)
             }
             val preview = Preview(post.id, arts.first().link)
 
