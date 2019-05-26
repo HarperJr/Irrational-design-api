@@ -61,7 +61,9 @@ fun Routing.postRouting() {
                 val rawImages = filter { body -> body.name?.startsWith("image") ?: false }
                     .map { body ->
                         if (body is PartData.FileItem) {
-                            val bytes = body.streamProvider().use { it.readBytes() }
+                            val bytes = body.streamProvider().use { inputStream ->
+                                base64Decoder.decode(inputStream.readBytes())
+                            }
                             Image(body.originalFileName!!, bytes)
                         } else throw ApiException(HttpStatusCode.BadRequest, "Image file is invalid")
                     }
@@ -113,4 +115,5 @@ fun Routing.postRouting() {
 
 typealias Image = Pair<String, ByteArray>
 
+private val base64Decoder = Base64.getDecoder()
 private const val ARTS = "arts"

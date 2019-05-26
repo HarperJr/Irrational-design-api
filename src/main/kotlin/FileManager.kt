@@ -4,7 +4,6 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
-import javax.imageio.ImageIO
 
 object FileManager {
     private const val ROOT_FOLDER_PATH = "/var/irrational-design"
