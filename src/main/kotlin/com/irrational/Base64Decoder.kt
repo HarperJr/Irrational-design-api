@@ -3,7 +3,6 @@ package com.irrational
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import java.io.InputStream
 import java.util.*
 
 /**
@@ -12,23 +11,22 @@ import java.util.*
 object Base64Decoder {
     private val base64Decoder = Base64.getDecoder()
 
-    suspend fun decodeImage(stream: InputStream): ImageFile = coroutineScope {
+    suspend fun decodeImage(bytes: ByteArray): ImageFile = coroutineScope {
         withContext(Dispatchers.IO) {
-            stream.use { s ->
-                val header = ByteArray(23).let {
-                    s.read(it)
-                    String(it)
-                }.split(";")
-                val data = header[0]
-                val formatType = if (data.startsWith(DATA_IMAGE_PREFIX)) {
-                    data.substring(DATA_IMAGE_PREFIX.length)
-                } else throw Exception("Invalid image format type")
+            String(bytes).let {
+                val divider = it.indexOf(',')
+                val metadata = it.substring(0, divider).split(";")
+                val data = it.substring(divider + 1)
+
+                val imageData = metadata.firstOrNull() ?: throw Exception("Unhandled metadata")
+                val formatType = if (imageData.startsWith(DATA_IMAGE_PREFIX)) {
+                    imageData.substring(DATA_IMAGE_PREFIX.length)
+                } else throw Exception("Image doesn't contain image data")
 
                 val uniqueName = UUID.randomUUID().toString()
-                val name = "$uniqueName.$formatType"
-                val decodedBytes = base64Decoder.decode(s.readBytes())
+                val imageName = "$uniqueName.$formatType"
 
-                ImageFile(name = name, bytes = decodedBytes)
+                ImageFile(imageName, base64Decoder.decode(data))
             }
         }
     }

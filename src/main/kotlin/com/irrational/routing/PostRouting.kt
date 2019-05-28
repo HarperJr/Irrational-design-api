@@ -57,11 +57,9 @@ fun Routing.postRouting() {
                 val imageFiles = filter { body -> body.name?.startsWith("image") ?: false }
                     .map { body ->
                         if (body is PartData.FileItem) {
-                            val stream = body.streamProvider()
-                            kotlin.runCatching { Base64Decoder.decodeImage(stream) }
-                                .getOrNull() ?: stream.use { s ->
-                                ImageFile(body.originalFileName!!, s.readBytes())
-                            }
+                            val bytes = body.streamProvider().use { it.readBytes() }
+                            kotlin.runCatching { Base64Decoder.decodeImage(bytes) }
+                                .getOrNull() ?: ImageFile(body.originalFileName!!, bytes)
                         } else throw ApiException(
                             HttpStatusCode.BadRequest,
                             "Image file is invalid"
