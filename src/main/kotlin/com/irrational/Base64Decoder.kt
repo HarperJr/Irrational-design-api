@@ -1,6 +1,8 @@
 package com.irrational
 
-import com.sun.org.apache.xml.internal.security.utils.Base64
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import java.io.InputStream
 import java.util.*
 
@@ -8,22 +10,26 @@ import java.util.*
  * Specially developed decoder for irrational design client images base64 encoded
  */
 object Base64Decoder {
-    fun decodeImage(stream: InputStream): ImageFile {
-        return stream.use { s ->
-            val header = CharArray(23).let {
-                s.reader().read(it)
-                String(it)
-            }.split(";")
-            val data = header[0]
-            val formatType = if (data.startsWith(DATA_IMAGE_PREFIX)) {
-                data.substring(DATA_IMAGE_PREFIX.length)
-            } else throw Exception("Invalid image format type")
+    private val base64Decoder = Base64.getDecoder()
 
-            val uniqueName = UUID.randomUUID().toString()
-            val name = "$uniqueName.$formatType"
-            val decodedBytes = Base64.decode(s.readBytes())
+    suspend fun decodeImage(stream: InputStream): ImageFile = coroutineScope {
+        withContext(Dispatchers.IO) {
+            stream.use { s ->
+                val header = ByteArray(23).let {
+                    s.read(it)
+                    String(it)
+                }.split(";")
+                val data = header[0]
+                val formatType = if (data.startsWith(DATA_IMAGE_PREFIX)) {
+                    data.substring(DATA_IMAGE_PREFIX.length)
+                } else throw Exception("Invalid image format type")
 
-            ImageFile(name = name, bytes = decodedBytes)
+                val uniqueName = UUID.randomUUID().toString()
+                val name = "$uniqueName.$formatType"
+                val decodedBytes = base64Decoder.decode(s.readBytes())
+
+                ImageFile(name = name, bytes = decodedBytes)
+            }
         }
     }
 }
