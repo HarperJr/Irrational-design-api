@@ -13,5 +13,7 @@ data class FeedPostResponse(
     var likes: Long,
     var bookmarks: Long,
     var comments: Long,
-    var date: Long
+    var date: Long,
+    var categories: List<CategoryResponse>,
+    var tags: List<TagResponse>
 )

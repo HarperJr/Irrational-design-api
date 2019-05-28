@@ -144,7 +144,17 @@ class PostLoaderImpl @Inject constructor(
                     likes = likeCollection.countByPost(post.id),
                     bookmarks = bookmarkCollection.countByPost(post.id),
                     comments = commentCollection.countByPost(post.id),
-                    preview = preview?.link
+                    preview = preview?.link,
+                    categories = categoryCollection.find(categoryInPostCollection.findByPost(post.id)).map {
+                        CategoryResponse(
+                            name = it.name
+                        )
+                    },
+                    tags = tagCollection.find(tagInPostCollection.findByPost(post.id)).map {
+                        TagResponse(
+                            name = it.name
+                        )
+                    }
                 )
             }
         }
