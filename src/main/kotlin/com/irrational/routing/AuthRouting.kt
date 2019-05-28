@@ -1,5 +1,6 @@
 package com.irrational.routing
 
+import com.irrational.authPayload
 import com.irrational.gson
 import com.irrational.interactor.artist.ArtistLoader
 import io.ktor.application.call
@@ -12,6 +13,7 @@ import io.ktor.routing.post
 import com.irrational.jwt.JwtConfig
 import com.irrational.request.AuthRequest
 import com.irrational.request.RegisterRequest
+import io.ktor.routing.get
 
 fun Routing.authRouting() {
     post("/auth") {
@@ -35,6 +37,11 @@ fun Routing.authRouting() {
     }
 
     authenticate {
+        get("/credentials") {
+            val artistId = call.authPayload().artistId
+            call.respond(ArtistLoader.artist(artistId))
+        }
+
         post("/change-pass") {
 
         }
