@@ -8,6 +8,8 @@ import com.irrational.database.collection.RoleCollection
 import com.irrational.database.document.Artist
 import com.irrational.database.document.Follower
 import com.irrational.response.*
+import com.irrational.utils.ApiException
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
@@ -25,7 +27,9 @@ class ArtistLoaderImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             val artist = artistCollection.find(id.toId())
             if (artist == null) {
-                throw Exception("Unable to find artist with id $id")
+                throw ApiException(
+                    errorMessage = "Unable to find artist with id $id",
+                    statusCode = HttpStatusCode.BadRequest)
             } else {
                 val avatar = artist.avatarId?.let { avatarCollection.find(it) }
                 return@withContext ArtistResponse(
