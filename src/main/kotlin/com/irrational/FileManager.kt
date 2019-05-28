@@ -6,6 +6,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
 
 object FileManager {
     private const val ROOT_FOLDER_PATH = "/var/irrational-design"
@@ -37,6 +38,5 @@ object FileManager {
 
 data class ImageFile(
     var name: String,
-    var type: String,
     var bytes: ByteArray
 )

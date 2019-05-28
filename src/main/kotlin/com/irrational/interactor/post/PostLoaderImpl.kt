@@ -1,18 +1,17 @@
 package com.irrational.interactor.post
 
 import com.irrational.FileManager
+import com.irrational.ImageFile
 import com.irrational.database.collection.*
 import com.irrational.database.document.*
 import com.irrational.database.transaction.Transaction
 import com.irrational.response.*
-import com.irrational.routing.Image
 import com.irrational.utils.ApiException
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import org.litote.kmongo.toId
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,10 +35,14 @@ class PostLoaderImpl @Inject constructor(
 
     override suspend fun upload(
         post: Post, categories: List<String>,
-        tags: List<String>, images: List<Image>
+        tags: List<String>, imageFiles: List<ImageFile>
     ) = coroutineScope {
         withContext(Dispatchers.IO) {
-            val artsUuid = UUID.randomUUID().toString()
+            val artsFolder = post.title
+                .replace(' ', '_') //replace all whitespaces with _
+                .trim()
+                .toLowerCase()
+
             val categoriesInPost = categories.map {
                 val category = categoryCollection.findByName(it)
                     ?: throw Exception("Unknown category")
@@ -50,9 +53,9 @@ class PostLoaderImpl @Inject constructor(
                     ?: Tag(it).also { tag -> tagCollection.insert(tag) }
                 TagInPost(post.id, tag.id)
             }
-            val arts = images.map { image ->
-                val name = "$artsUuid/${image.first}"
-                FileManager.save(FileManager.artsFolder(), name, image.second)
+            val arts = imageFiles.map { image ->
+                val name = "$artsFolder/${image.name}"
+                FileManager.save(FileManager.artsFolder(), name, image.bytes)
                 Art(post.id, name)
             }
             val preview = Preview(post.id, arts.first().link)

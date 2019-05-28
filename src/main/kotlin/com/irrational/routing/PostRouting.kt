@@ -54,20 +54,21 @@ fun Routing.postRouting() {
                 val postBody = find { body -> body.name.equals("post-part") }
                     ?: throw ApiException(HttpStatusCode.BadRequest, "No post part provided")
                 val post = gson.fromJson(postBody.read(), PostRequest::class.java)
-                val rawImages = filter { body -> body.name?.startsWith("image") ?: false }
+                val imageFiles = filter { body -> body.name?.startsWith("image") ?: false }
                     .map { body ->
                         if (body is PartData.FileItem) {
-                            val bytes = body.streamProvider().use { inputStream ->
-                                base64Decoder.decode(inputStream.readBytes())
+                            val stream = body.streamProvider()
+                            kotlin.runCatching { Base64Decoder.decodeImage(stream) }
+                                .getOrNull() ?: stream.use { s ->
+                                ImageFile(body.originalFileName!!, s.readBytes())
                             }
-                            Image(body.originalFileName!!, bytes)
                         } else throw ApiException(
                             HttpStatusCode.BadRequest,
                             "Image file is invalid"
                         )
                     }
 
-                if (rawImages.isEmpty()) {
+                if (imageFiles.isEmpty()) {
                     throw ApiException(
                         HttpStatusCode.BadRequest,
                         "No image parts provided, at least one is required"
@@ -84,7 +85,7 @@ fun Routing.postRouting() {
                     ),
                     categories = post.categories,
                     tags = post.tags,
-                    images = rawImages
+                    imageFiles = imageFiles
                 )
             }
             call.respond(HttpStatusCode.OK, "Post successfully added")
@@ -118,7 +119,4 @@ fun Routing.postRouting() {
     }
 }
 
-typealias Image = Pair<String, ByteArray>
-
-private val base64Decoder = Base64.getDecoder()
 private const val ARTS = "arts"

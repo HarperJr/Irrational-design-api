@@ -1,17 +1,17 @@
 package com.irrational.interactor.post
 
+import com.irrational.ImageFile
 import com.irrational.database.document.Post
 import com.irrational.di.AppComponent
 import com.irrational.response.FeedPostResponse
 import com.irrational.response.LikedResponse
 import com.irrational.response.PostResponse
-import com.irrational.routing.Image
 
 interface PostLoader {
 
     suspend fun upload(
         post: Post, categories: List<String>,
-        tags: List<String>, images: List<Image>
+        tags: List<String>, imageFiles: List<ImageFile>
     )
 
     suspend fun post(artistId: String?, id: String): PostResponse
