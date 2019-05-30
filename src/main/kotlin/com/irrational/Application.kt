@@ -85,13 +85,6 @@ fun Application.module() {
 
 //region extensions
 
-@Suppress("UNCHECKED_CAST")
-fun <T> ApplicationCall.arg(arg: String): T? = try {
-    request.queryParameters[arg] as T?
-} catch (ex: ClassCastException) {
-    null
-}
-
 fun ApplicationCall.authPayload(): AuthPayload {
     return authentication.principal?.let {
         AuthPayload((it as JWTPrincipal).payload)

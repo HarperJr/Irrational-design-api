@@ -27,10 +27,9 @@ fun Routing.postRouting() {
 
     get("/posts/{filter}") {
         val filter = call.parameters["filter"]!!
-        val from = call.arg<Int>("from") ?: 0
-        val to = call.arg<Int>("to") ?: 20
+        val from = call.request.queryParameters["from"]?.toInt() ?: 0
+        val to = call.request.queryParameters["to"]?.toInt() ?: 20
         call.respond(PostLoader.posts(from, to, filter))
-
     }
 
     get("/categories") {
@@ -91,7 +90,7 @@ fun Routing.postRouting() {
 
         post("post/{id}/like") {
             val postId = call.parameters["id"]!!
-            val initial = call.arg<Boolean>("initial")
+            val initial = call.request.queryParameters["initial"]?.toBoolean()
                 ?: throw ApiException(
                     HttpStatusCode.BadRequest,
                     "Argument <initial: Boolean> is required"
@@ -102,7 +101,7 @@ fun Routing.postRouting() {
 
         post("post/{id}/bookmark") {
             val postId = call.parameters["id"]!!
-            val initial = call.arg<Boolean>("initial")
+            val initial = call.request.queryParameters["initial"]?.toBoolean()
                 ?: throw ApiException(
                     HttpStatusCode.BadRequest,
                     "Argument <initial: Boolean> is required"

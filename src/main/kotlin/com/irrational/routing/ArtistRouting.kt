@@ -1,6 +1,5 @@
 package com.irrational.routing
 
-import com.irrational.arg
 import com.irrational.authPayload
 import com.irrational.interactor.artist.ArtistLoader
 import com.irrational.utils.ApiException
@@ -41,7 +40,7 @@ fun Routing.artistRouting() {
 
         post("/artist/{id}/follow") {
             val artistId = call.parameters["id"]!!
-            val initial = call.arg<Boolean>("initial")
+            val initial = call.request.queryParameters["initial"]?.toBoolean()
                 ?: throw ApiException(
                     HttpStatusCode.BadRequest,
                     "Argument <initial: Boolean> is required"
