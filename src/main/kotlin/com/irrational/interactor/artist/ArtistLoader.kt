@@ -1,5 +1,6 @@
 package com.irrational.interactor.artist
 
+import com.irrational.ImageFile
 import com.irrational.database.document.Artist
 import com.irrational.di.AppComponent
 import com.irrational.response.ArtistResponse
@@ -14,7 +15,7 @@ interface ArtistLoader {
 
     suspend fun find(id: String): Artist?
 
-    suspend fun insert(name: String, password: String, email: String)
+    suspend fun insert(name: String, password: String, email: String, avatarFile: ImageFile?)
 
     suspend fun follow(followerId: String, artistId: String, initial: Boolean)
 

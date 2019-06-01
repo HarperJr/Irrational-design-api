@@ -1,11 +1,14 @@
 package com.irrational.interactor.artist
 
+import com.irrational.FileManager
+import com.irrational.ImageFile
 import com.irrational.PwdEncryptor
 import com.irrational.database.collection.ArtistCollection
 import com.irrational.database.collection.AvatarCollection
 import com.irrational.database.collection.FollowerCollection
 import com.irrational.database.collection.RoleCollection
 import com.irrational.database.document.Artist
+import com.irrational.database.document.Avatar
 import com.irrational.database.document.Follower
 import com.irrational.response.*
 import com.irrational.utils.ApiException
@@ -109,15 +112,22 @@ class ArtistLoaderImpl @Inject constructor(
         }
     }
 
-    override suspend fun insert(name: String, password: String, email: String) = coroutineScope {
+    override suspend fun insert(name: String, password: String, email: String, avatarFile: ImageFile?) = coroutineScope {
         withContext(Dispatchers.IO) {
             if (artistCollection.findByName(name) == null) {
+                val avatar = avatarFile?.let { image ->
+                    val avatarFolder = name.toLowerCase()
+                    val name = "$avatarFolder/${image.name}"
+                    FileManager.save(FileManager.avatarsFolder(), name, image.bytes)
+                    Avatar(name)
+                }
                 artistCollection.insert(
                     Artist(
                         name = name,
                         password = PwdEncryptor.hash(password),
                         email = email,
-                        roleId = null
+                        roleId = null,
+                        avatarId = avatar?.id
                     )
                 )
             } else throw Exception("Invalid arguments")

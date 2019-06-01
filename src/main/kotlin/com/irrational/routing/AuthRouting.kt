@@ -1,7 +1,6 @@
 package com.irrational.routing
 
-import com.irrational.authPayload
-import com.irrational.gson
+import com.irrational.*
 import com.irrational.interactor.artist.ArtistLoader
 import io.ktor.application.call
 import io.ktor.auth.authenticate
@@ -13,6 +12,10 @@ import io.ktor.routing.post
 import com.irrational.jwt.JwtConfig
 import com.irrational.request.AuthRequest
 import com.irrational.request.RegisterRequest
+import com.irrational.utils.ApiException
+import io.ktor.http.content.PartData
+import io.ktor.http.content.readAllParts
+import io.ktor.request.receiveMultipart
 import io.ktor.routing.get
 
 fun Routing.authRouting() {
@@ -30,10 +33,20 @@ fun Routing.authRouting() {
     }
 
     post("/register") {
-        val body = call.receive<String>()
-        val form = gson.fromJson(body, RegisterRequest::class.java)
-        ArtistLoader.insert(form.name, form.password, form.email)
-        call.respond(HttpStatusCode.OK, "Successfully registered")
+        val multipart = call.receiveMultipart()
+        with(multipart.readAllParts()) {
+            val regBody = find { body -> body.name?.equals("reg-part") ?: false }
+                ?: throw ApiException(HttpStatusCode.BadRequest, "No reg part provided")
+            val avatarFile = find { body -> body.name?.equals("avatar") ?: false }
+
+            val reg = gson.fromJson(regBody.read(), RegisterRequest::class.java)
+            val avatar = if (avatarFile is PartData.FileItem) {
+                val bytes = avatarFile.readBytes()
+                kotlin.runCatching { Base64Decoder.decodeImage(bytes) }
+                    .getOrNull() ?: ImageFile(avatarFile.uuidFileName(), bytes)
+            } else null
+            ArtistLoader.insert(reg.name, reg.password, reg.email, avatar)
+        }
     }
 
     authenticate {

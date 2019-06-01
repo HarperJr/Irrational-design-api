@@ -28,6 +28,7 @@ import io.ktor.sessions.Sessions
 import org.litote.kmongo.Id
 import org.litote.kmongo.toId
 import java.time.Duration
+import java.util.*
 
 fun main() {
     embeddedServer(
@@ -100,5 +101,14 @@ fun PartData.readBytes() = when (this) {
 }
 
 fun PartData.read() = String(readBytes())
+
+fun PartData.FileItem.uuidFileName(): String {
+    val uuid = UUID.randomUUID().toString()
+    return originalFileName?.let {
+        val dotType = it.indexOf('.')
+        val fileName = it.substring(0, dotType)
+        it.replace(fileName, uuid)
+    } ?: uuid
+}
 
 //endregion

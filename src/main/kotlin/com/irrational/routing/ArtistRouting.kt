@@ -1,11 +1,14 @@
 package com.irrational.routing
 
+import com.irrational.FileManager
 import com.irrational.authPayload
 import com.irrational.interactor.artist.ArtistLoader
 import com.irrational.utils.ApiException
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.files
+import io.ktor.http.content.static
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
@@ -53,4 +56,10 @@ fun Routing.artistRouting() {
             call.respond(HttpStatusCode.OK, "Followed")
         }
     }
+
+    static(AVATARS) {
+        files(FileManager.avatarsFolder())
+    }
 }
+
+private const val AVATARS = "AVATARS"
