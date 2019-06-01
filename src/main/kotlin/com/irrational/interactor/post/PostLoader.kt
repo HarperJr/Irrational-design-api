@@ -1,11 +1,15 @@
 package com.irrational.interactor.post
 
 import com.irrational.ImageFile
+import com.irrational.database.document.Artist
 import com.irrational.database.document.Post
+import com.irrational.database.document.Role
 import com.irrational.di.AppComponent
 import com.irrational.response.FeedPostResponse
 import com.irrational.response.LikedResponse
 import com.irrational.response.PostResponse
+import com.irrational.response.StatusResponse
+import org.litote.kmongo.Id
 
 interface PostLoader {
 
@@ -25,6 +29,8 @@ interface PostLoader {
     suspend fun categories(): List<String>
 
     suspend fun liked(artistId: String, id: String): LikedResponse
+
+    suspend fun delete(postId: Id<Post>, initiatorId: Id<Artist>, roleId: Id<Role>): StatusResponse
 
     companion object : PostLoader by INSTANCE
 }

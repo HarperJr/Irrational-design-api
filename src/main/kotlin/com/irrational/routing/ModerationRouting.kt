@@ -15,6 +15,12 @@ fun Routing.moderationRouting() {
 
     authenticate {
         post("/complaint/push") {
+            if (!ModerationLoader.moderatorCheck(call.authPayload().roleId.toId())) call.respond(
+                ApiException(
+                    statusCode = HttpStatusCode.Forbidden,
+                    errorMessage = "Access denied"
+                )
+            )
             val postId = call.request.queryParameters["postId"] ?: return@post call.respond(
                 ApiException(
                     statusCode = HttpStatusCode.BadRequest,
@@ -24,6 +30,12 @@ fun Routing.moderationRouting() {
             call.respond(ModerationLoader.pushComplaint(call.authPayload().artistId.toId(), postId.toId()))
         }
         post("/complaint/accept") {
+            if (!ModerationLoader.moderatorCheck(call.authPayload().roleId.toId())) call.respond(
+                ApiException(
+                    statusCode = HttpStatusCode.Forbidden,
+                    errorMessage = "Access denied"
+                )
+            )
             val complaintId = call.request.queryParameters["complaintId"] ?: return@post call.respond(
                 ApiException(
                     statusCode = HttpStatusCode.BadRequest,
@@ -36,6 +48,12 @@ fun Routing.moderationRouting() {
         }
 
         post("/complaint/reject") {
+            if (!ModerationLoader.moderatorCheck(call.authPayload().roleId.toId())) call.respond(
+                ApiException(
+                    statusCode = HttpStatusCode.Forbidden,
+                    errorMessage = "Access denied"
+                )
+            )
             val complaintId = call.request.queryParameters["complaintId"] ?: return@post call.respond(
                 ApiException(
                     statusCode = HttpStatusCode.BadRequest,
@@ -45,7 +63,13 @@ fun Routing.moderationRouting() {
             call.respond(ModerationLoader.rejectComplaint(complaintId.toId()))
         }
 
-        post("/complaints"){
+        post("/complaints") {
+            if (!ModerationLoader.moderatorCheck(call.authPayload().roleId.toId())) call.respond(
+                ApiException(
+                    statusCode = HttpStatusCode.Forbidden,
+                    errorMessage = "Access denied"
+                )
+            )
             call.respond(ModerationLoader.complaints())
         }
     }

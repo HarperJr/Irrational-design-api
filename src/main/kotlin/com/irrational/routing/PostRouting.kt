@@ -8,7 +8,10 @@ import com.irrational.utils.ApiException
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.content.*
+import io.ktor.http.content.PartData
+import io.ktor.http.content.files
+import io.ktor.http.content.readAllParts
+import io.ktor.http.content.static
 import io.ktor.request.receiveMultipart
 import io.ktor.response.respond
 import io.ktor.routing.Routing
@@ -45,6 +48,11 @@ fun Routing.postRouting() {
                     postId
                 )
             )
+        }
+
+        post("/delete") {
+            val postId = call.parameters["postId"]!!
+            PostLoader.delete(postId.toId(), call.authPayload().artistId.toId(), call.authPayload().roleId.toId())
         }
 
         post("/upload") {

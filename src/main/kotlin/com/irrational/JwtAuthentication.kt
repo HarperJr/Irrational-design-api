@@ -22,4 +22,5 @@ fun Authentication.Configuration.authenticate() {
 
 data class AuthPayload(private val jwtPayload: Payload) {
     val artistId: String = jwtPayload.claim(JwtConfig.ARTIST_ID_CLAIM)
+    val roleId: String = jwtPayload.claim(JwtConfig.ARTIST_ROLE_CLAIM)
 }

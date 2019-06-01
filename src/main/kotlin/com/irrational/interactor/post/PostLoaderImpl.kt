@@ -11,6 +11,7 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import org.litote.kmongo.Id
 import org.litote.kmongo.toId
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,8 +31,34 @@ class PostLoaderImpl @Inject constructor(
     private val previewCollection: PreviewCollection,
     private val likeCollection: LikeCollection,
     private val bookmarkCollection: BookmarkCollection,
-    private val followerCollection: FollowerCollection
+    private val followerCollection: FollowerCollection,
+    private val roleCollection: RoleCollection
 ) : PostLoader {
+
+    override suspend fun delete(postId: Id<Post>, initiatorId: Id<Artist>, roleId: Id<Role>): StatusResponse {
+
+        val post = postCollection.find(postId) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "post not found"
+        )
+
+        val initiatorRole = roleCollection.find(roleId) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "role not found"
+        )
+
+        if (initiatorRole.type == RoleType.MODERATOR || post.artistId == initiatorId) {
+            postCollection.delete(postId)
+            return SuccessResponse(
+                message = "post deleted"
+            )
+        }
+
+        throw ApiException(
+            statusCode = HttpStatusCode.Forbidden,
+            errorMessage = "Access denied"
+        )
+    }
 
     override suspend fun upload(
         post: Post, categories: List<String>,

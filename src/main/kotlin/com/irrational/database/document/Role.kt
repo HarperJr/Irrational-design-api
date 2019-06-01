@@ -5,7 +5,7 @@ data class Role(
 ) : Document<Role>()
 
 enum class RoleType {
-    ADMIN, USER, MODERATOR;
+    USER, MODERATOR;
 
     companion object {
         fun by(ordinal: Int) = values().firstOrNull { it.ordinal == ordinal }

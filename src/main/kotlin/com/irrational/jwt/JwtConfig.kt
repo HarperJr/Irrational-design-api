@@ -15,6 +15,7 @@ object JwtConfig {
     private val algorithm = Algorithm.HMAC512(secret)
 
     const val ARTIST_ID_CLAIM = "id"
+    const val ARTIST_ROLE_CLAIM = "role"
 
     val verifier: JWTVerifier = JWT
         .require(algorithm)
@@ -25,6 +26,7 @@ object JwtConfig {
         .withSubject("Authentication")
         .withIssuer(issuer)
         .withClaim(ARTIST_ID_CLAIM, artist.id.toString())
+        .withClaim(ARTIST_ROLE_CLAIM, artist.roleId.toString())
         .withExpiresAt(getExpiration())
         .sign(algorithm)
 
