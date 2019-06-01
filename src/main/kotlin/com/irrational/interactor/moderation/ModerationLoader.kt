@@ -8,11 +8,11 @@ import com.irrational.response.StatusResponse
 import org.litote.kmongo.Id
 
 interface ModerationLoader {
-    suspend fun push_complaint(artistId: Id<Artist>, postId: Id<Post>): StatusResponse
+    suspend fun pushComplaint(artistId: Id<Artist>, postId: Id<Post>): StatusResponse
 
-    suspend fun accept_complaint(complaintId: Id<Complaint>): StatusResponse
+    suspend fun acceptComplaint(complaintId: Id<Complaint>): StatusResponse
 
-    suspend fun reject_complaint(complaintId: Id<Complaint>): StatusResponse
+    suspend fun rejectComplaint(complaintId: Id<Complaint>): StatusResponse
 
     suspend fun complaints(): List<Complaint>
 

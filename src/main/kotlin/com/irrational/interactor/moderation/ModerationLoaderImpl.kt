@@ -16,11 +16,12 @@ class ModerationLoaderImpl @Inject constructor(
     private val complaintCollection: ComplaintCollection,
     private val postCollection: PostCollection
 ) : ModerationLoader {
+
     override suspend fun complaints(): List<Complaint> {
         return complaintCollection.all()
     }
 
-    override suspend fun push_complaint(
+    override suspend fun pushComplaint(
         artistId: Id<Artist>, postId: Id<Post>
     ): StatusResponse {
 
@@ -34,7 +35,7 @@ class ModerationLoaderImpl @Inject constructor(
         )
     }
 
-    override suspend fun accept_complaint(complaintId: Id<Complaint>): StatusResponse {
+    override suspend fun acceptComplaint(complaintId: Id<Complaint>): StatusResponse {
         val complaint = complaintCollection.find(complaintId) ?: throw ApiException(
             statusCode = HttpStatusCode.BadRequest,
             errorMessage = "complaint doesn't exist"
@@ -51,7 +52,7 @@ class ModerationLoaderImpl @Inject constructor(
         )
     }
 
-    override suspend fun reject_complaint(complaintId: Id<Complaint>): StatusResponse {
+    override suspend fun rejectComplaint(complaintId: Id<Complaint>): StatusResponse {
 
         val complaint = complaintCollection.find(complaintId) ?: throw ApiException(
             statusCode = HttpStatusCode.BadRequest,
@@ -62,6 +63,4 @@ class ModerationLoaderImpl @Inject constructor(
             message = "Complaint rejected"
         )
     }
-
-
 }

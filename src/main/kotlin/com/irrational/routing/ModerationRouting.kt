@@ -14,16 +14,16 @@ import org.litote.kmongo.toId
 fun Routing.moderationRouting() {
 
     authenticate {
-        post("moderation/push") {
+        post("/complaint/push") {
             val postId = call.request.queryParameters["postId"] ?: return@post call.respond(
                 ApiException(
                     statusCode = HttpStatusCode.BadRequest,
                     errorMessage = "post doesn't exist"
                 )
             )
-            call.respond(ModerationLoader.push_complaint(call.authPayload().artistId.toId(), postId.toId()))
+            call.respond(ModerationLoader.pushComplaint(call.authPayload().artistId.toId(), postId.toId()))
         }
-        post("moderation/accept") {
+        post("/complaint/accept") {
             val complaintId = call.request.queryParameters["complaintId"] ?: return@post call.respond(
                 ApiException(
                     statusCode = HttpStatusCode.BadRequest,
@@ -31,21 +31,21 @@ fun Routing.moderationRouting() {
                 )
             )
             call.respond(
-                ModerationLoader.accept_complaint(complaintId = complaintId.toId())
+                ModerationLoader.acceptComplaint(complaintId = complaintId.toId())
             )
         }
 
-        post("moderation/reject") {
+        post("/complaint/reject") {
             val complaintId = call.request.queryParameters["complaintId"] ?: return@post call.respond(
                 ApiException(
                     statusCode = HttpStatusCode.BadRequest,
                     errorMessage = "complaint doesn't exist"
                 )
             )
-            call.respond(ModerationLoader.reject_complaint(complaintId.toId()))
+            call.respond(ModerationLoader.rejectComplaint(complaintId.toId()))
         }
 
-        post("moderation/complaints"){
+        post("/complaints"){
             call.respond(ModerationLoader.complaints())
         }
     }
