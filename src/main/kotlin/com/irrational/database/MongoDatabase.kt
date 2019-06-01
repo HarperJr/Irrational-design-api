@@ -73,5 +73,10 @@ class MongoDatabase(databaseName: String) : Database {
         VirtualWalletCollection(database.getCollection("virtual_wallet"))
 
     override fun walletCards() =
-        WalletCardCollection(database.getCollection("wallet_card"))
+        WalletCardCollection(
+            database.getCollection("wallet_card")
+        )
+
+    override fun moderations() =
+        ComplaintCollection(database.getCollection("complaint"))
 }

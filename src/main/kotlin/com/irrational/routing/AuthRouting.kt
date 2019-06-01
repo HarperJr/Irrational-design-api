@@ -46,6 +46,7 @@ fun Routing.authRouting() {
                     .getOrNull() ?: ImageFile(avatarFile.uuidFileName(), bytes)
             } else null
             ArtistLoader.insert(reg.name, reg.password, reg.email, avatar)
+            call.respond("Successfully registered")
         }
     }
 

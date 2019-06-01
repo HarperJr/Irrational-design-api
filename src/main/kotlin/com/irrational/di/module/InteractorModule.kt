@@ -8,6 +8,8 @@ import com.irrational.interactor.artist.ArtistLoader
 import com.irrational.interactor.artist.ArtistLoaderImpl
 import com.irrational.interactor.comment.CommentLoader
 import com.irrational.interactor.comment.CommentLoaderImpl
+import com.irrational.interactor.moderation.ModerationLoader
+import com.irrational.interactor.moderation.ModerationLoaderImpl
 import com.irrational.interactor.payment.PaymentLoader
 import com.irrational.interactor.payment.PaymentLoaderImpl
 import com.irrational.interactor.post.PostLoader
@@ -29,4 +31,7 @@ abstract class InteractorModule {
 
     @Binds
     internal abstract fun bindPaymentInteractor(paymentLoader: PaymentLoaderImpl): PaymentLoader
+
+    @Binds
+    internal abstract fun bindModerationInteracor(moderationLoader: ModerationLoaderImpl): ModerationLoader
 }

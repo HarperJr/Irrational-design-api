@@ -7,5 +7,6 @@ data class Post(
     var title: String,
     var subtitle: String,
     var description: String,
-    var date: Long
+    var date: Long,
+    var blocked: Boolean = false
 ) : Document<Post>()

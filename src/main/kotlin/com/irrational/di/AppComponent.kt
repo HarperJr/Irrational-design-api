@@ -7,6 +7,8 @@ import com.irrational.di.module.InteractorModule
 import com.irrational.interactor.art.ArtLoader
 import com.irrational.interactor.artist.ArtistLoader
 import com.irrational.interactor.comment.CommentLoader
+import com.irrational.interactor.moderation.ModerationLoader
+import com.irrational.interactor.moderation.ModerationLoaderImpl
 import com.irrational.interactor.payment.PaymentLoader
 import com.irrational.interactor.post.PostLoader
 import javax.inject.Singleton
@@ -25,6 +27,7 @@ interface AppComponent {
     fun artistLoader(): ArtistLoader
     fun artLoader(): ArtLoader
     fun paymentLoader(): PaymentLoader
+    fun moderationLoader(): ModerationLoader
 
     companion object : AppComponent by INSTANCE
 }

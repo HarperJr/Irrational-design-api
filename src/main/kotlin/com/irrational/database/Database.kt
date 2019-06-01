@@ -42,4 +42,6 @@ interface Database {
     fun virtualWallets(): VirtualWalletCollection
 
     fun walletCards(): WalletCardCollection
+
+    fun moderations(): ComplaintCollection
 }

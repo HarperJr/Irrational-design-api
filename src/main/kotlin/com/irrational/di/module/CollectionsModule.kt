@@ -76,4 +76,8 @@ class CollectionsModule {
     @Provides
     @Singleton
     fun provideWalletCardCollection(database: Database) = database.walletCards()
+
+    @Provides
+    @Singleton
+    fun provideModerationCollection(database: Database) = database.moderations()
 }

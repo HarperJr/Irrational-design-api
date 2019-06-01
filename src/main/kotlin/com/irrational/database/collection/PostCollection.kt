@@ -11,7 +11,7 @@ class PostCollection(private val collection: CoroutineCollection<Post>) :
     DocumentCollection<Post>(collection) {
 
     suspend fun allWithBoundary(from: Int, to: Int): List<Post> {
-        return collection.find().skip(from).limit(to).toList()
+        return collection.find(Post::blocked eq false).skip(from).limit(to).toList()
     }
 
     suspend fun hotWithBoundary(from: Int, to: Int): List<Post> {
@@ -45,6 +45,6 @@ class PostCollection(private val collection: CoroutineCollection<Post>) :
     }
 
     suspend fun byArtistWithBoundary(from: Int, to: Int, artistId: Id<Artist>): List<Post> {
-        return collection.find(Post::artistId eq artistId).skip(from).limit(to).toList()
+        return collection.find(and(Post::artistId eq artistId, Post::blocked eq false)).skip(from).limit(to).toList()
     }
 }
