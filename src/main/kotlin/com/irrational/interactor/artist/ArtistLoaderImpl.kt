@@ -117,10 +117,11 @@ class ArtistLoaderImpl @Inject constructor(
             if (artistCollection.findByName(name) == null) {
                 val avatar = avatarFile?.let { image ->
                     val avatarFolder = name.toLowerCase()
-                    val name = "$avatarFolder/${image.name}"
-                    FileManager.save(FileManager.avatarsFolder(), name, image.bytes)
-                    Avatar(name)
+                    val avatarName = "$avatarFolder/${image.name}"
+                    FileManager.save(FileManager.avatarsFolder(), avatarName, image.bytes)
+                    Avatar(avatarName)
                 }
+                avatar?.let { avatarCollection.insert(it) }
                 artistCollection.insert(
                     Artist(
                         name = name,

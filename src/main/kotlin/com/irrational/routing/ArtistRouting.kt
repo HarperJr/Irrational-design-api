@@ -62,4 +62,4 @@ fun Routing.artistRouting() {
     }
 }
 
-private const val AVATARS = "AVATARS"
+private const val AVATARS = "avatars"
