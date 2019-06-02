@@ -18,5 +18,9 @@ class CategoryInPostCollection(private val collection: CoroutineCollection<Categ
     suspend fun findAllByPost(postId: Id<Post>) = collection
         .find(CategoryInPost::postId eq postId)
         .toList()
+
+    suspend fun deleteByPost(postId: Id<Post>) {
+        collection.deleteMany(CategoryInPost::postId eq postId)
+    }
 }
 

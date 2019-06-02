@@ -18,4 +18,8 @@ class TagInPostCollection(private val collection: CoroutineCollection<TagInPost>
     suspend fun findAllByPost(postId: Id<Post>) = collection
         .find(TagInPost::postId eq postId)
         .toList()
+
+    suspend fun deleteByPost(postId: Id<Post>) {
+        collection.deleteMany(TagInPost::postId eq postId)
+    }
 }

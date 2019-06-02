@@ -27,12 +27,15 @@ object FileManager {
         }
     }
 
-    suspend fun delete(file: File, name: String) = coroutineScope {
+    suspend fun delete(folder: File, name: String) = coroutineScope {
         withContext(Dispatchers.IO) {
-            Paths.get(file.absolutePath, name).let { path ->
-                val file = File(path.toUri())
-                if (file.exists()) file.delete()
-            }
+            Paths.get(folder.absolutePath, name)
+                .let { path ->
+                    val file = File(path.toUri())
+                    if (file.exists()) {
+                        file.delete()
+                    }
+                }
         }
     }
 

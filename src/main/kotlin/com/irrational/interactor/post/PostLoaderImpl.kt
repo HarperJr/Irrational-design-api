@@ -36,12 +36,10 @@ class PostLoaderImpl @Inject constructor(
 ) : PostLoader {
 
     override suspend fun delete(postId: Id<Post>, initiatorId: Id<Artist>, roleId: Id<Role>): StatusResponse {
-
         val post = postCollection.find(postId) ?: throw ApiException(
             statusCode = HttpStatusCode.BadRequest,
             errorMessage = "post not found"
         )
-
         val initiatorRole = roleCollection.find(roleId) ?: throw ApiException(
             statusCode = HttpStatusCode.BadRequest,
             errorMessage = "role not found"
@@ -49,13 +47,11 @@ class PostLoaderImpl @Inject constructor(
 
         if (initiatorRole.type == RoleType.MODERATOR || post.artistId == initiatorId) {
             postCollection.delete(postId)
-            tagInPostCollection.delete(tagInPostCollection.findAllByPost(postId).map { it.id })
-            categoryInPostCollection.delete(categoryInPostCollection.findAllByPost(postId).map { it.id })
-            val arts = artCollection.findByPost(postId)
-            arts.forEach {
-                FileManager.delete(FileManager.artsFolder(), it.link)
-            }
-
+            tagInPostCollection.deleteByPost(postId)
+            categoryInPostCollection.deleteByPost(postId)
+            artCollection.findByPost(postId)
+                .forEach { FileManager.delete(FileManager.artsFolder(), it.link) }
+            artCollection.deleteByPost(postId)
             return SuccessResponse(
                 message = "post deleted"
             )

@@ -12,4 +12,8 @@ class ArtCollection(private val collection: CoroutineCollection<Art>) :
 
     suspend fun findByPost(postId: Id<Post>): List<Art> = collection.find(
         Art::postId eq postId).toList()
+
+    suspend fun deleteByPost(postId: Id<Post>) {
+        collection.deleteMany(Art::postId eq postId)
+    }
 }
