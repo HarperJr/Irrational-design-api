@@ -73,6 +73,7 @@ fun Application.module() {
         artistRouting()
         commentRouting()
         paymentRouting()
+        moderationRouting()
     }
     install(StatusPages) {
         exception<ApiException> { ex ->

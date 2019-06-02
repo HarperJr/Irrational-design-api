@@ -6,7 +6,6 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
 
 object FileManager {
     private const val ROOT_FOLDER_PATH = "/var/irrational-design"
@@ -25,6 +24,15 @@ object FileManager {
                     file.outputStream().use { it.write(source) }
                     file.absolutePath
                 }
+        }
+    }
+
+    suspend fun delete(file: File, name: String) = coroutineScope {
+        withContext(Dispatchers.IO) {
+            Paths.get(file.absolutePath, name).let { path ->
+                val file = File(path.toUri())
+                if (file.exists()) file.delete()
+            }
         }
     }
 

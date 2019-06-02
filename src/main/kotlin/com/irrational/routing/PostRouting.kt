@@ -50,11 +50,6 @@ fun Routing.postRouting() {
             )
         }
 
-        post("/delete") {
-            val postId = call.parameters["postId"]!!
-            PostLoader.delete(postId.toId(), call.authPayload().artistId.toId(), call.authPayload().roleId.toId())
-        }
-
         post("/upload") {
             val multipart = call.receiveMultipart()
             with(multipart.readAllParts()) {
@@ -115,6 +110,12 @@ fun Routing.postRouting() {
                     "Argument <initial: Boolean> is required"
                 )
             PostLoader.bookmark(postId, call.authPayload().artistId, initial)
+            call.respond(HttpStatusCode.OK)
+        }
+
+        post("post/{id}/delete") {
+            val postId = call.parameters["id"]!!
+            PostLoader.delete(postId.toId(), call.authPayload().artistId.toId(), call.authPayload().roleId.toId())
             call.respond(HttpStatusCode.OK)
         }
     }

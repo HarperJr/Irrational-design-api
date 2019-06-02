@@ -72,5 +72,10 @@ fun Routing.moderationRouting() {
             )
             call.respond(ModerationLoader.complaints())
         }
+
+        post("/complaint/ban") {
+            ModerationLoader.blockPost(call.parameters["id"]!!.toId())
+            call.respond(HttpStatusCode.OK)
+        }
     }
 }

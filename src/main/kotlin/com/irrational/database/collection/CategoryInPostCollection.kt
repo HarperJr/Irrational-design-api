@@ -14,5 +14,9 @@ class CategoryInPostCollection(private val collection: CoroutineCollection<Categ
         .find(CategoryInPost::postId eq postId)
         .toList()
         .map { it.categoryId }
+
+    suspend fun findAllByPost(postId: Id<Post>) = collection
+        .find(CategoryInPost::postId eq postId)
+        .toList()
 }
 

@@ -49,6 +49,13 @@ class PostLoaderImpl @Inject constructor(
 
         if (initiatorRole.type == RoleType.MODERATOR || post.artistId == initiatorId) {
             postCollection.delete(postId)
+            tagInPostCollection.delete(tagInPostCollection.findAllByPost(postId).map { it.id })
+            categoryInPostCollection.delete(categoryInPostCollection.findAllByPost(postId).map { it.id })
+            val arts = artCollection.findByPost(postId)
+            arts.forEach {
+                FileManager.delete(FileManager.artsFolder(), it.link)
+            }
+
             return SuccessResponse(
                 message = "post deleted"
             )
