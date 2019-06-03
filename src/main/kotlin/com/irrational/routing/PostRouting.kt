@@ -115,7 +115,7 @@ fun Routing.postRouting() {
 
         post("post/{id}/delete") {
             val postId = call.parameters["id"]!!
-            PostLoader.delete(postId.toId(), call.authPayload().artistId.toId(), call.authPayload().roleId.toId())
+            PostLoader.delete(postId.toId(), call.authPayload().artistId.toId())
             call.respond(HttpStatusCode.OK)
         }
     }

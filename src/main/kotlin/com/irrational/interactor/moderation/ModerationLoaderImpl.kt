@@ -73,16 +73,26 @@ class ModerationLoaderImpl @Inject constructor(
         )
     }
 
-    override suspend fun blockPost(postId: Id<Post>): StatusResponse {
+    override suspend fun blockPost(postId: Id<Post>, blocked: Boolean): StatusResponse {
         val post = postCollection.find(postId) ?: throw ApiException(
             statusCode = HttpStatusCode.ExpectationFailed,
             errorMessage = "post not found"
         )
 
-        post.blocked = true
+        post.blocked = blocked
         postCollection.update(post)
         return SuccessResponse(
             message = "post blocked"
         )
+    }
+
+    override suspend fun isModerator(roleId: Id<Role>): Boolean {
+        val role = roleCollection.find(roleId) ?: throw ApiException(
+            statusCode = HttpStatusCode.BadRequest,
+            errorMessage = "role doesn't exist"
+        )
+
+        if (role.type == RoleType.MODERATOR) return true
+        return false
     }
 }

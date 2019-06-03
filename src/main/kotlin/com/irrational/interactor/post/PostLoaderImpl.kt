@@ -31,27 +31,21 @@ class PostLoaderImpl @Inject constructor(
     private val previewCollection: PreviewCollection,
     private val likeCollection: LikeCollection,
     private val bookmarkCollection: BookmarkCollection,
-    private val followerCollection: FollowerCollection,
-    private val roleCollection: RoleCollection
+    private val followerCollection: FollowerCollection
 ) : PostLoader {
 
-    override suspend fun delete(postId: Id<Post>, initiatorId: Id<Artist>, roleId: Id<Role>): StatusResponse {
+    override suspend fun delete(postId: Id<Post>, artistId: Id<Artist>): StatusResponse {
         val post = postCollection.find(postId) ?: throw ApiException(
             statusCode = HttpStatusCode.BadRequest,
             errorMessage = "post not found"
         )
-        val initiatorRole = roleCollection.find(roleId) ?: throw ApiException(
-            statusCode = HttpStatusCode.BadRequest,
-            errorMessage = "role not found"
-        )
-
-        if (initiatorRole.type == RoleType.MODERATOR || post.artistId == initiatorId) {
-            postCollection.delete(postId)
+        if (post.artistId == artistId) {
             tagInPostCollection.deleteByPost(postId)
             categoryInPostCollection.deleteByPost(postId)
             artCollection.findByPost(postId)
                 .forEach { FileManager.delete(FileManager.artsFolder(), it.link) }
             artCollection.deleteByPost(postId)
+            postCollection.delete(postId)
             return SuccessResponse(
                 message = "post deleted"
             )

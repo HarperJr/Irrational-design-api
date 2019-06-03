@@ -19,7 +19,9 @@ interface ModerationLoader {
 
     suspend fun moderatorCheck(roleId: Id<Role>): Boolean
 
-    suspend fun blockPost(postId: Id<Post>): StatusResponse
+    suspend fun blockPost(postId: Id<Post>, blocked: Boolean): StatusResponse
+
+    suspend fun isModerator(roleId: Id<Role>): Boolean
 
     companion object : ModerationLoader by INSTANCE
 }
