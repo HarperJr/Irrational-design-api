@@ -14,7 +14,7 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
 
-fun Routing.artistRouting() {
+fun Routing.artists() {
     get("/artist/{id}") {
         val artistId = call.parameters["id"]!!
         call.respond(ArtistLoader.artist(artistId))

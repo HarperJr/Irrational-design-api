@@ -39,7 +39,8 @@ class PostLoaderImpl @Inject constructor(
             statusCode = HttpStatusCode.BadRequest,
             errorMessage = "post not found"
         )
-        if (post.artistId == artistId) {
+        val isOwner = post.artistId.toString() == artistId.toString()
+        if (isOwner) {
             tagInPostCollection.deleteByPost(postId)
             categoryInPostCollection.deleteByPost(postId)
             artCollection.findByPost(postId)

@@ -11,7 +11,7 @@ import io.ktor.routing.Routing
 import io.ktor.routing.post
 import org.litote.kmongo.toId
 
-fun Routing.moderationRouting() {
+fun Routing.moderation() {
 
     authenticate {
         post("/complaint/{id}/push") {

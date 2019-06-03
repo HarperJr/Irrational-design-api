@@ -20,7 +20,7 @@ import io.ktor.routing.post
 import org.litote.kmongo.toId
 import java.util.*
 
-fun Routing.postRouting() {
+fun Routing.posts() {
     get("/post/{id}") {
         val postId = call.parameters["id"]!!
         val artistId = call.runCatching { authPayload().artistId }.getOrNull()

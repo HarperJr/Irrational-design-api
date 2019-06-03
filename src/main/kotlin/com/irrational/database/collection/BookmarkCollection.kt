@@ -4,6 +4,7 @@ import com.irrational.database.collection.impl.DocumentCollection
 import com.irrational.database.document.Artist
 import com.irrational.database.document.Bookmark
 import com.irrational.database.document.Post
+import org.bson.types.ObjectId
 import org.litote.kmongo.Id
 import org.litote.kmongo.and
 import org.litote.kmongo.coroutine.CoroutineCollection
@@ -13,15 +14,15 @@ class BookmarkCollection(private val collection: CoroutineCollection<Bookmark>) 
     DocumentCollection<Bookmark>(collection) {
 
     suspend fun countByPost(postId: Id<Post>): Long {
-        return collection.countDocuments(Bookmark::postId eq postId)
+        return collection.countDocuments(Bookmark::postId eq ObjectId("$postId"))
     }
 
     suspend fun bookmarked(postId: Id<Post>, artistId: Id<Artist>): Boolean {
-        return collection.findOne(and(Bookmark::postId eq postId, Bookmark::artistId eq artistId)) != null
+        return collection.findOne(and(Bookmark::postId eq postId, Bookmark::artistId eq ObjectId("$artistId"))) != null
     }
 
     suspend fun deleteByArtist(postId: Id<Post>, artistId: Id<Artist>) {
-        collection.deleteOne(and(Bookmark::postId eq postId, Bookmark::artistId eq artistId))
+        collection.deleteOne(and(Bookmark::postId eq postId, Bookmark::artistId eq ObjectId("$artistId")))
     }
 
 }

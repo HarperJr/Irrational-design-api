@@ -1,14 +1,12 @@
 package com.irrational.interactor.comment
 
-import com.irrational.database.document.Post
 import com.irrational.di.AppComponent
-import org.litote.kmongo.Id
 import com.irrational.response.CommentResponse
 
 interface CommentLoader {
-    suspend fun comments(id: String): List<CommentResponse>
+    suspend fun comments(postId: String): List<CommentResponse>
 
-    suspend fun insert(postId: Id<Post>, author: String, content: String)
+    suspend fun insert(postId: String, artistId: String, content: String): CommentResponse
 
     companion object : CommentLoader by INSTANCE
 }

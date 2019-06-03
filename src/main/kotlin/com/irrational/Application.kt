@@ -68,12 +68,12 @@ fun Application.module() {
     install(Authentication) { authenticate() }
     install(Sessions) { initSession() }
     install(Routing) {
-        authRouting()
-        postRouting()
-        artistRouting()
-        commentRouting()
-        paymentRouting()
-        moderationRouting()
+        authorization()
+        moderation()
+        comments()
+        payment()
+        artists()
+        posts()
     }
     install(StatusPages) {
         exception<ApiException> { ex ->

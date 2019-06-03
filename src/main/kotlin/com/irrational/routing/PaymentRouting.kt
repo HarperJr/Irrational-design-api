@@ -2,6 +2,9 @@ package com.irrational.routing
 
 import com.irrational.authPayload
 import com.irrational.interactor.payment.PaymentLoader
+import com.irrational.request.CardRequest
+import com.irrational.request.PaymentProcessRequest
+import com.irrational.request.PaymentRequest
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.request.receive
@@ -9,11 +12,8 @@ import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.post
 import org.litote.kmongo.toId
-import com.irrational.request.CardRequest
-import com.irrational.request.PaymentProcessRequest
-import com.irrational.request.PaymentRequest
 
-fun Routing.paymentRouting() {
+fun Routing.payment() {
     authenticate {
         post("/payment/request-payment") {
             val paymentData = call.receive<PaymentRequest>()

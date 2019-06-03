@@ -3,6 +3,7 @@ package com.irrational.database.collection
 import com.irrational.database.collection.impl.DocumentCollection
 import com.irrational.database.document.Artist
 import com.irrational.database.document.Post
+import org.bson.types.ObjectId
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.coroutine.aggregate
@@ -45,6 +46,11 @@ class PostCollection(private val collection: CoroutineCollection<Post>) :
     }
 
     suspend fun byArtistWithBoundary(from: Int, to: Int, artistId: Id<Artist>): List<Post> {
-        return collection.find(and(Post::artistId eq artistId, Post::blocked eq false)).skip(from).limit(to).toList()
+        return collection.find(
+            and(
+                Post::artistId eq ObjectId("$artistId"),
+                Post::blocked eq false
+            )
+        ).skip(from).limit(to).toList()
     }
 }

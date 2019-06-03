@@ -2,23 +2,23 @@ package com.irrational.routing
 
 import com.irrational.*
 import com.irrational.interactor.artist.ArtistLoader
-import io.ktor.application.call
-import io.ktor.auth.authenticate
-import io.ktor.http.HttpStatusCode
-import io.ktor.request.receive
-import io.ktor.response.respond
-import io.ktor.routing.Routing
-import io.ktor.routing.post
 import com.irrational.jwt.JwtConfig
 import com.irrational.request.AuthRequest
 import com.irrational.request.RegisterRequest
 import com.irrational.utils.ApiException
+import io.ktor.application.call
+import io.ktor.auth.authenticate
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
 import io.ktor.http.content.readAllParts
+import io.ktor.request.receive
 import io.ktor.request.receiveMultipart
+import io.ktor.response.respond
+import io.ktor.routing.Routing
 import io.ktor.routing.get
+import io.ktor.routing.post
 
-fun Routing.authRouting() {
+fun Routing.authorization() {
     post("/auth") {
         val credentials = call.receive<AuthRequest>()
         val identified = ArtistLoader.findByCredentials(credentials.name, credentials.password)
@@ -54,10 +54,6 @@ fun Routing.authRouting() {
         get("/credentials") {
             val artistId = call.authPayload().artistId
             call.respond(ArtistLoader.artist(artistId))
-        }
-
-        post("/change-pass") {
-
         }
     }
 }
