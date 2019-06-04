@@ -187,11 +187,11 @@ class PostLoaderImpl @Inject constructor(
         }
     }
 
-    override suspend fun like(id: String, artistId: String, initial: Boolean) = coroutineScope {
+    override suspend fun like(id: String, artistId: String, initial: Boolean): LikedResponse = coroutineScope {
         withContext(Dispatchers.IO) {
             val post = postCollection.find(id.toId()) ?: throw ApiException(
                 statusCode = HttpStatusCode.BadRequest,
-                errorMessage = "Unable to bookmark nonexistent post"
+                errorMessage = "Unable to like nonexistent post"
             )
             val liked = likeCollection.liked(post.id, artistId.toId())
             if (initial) {
@@ -205,7 +205,9 @@ class PostLoaderImpl @Inject constructor(
                     return@withContext LikedResponse(liked = true)
                 }
             } else {
-                if (!liked) return@withContext
+                if (!liked) {
+                    return@withContext LikedResponse(liked = false)
+                }
                 likeCollection.deleteByArtist(post.id, artistId.toId())
                 return@withContext LikedResponse(liked = false)
             }

@@ -52,7 +52,7 @@ fun Routing.payment() {
 
         post("/payment/add-card") {
             val cardData = call.receive<CardRequest>()
-            val response = PaymentLoader.addCard(cardData = cardData)
+            val response = PaymentLoader.addCard(cardData = cardData, owner = call.authPayload().artistId.toId())
             call.respond(response)
         }
 

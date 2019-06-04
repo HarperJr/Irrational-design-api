@@ -100,8 +100,7 @@ fun Routing.posts() {
                     HttpStatusCode.BadRequest,
                     "Argument <initial: Boolean> is required"
                 )
-            PostLoader.like(postId, call.authPayload().artistId, initial)
-            call.respond(HttpStatusCode.OK)
+            call.respond(PostLoader.like(postId, call.authPayload().artistId, initial))
         }
 
         post("post/{id}/bookmark") {
