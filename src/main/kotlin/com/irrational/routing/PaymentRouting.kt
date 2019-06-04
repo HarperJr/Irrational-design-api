@@ -57,7 +57,7 @@ fun Routing.payment() {
         }
 
         post("/payment/add-wallet") {
-            val response = PaymentLoader.addWallet(owner = call.receive())
+            val response = PaymentLoader.addWallet(owner = call.authPayload().artistId.toId())
             call.respond(response)
         }
     }

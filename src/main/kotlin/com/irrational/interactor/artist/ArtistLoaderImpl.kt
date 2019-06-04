@@ -16,6 +16,8 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import org.bson.types.ObjectId
+import org.litote.kmongo.id.toId
 import org.litote.kmongo.toId
 import javax.inject.Inject
 
@@ -32,7 +34,8 @@ class ArtistLoaderImpl @Inject constructor(
             if (artist == null) {
                 throw ApiException(
                     errorMessage = "Unable to find artist with id $id",
-                    statusCode = HttpStatusCode.BadRequest)
+                    statusCode = HttpStatusCode.BadRequest
+                )
             } else {
                 val avatar = artist.avatarId?.let { avatarCollection.find(it) }
                 return@withContext ArtistResponse(
@@ -112,49 +115,53 @@ class ArtistLoaderImpl @Inject constructor(
         }
     }
 
-    override suspend fun insert(name: String, password: String, email: String, avatarFile: ImageFile?) = coroutineScope {
-        withContext(Dispatchers.IO) {
-            if (artistCollection.findByName(name) == null) {
-                val avatar = avatarFile?.let { image ->
-                    val avatarFolder = name.toLowerCase()
-                    val avatarName = "$avatarFolder/${image.name}"
-                    FileManager.save(FileManager.avatarsFolder(), avatarName, image.bytes)
-                    Avatar(avatarName)
-                }
-                avatar?.let { avatarCollection.insert(it) }
-                artistCollection.insert(
-                    Artist(
-                        name = name,
-                        password = PwdEncryptor.hash(password),
-                        email = email,
-                        roleId = null,
-                        avatarId = avatar?.id
-                    )
-                )
-            } else throw Exception("Invalid arguments")
-        }
-    }
-
-    override suspend fun follow(followerId: String, artistId: String, initial: Boolean) = coroutineScope {
-        withContext(Dispatchers.IO) {
-            val artist = artistCollection.find(artistId.toId())
-            if (artist == null) {
-                throw Exception("Unable to find artist with id $artistId")
-            } else {
-                val followed = followerCollection.followed(artistId.toId(), followerId.toId())
-                if (initial) {
-                    if (followed) throw Exception("Already followed")
-                    followerCollection.insert(
-                        Follower(
-                            followerId = followerId.toId(),
-                            artistId = artist.id
+    override suspend fun insert(name: String, password: String, email: String, avatarFile: ImageFile?) =
+        coroutineScope {
+            withContext(Dispatchers.IO) {
+                if (artistCollection.findByName(name) == null) {
+                    val avatar = avatarFile?.let { image ->
+                        val avatarFolder = name.toLowerCase()
+                        val avatarName = "$avatarFolder/${image.name}"
+                        FileManager.save(FileManager.avatarsFolder(), avatarName, image.bytes)
+                        Avatar(avatarName)
+                    }
+                    avatar?.let { avatarCollection.insert(it) }
+                    artistCollection.insert(
+                        Artist(
+                            name = name,
+                            password = PwdEncryptor.hash(password),
+                            email = email,
+                            roleId = null,
+                            avatarId = ObjectId("${avatar?.id}").toId()
                         )
                     )
+                } else throw Exception("Invalid arguments")
+            }
+        }
+
+    override suspend fun follow(followerId: String, artistId: String, initial: Boolean): FollowedResponse =
+        coroutineScope {
+            withContext(Dispatchers.IO) {
+                val artist = artistCollection.find(artistId.toId())
+                if (artist == null) {
+                    throw Exception("Unable to find artist with id $artistId")
                 } else {
-                    if (!followed) return@withContext
-                    followerCollection.deleteByFollower(followerId.toId())
+                    val followed = followerCollection.followed(artistId.toId(), followerId.toId())
+                    if (initial) {
+                        if (followed) return@withContext FollowedResponse(followed = true)
+                        followerCollection.insert(
+                            Follower(
+                                followerId = ObjectId(followerId).toId(),
+                                artistId = ObjectId("${artist.id}").toId()
+                            )
+                        )
+                        return@withContext FollowedResponse(followed = true)
+                    } else {
+                        if (!followed) return@withContext FollowedResponse(followed = false)
+                        followerCollection.deleteByFollower(followerId.toId())
+                        return@withContext FollowedResponse(followed = false)
+                    }
                 }
             }
         }
-    }
 }

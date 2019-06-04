@@ -3,9 +3,9 @@ package com.irrational.interactor.payment
 import com.irrational.database.document.Artist
 import com.irrational.database.document.Payment
 import com.irrational.di.AppComponent
-import org.litote.kmongo.Id
 import com.irrational.request.CardRequest
 import com.irrational.response.StatusResponse
+import org.litote.kmongo.Id
 
 
 interface PaymentLoader {
@@ -30,7 +30,8 @@ interface PaymentLoader {
     ): StatusResponse
 
     suspend fun addCard(
-        cardData: CardRequest
+        cardData: CardRequest,
+        owner: Id<Artist>
     ): StatusResponse
 
     suspend fun addWallet(

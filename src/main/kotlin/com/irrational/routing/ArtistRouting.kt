@@ -48,12 +48,13 @@ fun Routing.artists() {
                     HttpStatusCode.BadRequest,
                     "Argument <initial: Boolean> is required"
                 )
-            ArtistLoader.follow(
-                call.authPayload().artistId,
-                artistId,
-                initial
+            call.respond(
+                ArtistLoader.follow(
+                    call.authPayload().artistId,
+                    artistId,
+                    initial
+                )
             )
-            call.respond(HttpStatusCode.OK, "Followed")
         }
     }
 

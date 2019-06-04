@@ -17,7 +17,7 @@ interface ArtistLoader {
 
     suspend fun insert(name: String, password: String, email: String, avatarFile: ImageFile?)
 
-    suspend fun follow(followerId: String, artistId: String, initial: Boolean)
+    suspend fun follow(followerId: String, artistId: String, initial: Boolean): FollowedResponse
 
     suspend fun followers(artistId: String): FollowersResponse
 

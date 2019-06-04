@@ -13,6 +13,8 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import org.bson.types.ObjectId
+import org.litote.kmongo.id.toId
 import org.litote.kmongo.toId
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -51,8 +53,8 @@ class CommentLoaderImpl @Inject constructor(
                 val artist = artistCollection.find(artistId.toId())!!
                 val avatar = artist.avatarId?.let { avatarCollection.find(it) }
                 val comment = Comment(
-                    artist.id,
-                    post.id,
+                    ObjectId("${artist.id}").toId(),
+                    ObjectId("${post.id}").toId(),
                     content
                 )
                 commentCollection.insert(comment)

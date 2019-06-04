@@ -11,7 +11,9 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import org.bson.types.ObjectId
 import org.litote.kmongo.Id
+import org.litote.kmongo.id.toId
 import org.litote.kmongo.toId
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -193,16 +195,19 @@ class PostLoaderImpl @Inject constructor(
             )
             val liked = likeCollection.liked(post.id, artistId.toId())
             if (initial) {
-                if (liked) throw Exception("Already liked")
-                likeCollection.insert(
-                    Like(
-                        postId = id.toId(),
-                        artistId = artistId.toId()
+                if (liked) return@withContext LikedResponse(liked = true) else {
+                    likeCollection.insert(
+                        Like(
+                            postId = ObjectId(id).toId(),
+                            artistId = ObjectId(artistId).toId()
+                        )
                     )
-                )
+                    return@withContext LikedResponse(liked = true)
+                }
             } else {
                 if (!liked) return@withContext
                 likeCollection.deleteByArtist(post.id, artistId.toId())
+                return@withContext LikedResponse(liked = false)
             }
         }
     }
@@ -218,8 +223,8 @@ class PostLoaderImpl @Inject constructor(
                 if (bookmarked) throw Exception("Already bookmarked")
                 bookmarkCollection.insert(
                     Bookmark(
-                        postId = id.toId(),
-                        artistId = artistId.toId()
+                        postId = ObjectId(id).toId(),
+                        artistId = ObjectId(artistId).toId()
                     )
                 )
             } else {

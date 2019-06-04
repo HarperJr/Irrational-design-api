@@ -9,7 +9,9 @@ import com.irrational.request.CardRequest
 import com.irrational.response.*
 import com.irrational.utils.ApiException
 import io.ktor.http.HttpStatusCode
+import org.bson.types.ObjectId
 import org.litote.kmongo.Id
+import org.litote.kmongo.id.toId
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -21,17 +23,22 @@ class PaymentLoaderImpl @Inject constructor(
     private val virtualWalletCollection: VirtualWalletCollection,
     private var walletCardCollection: WalletCardCollection
 ) : PaymentLoader {
-    override suspend fun addCard(cardData: CardRequest): StatusResponse {
 
-        val wallet = virtualWalletCollection.findByArtist(cardData.owner)
+    override suspend fun addCard(cardData: CardRequest, owner: Id<Artist>): StatusResponse {
+        var wallet = virtualWalletCollection.findByArtist(owner)
 
         if (wallet == null) {
-            addWallet(cardData.owner)
+            addWallet(owner)
+            wallet = virtualWalletCollection.findByArtist(owner) ?: throw ApiException(
+                statusCode = HttpStatusCode.InternalServerError,
+                errorMessage = "something wrong while add wallet"
+            )
         }
+
 
         walletCardCollection.insert(
             WalletCard(
-                walletId = wallet!!.id,
+                walletId = wallet.id,
                 csc = cardData.csc,
                 cash = 0.0,
                 panFragment = cardData.panFragment,
@@ -53,7 +60,7 @@ class PaymentLoaderImpl @Inject constructor(
 
         virtualWalletCollection.insert(
             VirtualWallet(
-                artistId = owner,
+                artistId = ObjectId("$owner").toId(),
                 cash = 0.0
             )
         )

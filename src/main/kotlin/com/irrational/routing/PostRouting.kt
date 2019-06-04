@@ -17,6 +17,8 @@ import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
+import org.bson.types.ObjectId
+import org.litote.kmongo.id.toId
 import org.litote.kmongo.toId
 import java.util.*
 
@@ -77,7 +79,7 @@ fun Routing.posts() {
 
                 PostLoader.upload(
                     Post(
-                        artistId = call.authPayload().artistId.toId(),
+                        artistId = ObjectId(call.authPayload().artistId).toId(),
                         title = post.title,
                         subtitle = post.subtitle,
                         description = post.description,
