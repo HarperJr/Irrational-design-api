@@ -120,9 +120,8 @@ class PostLoaderImpl @Inject constructor(
                 artist = ArtistResponse(
                     id = artist.id,
                     name = artist.name,
-                    followed = artistId?.let { followerCollection.followed(artist.id, it.toId()) } ?: false,
-                    follows = followerCollection.follows(artist.id).count(),
                     followers = followerCollection.followers(artist.id).count(),
+                    follows = followerCollection.follows(artist.id).count(),
                     email = artist.email,
                     avatar = avatar?.let { AvatarResponse(it.link) }
                 ),
@@ -161,11 +160,10 @@ class PostLoaderImpl @Inject constructor(
                     date = post.date,
                     artist = ArtistResponse(
                         id = artist.id,
-                        followed = false,
-                        follows = followerCollection.follows(artist.id).count(),
-                        followers = followerCollection.followers(artist.id).count(),
-                        email = artist.email,
                         name = artist.name,
+                        followers = followerCollection.followers(artist.id).count(),
+                        follows = followerCollection.follows(artist.id).count(),
+                        email = artist.email,
                         avatar = avatar?.let { AvatarResponse(it.link) }
                     ),
                     likes = likeCollection.countByPost(post.id),

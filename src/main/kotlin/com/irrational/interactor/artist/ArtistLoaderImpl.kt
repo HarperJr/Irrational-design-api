@@ -39,15 +39,14 @@ class ArtistLoaderImpl @Inject constructor(
             } else {
                 val avatar = artist.avatarId?.let { avatarCollection.find(it) }
                 return@withContext ArtistResponse(
-                    avatar = avatar?.let {
-                        AvatarResponse(it.link)
-                    },
+                    id = artist.id,
                     name = artist.name,
-                    email = artist.email,
-                    followed = false,
                     followers = followerCollection.followers(artist.id).count(),
                     follows = followerCollection.follows(artist.id).count(),
-                    id = artist.id
+                    email = artist.email,
+                    avatar = avatar?.let {
+                        AvatarResponse(it.link)
+                    }
                 )
             }
         }
@@ -77,7 +76,6 @@ class ArtistLoaderImpl @Inject constructor(
                         ArtistResponse(
                             id = artist.id,
                             name = artist.name,
-                            followed = false,
                             followers = followerCollection.followers(artist.id).count(),
                             follows = followerCollection.follows(artist.id).count(),
                             email = artist.email,
@@ -98,7 +96,6 @@ class ArtistLoaderImpl @Inject constructor(
                         ArtistResponse(
                             id = artist.id,
                             name = artist.name,
-                            followed = false,
                             followers = followerCollection.followers(artist.id).count(),
                             follows = followerCollection.follows(artist.id).count(),
                             email = artist.email,
@@ -109,9 +106,9 @@ class ArtistLoaderImpl @Inject constructor(
         }
     }
 
-    override suspend fun followed(artistId: String, id: String): FollowedResponse = coroutineScope {
+    override suspend fun followed(followerId: String, artistId: String): FollowedResponse = coroutineScope {
         withContext(Dispatchers.IO) {
-            FollowedResponse(followerCollection.followed(id.toId(), artistId.toId()))
+            FollowedResponse(followerCollection.followed(artistId.toId(), followerId.toId()))
         }
     }
 

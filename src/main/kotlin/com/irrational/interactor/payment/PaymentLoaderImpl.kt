@@ -151,7 +151,10 @@ class PaymentLoaderImpl @Inject constructor(
             statusCode = HttpStatusCode.BadRequest,
             errorMessage = "Receiver wallet not found"
         )
-
+        if (senderCard.cash < payment.amount) return PaymentErrorResponse(
+            error = "payment_refused",
+            errorDescription = "not enough cash"
+        )
         senderCard.cash -= payment.amount
         walletCardCollection.update(senderCard)
 
@@ -196,6 +199,11 @@ class PaymentLoaderImpl @Inject constructor(
         val receiverWallet = virtualWalletCollection.findByArtist(receiver.id) ?: throw ApiException(
             statusCode = HttpStatusCode.BadRequest,
             errorMessage = "Receiver wallet not found"
+        )
+
+        if (senderWallet.cash < payment.amount) return PaymentErrorResponse(
+            error = "payment_refused",
+            errorDescription = "not enough cash"
         )
 
         senderWallet.cash -= payment.amount

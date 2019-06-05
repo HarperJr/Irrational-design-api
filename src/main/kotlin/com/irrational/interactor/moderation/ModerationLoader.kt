@@ -21,8 +21,6 @@ interface ModerationLoader {
 
     suspend fun blockPost(postId: Id<Post>, blocked: Boolean): StatusResponse
 
-    suspend fun isModerator(roleId: Id<Role>): Boolean
-
     companion object : ModerationLoader by INSTANCE
 }
 

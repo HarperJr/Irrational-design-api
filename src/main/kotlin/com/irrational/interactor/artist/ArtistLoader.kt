@@ -23,7 +23,7 @@ interface ArtistLoader {
 
     suspend fun follows(artistId: String): FollowsResponse
 
-    suspend fun followed(artistId: String, id: String): FollowedResponse
+    suspend fun followed(followerId: String, artistId: String): FollowedResponse
 
     companion object : ArtistLoader by INSTANCE
 }

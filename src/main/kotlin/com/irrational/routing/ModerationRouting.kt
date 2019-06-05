@@ -15,12 +15,6 @@ fun Routing.moderation() {
 
     authenticate {
         post("/complaint/{id}/push") {
-            if (!ModerationLoader.moderatorCheck(call.authPayload().roleId.toId())) call.respond(
-                ApiException(
-                    statusCode = HttpStatusCode.Forbidden,
-                    errorMessage = "Access denied"
-                )
-            )
             val postId = call.parameters["id"] ?: return@post call.respond(
                 ApiException(
                     statusCode = HttpStatusCode.BadRequest,
@@ -74,7 +68,12 @@ fun Routing.moderation() {
         }
 
         post("/post/{id}/ban") {
-
+            if (!ModerationLoader.moderatorCheck(call.authPayload().roleId.toId())) call.respond(
+                ApiException(
+                    statusCode = HttpStatusCode.Forbidden,
+                    errorMessage = "Access denied"
+                )
+            )
             val initial = call.request.queryParameters["initial"]?.toBoolean()
                 ?: throw ApiException(
                     HttpStatusCode.BadRequest,
@@ -85,7 +84,7 @@ fun Routing.moderation() {
         }
 
         post("moderation/check") {
-            call.respond(ModerationLoader.isModerator(call.authPayload().roleId.toId()))
+            call.respond(ModerationLoader.moderatorCheck(call.authPayload().roleId.toId()))
         }
     }
 }
